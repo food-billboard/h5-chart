@@ -5,7 +5,7 @@ import {
 } from '../../constants';
 
 const isStatic = process.env.REACT_APP === 'static';
-const isImportBackend = process.env.REACT_APP === 'improve_prod';
+const isImportBackend = process.env.REACT_APP === 'improve';
 const isDebug = process.env.REACT_DEBUG === 'debug';
 
 class GlobalConfig {

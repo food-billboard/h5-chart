@@ -72,7 +72,11 @@ export function UploadImage(
 
   // improve版本
   if (GlobalConfig.IS_IMPROVE_BACKEND) {
-    return uploadFileImprove(originFileObj!).then((data) => {});
+    return uploadFileImprove(originFileObj!).then((data) => {
+      value.url = createImproveUploadResultFileUrl(data);
+      value.status = 'done';
+      onChange?.(value);
+    });
   }
 
   value.response = value.response || {};
@@ -116,6 +120,14 @@ export function UploadImage(
     value.response.task = task;
   }
 }
+
+// improve 没有直接返回文件路径，需要自己拼
+export const createImproveUploadResultFileUrl = (
+  data: API_IMPROVE.MediaData,
+) => {
+  const { collectionId, id, file } = data;
+  return `${process.env.API_IMPROVE_URL}/api/files/${collectionId}/${id}/${file}`;
+};
 
 export const createBaseUploadFile: (file: RcFile) => UploadFile = (file) => {
   return {

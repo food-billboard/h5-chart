@@ -27,6 +27,7 @@ const commonConfig = {
   define: {
     'process.env.REACT_APP': process.env.REACT_APP,
     'process.env.REACT_DEBUG': process.env.REACT_DEBUG,
+    'process.env.API_IMPROVE_URL': process.env.API_IMPROVE_URL,
   },
   hash: true,
   antd: {},

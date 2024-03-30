@@ -50,7 +50,7 @@ const Layout = (props: { children?: ReactNode }) => {
               label: '模板',
               key: '/model',
             },
-            ...(!GlobalConfig.IS_IMPROVE_BACKEND
+            ...(GlobalConfig.IS_IMPROVE_BACKEND
               ? [
                   {
                     label: '媒体资源',

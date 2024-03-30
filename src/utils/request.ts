@@ -125,7 +125,6 @@ const request = async <ResBody>(
 
   // 返回真正的response body res 内容
   if (!error) {
-    console.log(body, 222222);
     return (
       origin ? body : (improve ? body?.data : body?.data?.res?.data) ?? {}
     ) as ResBody;

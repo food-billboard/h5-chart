@@ -770,7 +770,7 @@ declare namespace Logger {
 
 declare namespace ComponentType {
   export type ComponentChildren = {
-    type: string;
+    type: ComponentData.TComponentSelfType;
     title: string;
     icon: any;
     description: string;

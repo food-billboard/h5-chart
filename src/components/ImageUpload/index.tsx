@@ -120,11 +120,6 @@ const PicturesWall = (
     [UploadImage, setInputValue, onRemove, value],
   );
 
-  // improve自定义上传
-  const beforeUploadImprove = useCallback(async (file) => {
-    return false;
-  }, []);
-
   // 默认自定义上传
   const beforeUploadNormal = useCallback(
     async (file) => {
@@ -148,13 +143,11 @@ const PicturesWall = (
     async (file) => {
       if (GlobalConfig.IS_STATIC) {
         return beforeUploadStatic(file);
-      } else if (GlobalConfig.IS_IMPROVE_BACKEND) {
-        return beforeUploadImprove(file);
       } else {
         return beforeUploadNormal(file);
       }
     },
-    [beforeUploadStatic, beforeUploadNormal, beforeUploadImprove],
+    [beforeUploadStatic, beforeUploadNormal],
   );
 
   const onUrlChange = useCallback(

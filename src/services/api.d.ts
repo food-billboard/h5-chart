@@ -233,8 +233,9 @@ declare namespace API_IMPROVE {
   };
 
   export type AddMediaDataParams = {
-    classic: string;
-    value: string;
+    collectionId: string;
+    id: string;
+    file: string;
   };
 
   export type DeleteMediaDataParams = AddMediaDataParams;

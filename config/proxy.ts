@@ -1,6 +1,6 @@
-export const API_IMPROVE = 'http://jimmy2021nas.ddnsfree.com:20038';
 export const API_DOMAIN = 'http://47.97.27.23';
 // export const API_DOMAIN = 'http://localhost:4000';
+const API_IMPROVE_URL = process.env.API_IMPROVE_URL;
 
 export default {
   dev: {
@@ -24,8 +24,18 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
+    '/api/manage/': {
+      target: API_DOMAIN,
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
+    },
+    '/api/files/': {
+      target: API_IMPROVE_URL,
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
+    },
     '/api/collections/': {
-      target: API_IMPROVE,
+      target: API_IMPROVE_URL,
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
@@ -61,8 +71,18 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
+    '/api/manage/': {
+      target: API_DOMAIN,
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
+    },
     '/api/collections/': {
-      target: API_IMPROVE,
+      target: API_IMPROVE_URL,
+      changeOrigin: true,
+      pathRewrite: { '^': '' },
+    },
+    '/api/files/': {
+      target: API_IMPROVE_URL,
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },

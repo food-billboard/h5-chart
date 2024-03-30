@@ -4,7 +4,7 @@ import request from '../utils/request';
 export async function uploadFileImprove(file: File) {
   const formData = new FormData();
   formData.append('file', file);
-  return request('/api/collections/media/records', {
+  return request<API_IMPROVE.MediaData>('/api/collections/media/records', {
     method: 'POST',
     data: formData,
     improve: true,
@@ -78,10 +78,9 @@ export async function addMediaData(data: API_IMPROVE.AddMediaDataParams) {
 export async function deleteMediaData(
   params: API_IMPROVE.DeleteMediaDataParams,
 ) {
-  const { value, classic } = params;
-  return request(`/api/files/${classic}/${'records'}/${value}`, {
+  const { collectionId, id } = params;
+  return request(`/api/collections/${collectionId}/records/${id}`, {
     method: 'DELETE',
-    params,
     improve: true,
   });
 }
