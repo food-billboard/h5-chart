@@ -23,7 +23,6 @@ import {
   deleteClassic,
   addClassic,
   updateClassic,
-  addMediaData,
   deleteMediaData,
 } from '@/services';
 import GlobalConfig from '@/utils/Assist/GlobalConfig';

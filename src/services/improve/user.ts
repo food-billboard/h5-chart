@@ -1,14 +1,5 @@
 import { merge } from 'lodash';
 import { request } from '@/utils';
-import GlobalConfig from '@/utils/Assist/GlobalConfig';
-import {
-  getUserInfo4Improve,
-  accountLogin4Improve,
-  getCaptcha4Improve,
-  outLogin4Improve,
-  forgetPassword4Improve,
-  register4Improve,
-} from './improve';
 
 const { REACT_APP_ENV } = process.env;
 
@@ -29,18 +20,16 @@ export interface ResetParamsType
   extends Pick<RegisterParamsType, 'email' | 'password' | 'captcha'> {}
 
 // 获取当前用户信息
-export async function getUserInfo() {
-  if (GlobalConfig.IS_IMPROVE_BACKEND) return getUserInfo4Improve();
+export async function getUserInfo4Improve() {
   return request<any>('/api/customer/manage', {
     method: 'GET',
   });
 }
 
 // 登录
-export async function accountLogin(
+export async function accountLogin4Improve(
   params: Pick<LoginParamsType, 'mobile' | 'password'>,
 ) {
-  if (GlobalConfig.IS_IMPROVE_BACKEND) return accountLogin4Improve(params);
   return request<any>('/api/user/logon/account', {
     method: 'POST',
     data: merge(params, { env: REACT_APP_ENV || 'prod' }),
@@ -49,8 +38,10 @@ export async function accountLogin(
 }
 
 // 邮箱验证码
-export async function getCaptcha(email: string, type: 'register' | 'forget') {
-  if (GlobalConfig.IS_IMPROVE_BACKEND) return getCaptcha4Improve(email, type);
+export async function getCaptcha4Improve(
+  email: string,
+  type: 'register' | 'forget',
+) {
   return request(`/api/user/logon/email`, {
     method: 'POST',
     data: {
@@ -61,16 +52,14 @@ export async function getCaptcha(email: string, type: 'register' | 'forget') {
 }
 
 // 退出登录
-export async function outLogin() {
-  if (GlobalConfig.IS_IMPROVE_BACKEND) return outLogin4Improve();
+export async function outLogin4Improve() {
   return request('/api/user/logon/signout', {
     method: 'POST',
   });
 }
 
 // 忘记密码
-export async function forgetPassword(params: ResetParamsType) {
-  if (GlobalConfig.IS_IMPROVE_BACKEND) return forgetPassword4Improve(params);
+export async function forgetPassword4Improve(params: ResetParamsType) {
   return request('/api/user/logon/forget', {
     method: 'PUT',
     data: params,
@@ -78,8 +67,7 @@ export async function forgetPassword(params: ResetParamsType) {
 }
 
 // 注册
-export async function register(params: RegisterParamsType) {
-  if (GlobalConfig.IS_IMPROVE_BACKEND) return register4Improve(params);
+export async function register4Improve(params: RegisterParamsType) {
   return request('/api/user/logon/register', {
     method: 'POST',
     data: params,

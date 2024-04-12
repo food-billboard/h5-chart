@@ -1,10 +1,7 @@
-import GlobalConfig from '@/utils/Assist/GlobalConfig';
-import request from '../utils/request';
-import { getMockKindList4Improve } from './improve';
+import request from '../../utils/request';
 
 // mock数据格式列表
-export const getMockKindList = async () => {
-  if (GlobalConfig.IS_IMPROVE_BACKEND) return getMockKindList4Improve();
+export const getMockKindList4Improve = async () => {
   return request<API_MOCK.TGetMockKindListData[]>('/api/screen/mock/params', {
     method: 'GET',
   }).then((data) => {
