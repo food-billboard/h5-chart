@@ -10,6 +10,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { connect, history } from 'umi';
 import Icon from '@/components/ChartComponents/Common/Icon';
 import { getCaptcha } from '@/services';
+import GlobalConfig from '@/utils/Assist/GlobalConfig';
 import CommonBackground from './components/Background';
 import { mapDispatchToProps, mapStateToProps } from './connect';
 import styles from './index.less';
@@ -165,8 +166,9 @@ const Login = (props: { login: (value: any) => any }) => {
 
   const { message } = App.useApp();
 
-  const [mobile, setMobile] = useState<string>('18356778908');
-  const [password, setPassword] = useState<string>('123456789');
+  const [mobile, setMobile] = useState<string>('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState<string>('');
   const [fetchLoading, setFetchLoading] = useState<boolean>(false);
 
   const tips = useMemo(() => {
@@ -190,19 +192,27 @@ const Login = (props: { login: (value: any) => any }) => {
 
   const handleLogin = useCallback(async () => {
     if (fetchLoading) return;
+    const realEmail = email.trim();
     const realMobile = mobile.trim();
-    if (!realMobile || !password) {
+    if (
+      !(GlobalConfig.IS_IMPROVE_BACKEND ? realEmail : realMobile) ||
+      !password
+    ) {
       return message.info('账号或密码错误');
     }
     setFetchLoading(true);
     try {
-      await login({ mobile: realMobile, password });
+      await login({
+        mobile: realMobile,
+        password,
+        email: realEmail,
+      });
     } catch (err) {
       message.info('账号或密码错误');
     } finally {
       setFetchLoading(false);
     }
-  }, [mobile, password, login, fetchLoading]);
+  }, [mobile, password, login, fetchLoading, email]);
 
   const action = useMemo(() => {
     return (
@@ -235,7 +245,11 @@ const Login = (props: { login: (value: any) => any }) => {
       action={action}
       onSubmit={handleLogin}
     >
-      <Mobile value={mobile} onChange={setMobile} />
+      {GlobalConfig.IS_IMPROVE_BACKEND ? (
+        <Email value={email} onChange={setEmail} />
+      ) : (
+        <Mobile value={mobile} onChange={setMobile} />
+      )}
       <Password value={password} onChange={setPassword} />
     </CommonBackground>
   );

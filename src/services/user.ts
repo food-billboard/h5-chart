@@ -18,6 +18,7 @@ export interface LoginParamsType {
   mobile: string;
   captcha: string;
   type: string;
+  email: string;
 }
 
 export interface RegisterParamsType
@@ -38,7 +39,7 @@ export async function getUserInfo() {
 
 // 登录
 export async function accountLogin(
-  params: Pick<LoginParamsType, 'mobile' | 'password'>,
+  params: Pick<LoginParamsType, 'mobile' | 'password' | 'email'>,
 ) {
   if (GlobalConfig.IS_IMPROVE_BACKEND) return accountLogin4Improve(params);
   return request<any>('/api/user/logon/account', {
