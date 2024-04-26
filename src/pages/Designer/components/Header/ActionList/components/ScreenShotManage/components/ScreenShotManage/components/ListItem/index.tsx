@@ -18,7 +18,7 @@ const ListItem = (props: {
   onUpdate: () => Promise<any>;
 }) => {
   const { value, onUpdate, screen } = props;
-  const { isUse, _id, createAt, description } = value;
+  const { isUse, _id, created, description } = value;
 
   const {
     onUpdate: serviceUpdate,
@@ -50,7 +50,7 @@ const ListItem = (props: {
           )}
         >
           <div style={isUse ? { color: 'var(--primary-color)' } : {}}>
-            {createAt}
+            {created}
           </div>
           <div
             title={description}

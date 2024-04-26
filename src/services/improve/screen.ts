@@ -1,32 +1,181 @@
 import { merge } from 'lodash';
-import { isModelHash, useAnyDva } from '@/hooks';
+import { isModelHash } from '@/hooks';
 import { getLocationQuery } from '../../utils';
 import { SCREEN_VERSION, SERVICE_REQUEST_URL } from '../../utils/constants';
+import PocketBase, {
+  parseFilter,
+  getUserInfo,
+} from '../../utils/pocketBaseRequest';
 import request from '../../utils/request';
 
 const { REACT_APP_ENV } = process.env;
 
+// 已完成
+
 // 新增大屏
 export const postScreen4Improve = (data: API_SCREEN.TAddScreenParams) => {
-  return request('/api/screen/list', {
-    method: 'POST',
-    data: {
+  return PocketBase.collection('screen')
+    .create({
       ...data,
+      user: getUserInfo(),
       version: SCREEN_VERSION(),
-    },
-  });
+    })
+    .then((data) => data.id);
 };
 
 // 修改大屏
 export const putScreen4Improve = (data: API_SCREEN.TEditScreenParams) => {
-  return request('/api/screen/list', {
-    method: 'PUT',
-    data: {
-      ...data,
-      version: SCREEN_VERSION(),
-    },
+  const { _id, ...nextData } = data;
+  return PocketBase.collection('screen').update(_id, {
+    ...nextData,
+    user: getUserInfo(),
+    version: SCREEN_VERSION(),
   });
 };
+
+// 大屏详情
+export const getScreenDetail4Improve = (
+  params: API_SCREEN.TGetScreenDetail,
+): Promise<API_SCREEN.TScreenDetail> => {
+  const { _id } = params;
+  return PocketBase.collection('screen')
+    .getOne<API_SCREEN.TScreenDetail & { id: string; data: string }>(_id)
+    .then((data) => {
+      const { data: screenData, id, ...nextData } = data;
+      return {
+        ...nextData,
+        _id: id,
+        components: screenData,
+      } as API_SCREEN.TScreenDetail;
+    });
+};
+
+// 大屏列表
+export const getScreenList4Improve = (
+  params: API_SCREEN.TGetScreenListParams,
+) => {
+  const { currPage, pageSize, content, flag } = params;
+  return PocketBase.collection('screen').getList<API_IMPROVE.ResponseListData>(
+    currPage,
+    pageSize,
+    {
+      filter: parseFilter([
+        {
+          key: 'flag',
+          value: flag,
+          operator: '=',
+        },
+        {
+          key: 'name',
+          value: content,
+          operator: '~',
+        },
+        {
+          key: 'description',
+          value: content,
+          operator: '~',
+        },
+      ]),
+      fields: 'id,description,name,flag,poster,enable',
+    },
+  );
+};
+
+// 大屏删除
+export const deleteScreen4Improve = (
+  params: API_SCREEN.TDeleteScreenParams,
+) => {
+  return PocketBase.collection('screen').delete(params._id);
+};
+
+// 大屏启用
+export const enableScreen4Improve = (data: API_SCREEN.TEnableScreenParams) => {
+  return PocketBase.collection('screen').update(data._id, {
+    enable: true,
+  });
+};
+
+// 大屏禁用
+export const disabledScreen4Improve = (
+  params: API_SCREEN.TDisabledScreenParams,
+) => {
+  return PocketBase.collection('screen').update(params._id, {
+    enable: false,
+  });
+};
+
+// 快照列表
+export async function getScreenShotList(
+  params: API_IMPROVE.GetScreenShotListParams,
+): Promise<API_IMPROVE.GetScreenShotListData[]> {
+  return PocketBase.collection('screen_shot')
+    .getFullList<API_IMPROVE.GetScreenShotListData>({
+      filter: parseFilter([
+        {
+          key: 'id',
+          value: params._id,
+          operator: '=',
+        },
+      ]),
+      expand: 'user',
+      fields:
+        'id,description,created,user,isUse,expand.user.username,expand.user.avatar',
+    })
+    .then((data) => {
+      return data.map((item) => {
+        // @ts-ignore
+        const { expand, ...nextItem } = item;
+        return {
+          ...nextItem,
+          ...expand?.user,
+        };
+      });
+    });
+}
+
+// 当前快照详情
+export async function getCurrentScreenShotData(
+  params: API_SCREEN.TGetScreenDetail,
+) {
+  return PocketBase.collection('screen_shot')
+    .getFullList<API_IMPROVE.GetScreenShotListData>({
+      filter: parseFilter([
+        {
+          key: 'screen',
+          value: params._id,
+          operator: '=',
+          ignore: null,
+        },
+        {
+          key: 'isUser',
+          value: true,
+          operator: '=',
+          ignore: null,
+        },
+      ]),
+    })
+    .then((data) => {
+      return data[0];
+    });
+}
+
+// 删除快照
+export async function deleteScreenShot(params: {
+  _id: string;
+  screen: string;
+}) {
+  return PocketBase.collection('screen_shot').delete(params._id);
+}
+
+// 更新快照
+export async function updateScreenShot(data: API_IMPROVE.UpdateScreenShotData) {
+  const { _id, description } = data;
+  return PocketBase.collection('screen_shot').update(_id, {
+    description,
+  });
+}
+
+// 未完成
 
 // 链式修改大屏
 export const putScreenPool4Improve = (
@@ -66,8 +215,7 @@ export const deleteScreenPool4Improve = (
   customParams?: Partial<{ _id: string; type: string }>,
 ) => {
   const { id } = getLocationQuery() || {};
-  const { getState } = useAnyDva();
-  const userId = getState().user.currentUser._id;
+  const userId = getUserInfo();
 
   let params = {
     type: isModelHash(location.hash) ? 'model' : 'screen',
@@ -87,47 +235,6 @@ export const deleteScreenPool4Improve = (
     type: 'text/plain',
   });
   navigator.sendBeacon(url, data);
-};
-
-// 大屏详情
-export const getScreenDetail4Improve = (
-  params: API_SCREEN.TGetScreenDetail,
-) => {
-  return request<API_SCREEN.TScreenDetail>('/api/screen/detail', {
-    method: 'GET',
-    params,
-  });
-};
-
-// 大屏列表
-export const getScreenList4Improve = (
-  params: API_SCREEN.TGetScreenListParams,
-) => {
-  const { currPage, pageSize, ...nextParams } = params;
-  return request<any>('/api/collections/screen/records', {
-    method: 'GET',
-    params: {
-      ...nextParams,
-      page: currPage,
-      perPage: pageSize,
-    },
-    improve: true,
-  });
-  return request<any>('/api/screen/list', {
-    method: 'GET',
-    params,
-    origin: true,
-  });
-};
-
-// 大屏删除
-export const deleteScreen4Improve = (
-  params: API_SCREEN.TDeleteScreenParams,
-) => {
-  return request('/api/screen/list', {
-    method: 'DELETE',
-    params,
-  });
 };
 
 // 大屏预览
@@ -216,24 +323,6 @@ export const shareScreenPost4Improve = (
   });
 };
 
-// 大屏启用
-export const enableScreen4Improve = (data: API_SCREEN.TEnableScreenParams) => {
-  return request('/api/screen/enable', {
-    method: 'PUT',
-    data,
-  });
-};
-
-// 大屏禁用
-export const disabledScreen4Improve = (
-  params: API_SCREEN.TDisabledScreenParams,
-) => {
-  return request('/api/screen/enable', {
-    method: 'DELETE',
-    params,
-  });
-};
-
 // 服务端代理数据请求
 export const preRequestData4Improve = (
   data: API_SCREEN.TPreRequestDataParams,
@@ -266,68 +355,26 @@ export const postScreenExport4Improve = (
   });
 };
 
-// 快照列表
-export async function getScreenShotList(
-  params: API_IMPROVE.GetScreenShotListParams,
-) {
-  return request('/api/screen/model', {
-    method: 'GET',
-    params,
-    improve: true,
-  });
-}
-
-// 当前快照详情
-export async function getCurrentScreenShotData(
-  params: API_SCREEN.TGetScreenDetail,
-) {
-  return request('/api/screen/model', {
-    method: 'GET',
-    params,
-    improve: true,
-  });
-}
-
-// 删除快照
-export async function deleteScreenShot(params: {
-  _id: string;
-  screen: string;
-}) {
-  return request('/api/screen/model', {
-    method: 'DELETE',
-    params,
-    improve: true,
-  });
-}
-
-// 更新快照
-export async function updateScreenShot(data: API_IMPROVE.UpdateScreenShotData) {
-  return request('/api/screen/model', {
-    method: 'PUT',
-    data,
-    improve: true,
+// 使用快照
+export async function useScreenShot(data: { _id: string; screen: string }) {
+  return PocketBase.collection('screen_shot').update(data._id, {
+    // 需要把其他已启用的改成未启用
+    isUse: true,
   });
 }
 
 // 新增快照
 export async function addScreenShot(data: { _id: string }) {
-  return request('/api/screen/model', {
-    method: 'POST',
-    data,
-    improve: true,
-  });
-}
-
-// 使用快照
-export async function useScreenShot(data: { _id: string; screen: string }) {
-  return request('/api/screen/model', {
-    method: 'PUT',
-    data,
-    improve: true,
+  return PocketBase.collection('screen_id').create({
+    screen: data._id,
+    isUse: false,
+    user: getUserInfo(),
+    // 需要后端自行去获取当前大屏的数据
   });
 }
 
 // 覆盖快照
+// 将当前大屏的数据覆盖到当前快照，即更新快照的data
 export async function coverScreenShot(data: { _id: string; screen: string }) {
   return request('/api/screen/model', {
     method: 'PUT',

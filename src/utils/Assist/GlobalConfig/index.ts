@@ -50,7 +50,7 @@ class GlobalConfig {
   };
 
   // 是否开启 mock数据配置
-  ENABLE_MOCK_DATA_CONFIG = true;
+  ENABLE_MOCK_DATA_CONFIG = !isImportBackend;
 
   // mock数据请求的url地址
   // ? 不知道为什么赋值不了，改成get/set
@@ -87,8 +87,8 @@ class GlobalConfig {
     | 'auto'
     | 'manual'
     | 'auto-all'
-    | 'auto-all-storage' =
-    isStatic || isImportBackend ? 'auto-all-storage' : 'auto';
+    | 'auto-all-storage' = 'manual';
+  // isStatic || isImportBackend ? 'auto-all-storage' : 'auto';
 
   // 是否为自动保存类型
   isAutoSaveType() {

@@ -32,7 +32,7 @@ const useService = ({ screen }: { screen: string }) => {
   const fetchData = async () => {
     if (GlobalConfig.IS_IMPROVE_BACKEND) {
       const result = await getScreenShotList({ _id: screen });
-      setDataSource(result as API_IMPROVE.GetScreenShotListData[]);
+      setDataSource(result || []);
     } else if (GlobalConfig.IS_STATIC) {
       // ? 不需要获取数据，直接从本地storage拿
     }
@@ -55,7 +55,7 @@ const useService = ({ screen }: { screen: string }) => {
             ...(localDataSource[screen] || []),
             {
               _id: Date.now().toString(),
-              createAt: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+              created: dayjs().format('YYYY-MM-DD HH:mm:ss'),
               user: '',
               description: '',
               isUse: false,

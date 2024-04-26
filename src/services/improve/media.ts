@@ -1,27 +1,32 @@
+import { get } from 'lodash';
+import PocketBase from '../../utils/pocketBaseRequest';
 import request from '../../utils/request';
 
 // 文件上传
-export async function uploadFileImprove(file: File) {
+export async function uploadFileImprove(
+  file: File,
+): Promise<API_IMPROVE.MediaData> {
   const formData = new FormData();
   formData.append('file', file);
-  return request<API_IMPROVE.MediaData>('/api/collections/media/records', {
-    method: 'POST',
-    data: formData,
-    improve: true,
-  });
+  return PocketBase.collection('media').create(formData);
 }
 
 // 获取媒体资源列表
-export async function getMediaList(params: API_IMPROVE.MediaParams) {
+export async function getMediaList(
+  params: API_IMPROVE.MediaParams,
+): Promise<API_IMPROVE.MediaDataRes> {
   const { current, pageSize } = params;
-  return request<API_IMPROVE.MediaDataRes>('/api/collections/media/records', {
-    method: 'GET',
-    params: {
-      page: current,
-      perPage: pageSize,
-    },
-    improve: true,
-  });
+  return PocketBase.collection('media')
+    .getList<API_IMPROVE.ResponseListData<API_IMPROVE.MediaData>>(
+      current,
+      pageSize,
+    )
+    .then((data: any) => {
+      return {
+        list: get(data, 'data.res.list'),
+        total: get(data, 'data.res.total'),
+      };
+    }) as any;
 }
 
 // ! 暂时没用

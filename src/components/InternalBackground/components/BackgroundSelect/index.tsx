@@ -155,13 +155,13 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
       async ({ current, classic }: { current: number; classic: string }) => {
         if (!GlobalConfig.IS_IMPROVE_BACKEND) return;
         setFetchLoading(true);
-        const data: API_IMPROVE.MediaDataRes = await getMediaList({
+        const data = await getMediaList({
           current,
           pageSize: pageSize.current,
           classic,
         });
         setImproveDataSource(
-          data.items.map((item) => {
+          data.list.map((item) => {
             return {
               ...item,
               value: createImproveUploadResultFileUrl(item),
@@ -172,7 +172,7 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
             };
           }),
         );
-        setTotal(data.totalItems);
+        setTotal(data.total);
         setFetchLoading(false);
       },
       [],

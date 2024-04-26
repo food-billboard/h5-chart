@@ -9648,6 +9648,11 @@ pngjs@^5.0.0:
   resolved "https://registry.npmmirror.com/pngjs/-/pngjs-5.0.0.tgz#e79dd2b215767fd9c04561c01236df960bce7fbb"
   integrity sha512-40QW5YalBNfQo5yRYmiw7Yz6TKKVr3h6970B2YE+3fQpsWcrbj1PzJgxeJ19DRQjhMbKPIuMY8rFaXc8moolVw==
 
+pocketbase@^0.21.2:
+  version "0.21.2"
+  resolved "https://registry.npmmirror.com/pocketbase/-/pocketbase-0.21.2.tgz#0eee13983048610150c2c78ff2fa53545695afe9"
+  integrity sha512-XZdgU9dEv3TPjexDRHy5feYrZrJhWqxTki8ClFGpsnC51G3Qkwoa/U7CVG72jYcLDP3p0HiEhRUUevnlryWkHA==
+
 point-in-polygon@^1.1.0:
   version "1.1.0"
   resolved "https://registry.npmmirror.com/point-in-polygon/-/point-in-polygon-1.1.0.tgz#b0af2616c01bdee341cbf2894df643387ca03357"

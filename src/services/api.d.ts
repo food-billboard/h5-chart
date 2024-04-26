@@ -195,6 +195,15 @@ declare namespace API_THIRD {
 }
 
 declare namespace API_IMPROVE {
+  export type ResponseListData<T = any> = {
+    data: {
+      res: {
+        list: T[];
+        total: number;
+      };
+    };
+  };
+
   export type MediaParams = {
     current: number;
     pageSize: number;
@@ -215,8 +224,8 @@ declare namespace API_IMPROVE {
   };
 
   export type MediaDataRes = {
-    totalItems: number;
-    items: MediaData[];
+    total: number;
+    list: MediaData[];
   };
 
   export type MediaClassicData = {
@@ -246,10 +255,12 @@ declare namespace API_IMPROVE {
 
   export type GetScreenShotListData = {
     _id: string;
-    createAt: string;
+    created: string;
     user: string;
     description: string;
     isUse: boolean;
+    username?: string;
+    avatar?: string;
   };
 
   export type UpdateScreenShotData = {

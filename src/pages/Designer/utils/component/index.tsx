@@ -821,7 +821,7 @@ export const COMPONENT_TYPE_LIST: ComponentType.ComponentTypeList[] = [
     });
     return acc;
   }, []),
-];
+] as ComponentType.ComponentTypeList[];
 
 export const COMPONENT_ONLY_TYPE_LIST = COMPONENT_TYPE_LIST.reduce<
   {
