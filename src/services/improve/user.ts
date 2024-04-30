@@ -1,8 +1,4 @@
-import { merge } from 'lodash';
 import PocketBase from '../../utils/pocketBaseRequest';
-import request from '../../utils/request';
-
-const { REACT_APP_ENV } = process.env;
 
 export interface LoginParamsType {
   username: string;
@@ -23,9 +19,12 @@ export interface ResetParamsType
 
 // 获取当前用户信息
 export async function getUserInfo4Improve() {
-  return request<any>('/api/customer/manage', {
-    method: 'GET',
-  });
+  return PocketBase.collection('user')
+    .authRefresh()
+    .then((data) => {
+      console.log(data, 222222);
+      return data;
+    });
 }
 
 // 登录
@@ -53,17 +52,17 @@ export async function outLogin4Improve() {
 
 // 忘记密码
 export async function forgetPassword4Improve(params: ResetParamsType) {
-  return request('/api/user/logon/forget', {
-    method: 'PUT',
-    data: params,
-  });
+  return PocketBase.collection('user').requestPasswordReset(params.email);
 }
 
 // 注册
 export async function register4Improve(params: RegisterParamsType) {
-  return PocketBase.collection('user').create({});
-  return request('/api/user/logon/register', {
-    method: 'POST',
-    data: params,
+  const { email, password } = params;
+  return PocketBase.collection('user').create({
+    username: `一条咸鱼${Date.now()}`,
+    email,
+    password,
+    passwordConfirm: password,
+    avatar: `${process.env.API_IMPROVE_URL}/api/files/2032389060504322048/2047184411262189568/OxXgNBVZeA_NWHbVLN0eo.jpg`,
   });
 }
