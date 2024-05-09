@@ -61,6 +61,10 @@ export const normalRouter = [
             component: '@/pages/Previewer',
           },
           {
+            path: '/reset',
+            component: '@/pages/Reset',
+          },
+          {
             redirect: '/',
             component: '@/pages/Home',
           },

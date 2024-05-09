@@ -84,8 +84,10 @@ export function parseFilter(
 export default pb;
 
 export function getUserInfo() {
-  return '2045448404569423872';
   const { getState } = useAnyDva();
-  const userId = getState().user.currentUser._id;
-  return userId;
+  return getState().user.currentUser;
+}
+
+export function getUserId() {
+  return getUserInfo()._id;
 }

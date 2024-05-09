@@ -1,43 +1,38 @@
 import { Button, App } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
 import { connect } from 'umi';
-import { Captcha, Email, Password } from '../Login';
+import { Email, Password } from '../Login';
 import CommonBackground from '../Login/components/Background';
 import { mapDispatchToProps, mapStateToProps } from './connect';
 
-const Forget = (props: { forget: (value: any) => any }) => {
+const Reset = (props: { forget: (value: any) => any }) => {
   const { forget } = props;
 
   const { message } = App.useApp();
 
   const [password, setPassword] = useState<string>('');
   const [email, setEmail] = useState<string>('');
-  const [captcha, setCaptcha] = useState<string>('');
   const [fetchLoading, setFetchLoading] = useState<boolean>(false);
 
-  const handleForget = useCallback(async () => {
+  const handleReset = useCallback(async () => {
     if (fetchLoading) return;
     const realEmail = email.trim();
-    const realCaptcha = captcha.trim();
     if (!password) {
       return message.info('请输入密码');
     }
     if (!realEmail) {
       return message.info('请输入邮箱');
     }
-    if (!realCaptcha) {
-      return message.info('请输入验证码');
-    }
 
     setFetchLoading(true);
     try {
-      await forget({ password, captcha: realCaptcha, email: realEmail });
+      await forget({ password, email: realEmail });
     } catch (err) {
       message.info('提交错误');
     } finally {
       setFetchLoading(false);
     }
-  }, [password, forget, email, captcha]);
+  }, [password, forget, email]);
 
   const action = useMemo(() => {
     return (
@@ -46,25 +41,19 @@ const Forget = (props: { forget: (value: any) => any }) => {
         loading={fetchLoading}
         type="primary"
         block
-        onClick={handleForget}
+        onClick={handleReset}
       >
         提交
       </Button>
     );
-  }, [handleForget]);
+  }, [handleReset]);
 
   return (
-    <CommonBackground title="忘记密码" action={action} onSubmit={handleForget}>
+    <CommonBackground title="重置密码" action={action} onSubmit={handleReset}>
       <Email value={email} onChange={setEmail} />
-      <Captcha
-        email={email}
-        value={captcha}
-        onChange={setCaptcha}
-        status="forget"
-      />
       <Password value={password} onChange={setPassword} />
     </CommonBackground>
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Forget);
+export default connect(mapStateToProps, mapDispatchToProps)(Reset);

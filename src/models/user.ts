@@ -96,8 +96,8 @@ export default {
       // @ts-ignore
       const response = yield call(register, payload);
 
-      //注册成功跳转至登录
-      if (!!response.token) {
+      const action = () => {
+        // 注册成功跳转至登录
         message.success({
           content: '注册成功',
           duration: 1.5,
@@ -105,18 +105,25 @@ export default {
             history.replace('/login');
           },
         });
+      };
+      //重置成功跳转至登录
+      if (GlobalConfig.IS_IMPROVE_BACKEND) {
+        if (response.id) {
+          action();
+        }
+      } else if (response.token) {
+        action();
       }
     },
 
-    //重置密码
-    *forger(
+    //忘记密码
+    *forget(
       { payload }: { payload: ResetParamsType },
       { call }: { call: any },
     ) {
       // @ts-ignore
       const response = yield call(forgetPassword, payload);
-      //重置成功跳转至登录
-      if (response.status === 'ok') {
+      const action = () => {
         message.success({
           content: '重置成功',
           duration: 1.5,
@@ -124,6 +131,14 @@ export default {
             history.replace('/login');
           },
         });
+      };
+      //重置成功跳转至登录
+      if (GlobalConfig.IS_IMPROVE_BACKEND) {
+        if (response) {
+          action();
+        }
+      } else if (response.status === 'ok') {
+        action();
       }
     },
   },

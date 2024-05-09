@@ -172,6 +172,8 @@ const Login = (props: { login: (value: any) => any }) => {
   const [fetchLoading, setFetchLoading] = useState<boolean>(false);
 
   const tips = useMemo(() => {
+    if (GlobalConfig.IS_IMPROVE_BACKEND)
+      return <div style={{ marginBottom: 8 }}></div>;
     return (
       <div
         style={{
@@ -220,17 +222,17 @@ const Login = (props: { login: (value: any) => any }) => {
         <Button
           loading={fetchLoading}
           type="primary"
-          block
           onClick={handleLogin}
+          block
         >
           登录
         </Button>
         <Button
           type="primary"
-          block
           onClick={() => {
             history.push('/register');
           }}
+          block
         >
           注册
         </Button>

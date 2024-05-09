@@ -31,7 +31,7 @@ const Register = (props: { register: (value: any) => any }) => {
     if (!realEmail) {
       return message.info('请输入邮箱');
     }
-    if (!realCaptcha) {
+    if (!realCaptcha && !GlobalConfig.IS_IMPROVE_BACKEND) {
       return message.info('请输入验证码');
     }
 
@@ -71,12 +71,14 @@ const Register = (props: { register: (value: any) => any }) => {
       )}
       <Email value={email} onChange={setEmail} />
       <Password value={password} onChange={setPassword} />
-      <Captcha
-        email={email}
-        value={captcha}
-        onChange={setCaptcha}
-        status="register"
-      />
+      {!GlobalConfig.IS_IMPROVE_BACKEND && (
+        <Captcha
+          email={email}
+          value={captcha}
+          onChange={setCaptcha}
+          status="register"
+        />
+      )}
     </CommonBackground>
   );
 };

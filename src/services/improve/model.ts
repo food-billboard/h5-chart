@@ -1,13 +1,7 @@
-import { merge } from 'lodash';
-import { isModelHash } from '@/hooks';
-import { getLocationQuery } from '../../utils';
-import {
-  SCREEN_MODEL_VERSION,
-  SERVICE_REQUEST_URL,
-} from '../../utils/constants';
+import { SCREEN_MODEL_VERSION } from '../../utils/constants';
 import PocketBase, {
   parseFilter,
-  getUserInfo,
+  getUserId,
 } from '../../utils/pocketBaseRequest';
 import request from '../../utils/request';
 
@@ -17,7 +11,7 @@ export const postScreenModel4Improve = (data: API_SCREEN.TAddScreenParams) => {
   return PocketBase.collection('model')
     .create({
       ...data,
-      user: getUserInfo(),
+      user: getUserId(),
       version: SCREEN_MODEL_VERSION(),
     })
     .then((data) => data.id);
@@ -28,7 +22,7 @@ export const putScreenModel4Improve = (data: API_SCREEN.TEditScreenParams) => {
   const { _id, ...nextData } = data;
   return PocketBase.collection('model').update(_id, {
     ...nextData,
-    user: getUserInfo(),
+    user: getUserId(),
     version: SCREEN_MODEL_VERSION(),
   });
 };

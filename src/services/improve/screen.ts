@@ -4,7 +4,7 @@ import { getLocationQuery } from '../../utils';
 import { SCREEN_VERSION, SERVICE_REQUEST_URL } from '../../utils/constants';
 import PocketBase, {
   parseFilter,
-  getUserInfo,
+  getUserId,
 } from '../../utils/pocketBaseRequest';
 import request from '../../utils/request';
 
@@ -17,7 +17,7 @@ export const postScreen4Improve = (data: API_SCREEN.TAddScreenParams) => {
   return PocketBase.collection('screen')
     .create({
       ...data,
-      user: getUserInfo(),
+      user: getUserId(),
       version: SCREEN_VERSION(),
     })
     .then((data) => data.id);
@@ -28,7 +28,7 @@ export const putScreen4Improve = (data: API_SCREEN.TEditScreenParams) => {
   const { _id, ...nextData } = data;
   return PocketBase.collection('screen').update(_id, {
     ...nextData,
-    user: getUserInfo(),
+    user: getUserId(),
     version: SCREEN_VERSION(),
   });
 };
@@ -215,7 +215,7 @@ export const deleteScreenPool4Improve = (
   customParams?: Partial<{ _id: string; type: string }>,
 ) => {
   const { id } = getLocationQuery() || {};
-  const userId = getUserInfo();
+  const userId = getUserId();
 
   let params = {
     type: isModelHash(location.hash) ? 'model' : 'screen',
@@ -368,7 +368,7 @@ export async function addScreenShot(data: { _id: string }) {
   return PocketBase.collection('screen_id').create({
     screen: data._id,
     isUse: false,
-    user: getUserInfo(),
+    user: getUserId(),
     // 需要后端自行去获取当前大屏的数据
   });
 }
