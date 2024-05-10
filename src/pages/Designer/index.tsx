@@ -173,8 +173,12 @@ const Designer = (props: {
   // 页面关闭的时候需要提示是否保存
   // 这是在手动保存或者improve的时候才需要使用的
   useEffect(() => {
-    if (GlobalConfig.isAutoSaveType() && !GlobalConfig.IS_IMPROVE_BACKEND)
+    if (
+      (GlobalConfig.isAutoSaveType() && !GlobalConfig.IS_IMPROVE_BACKEND) ||
+      process.env.NODE_ENV === 'development'
+    ) {
       return;
+    }
     window.addEventListener('beforeunload', closeAndPrompt);
     return () => {
       window.removeEventListener('beforeunload', closeAndPrompt);

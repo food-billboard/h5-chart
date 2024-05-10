@@ -2,7 +2,9 @@ import { isNil } from 'lodash';
 import PocketBase from 'pocketbase';
 import { useAnyDva } from '@/hooks';
 
-const pb = new PocketBase(process.env.API_IMPROVE_URL);
+const pb = new PocketBase(
+  process.env.REACT_APP_ENV === 'prod' ? process.env.API_IMPROVE_URL : '',
+);
 
 pb.beforeSend = function (url, options) {
   // TODO

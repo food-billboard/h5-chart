@@ -277,6 +277,12 @@ declare namespace API_IMPROVE {
   export type LocalScreenShotData = {
     [screenId: string]: LocalScreenShotDataValue[];
   };
+
+  export type PostFeedbackParams = {
+    type: 'BUG' | 'RECOMMEND' | 'QUESTION';
+    description: string;
+    image?: File[];
+  };
 }
 
 declare namespace API_MEDIA_MANAGE {}
