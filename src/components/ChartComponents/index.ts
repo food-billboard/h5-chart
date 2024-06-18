@@ -206,6 +206,8 @@ export function getComponentByType(
     Pick<ComponentData.TComponentData, 'componentType'>,
 ): MapValue {
   const config = COMPONENT_MAP.get(component.componentType);
+  // @ts-ignore
+  if (!config) return {};
   const { render, ...nextConfig } = config as MapValue;
   return {
     ...nextConfig,
@@ -221,7 +223,7 @@ export function getComponentDefaultConfigByType(
   isNew = false,
 ) {
   const defaultConfig =
-    getComponentByType({ componentType })?.defaultConfig() || {};
+    getComponentByType({ componentType })?.defaultConfig?.() || {};
   // ? 合并默认的数据请求配置到默认配置中
   if (isNew && !get(defaultConfig, 'config.data.disabled')) {
     const defaultRequest =
