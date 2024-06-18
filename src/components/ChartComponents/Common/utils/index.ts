@@ -1,7 +1,7 @@
 import { merge } from 'lodash';
-import { RadialGradient, LinearGradient } from '@/utils/Assist/EchartsLoader';
 import ColorSelect from '@/components/ColorSelect';
 import { useAnyDva } from '@/hooks';
+import { RadialGradient, LinearGradient } from '@/utils/Assist/EchartsLoader';
 import InteractiveUtil from '@/utils/Assist/Interactive';
 
 const { getRgbaString } = ColorSelect;
@@ -203,4 +203,12 @@ export function updateInteractiveAndSyncParams4Component<T extends object = {}>(
     if (result) updateData = merge(updateData, result);
   }
   return updateData;
+}
+
+// 公共处理文字样式
+export function parseTextStyle(textStyle: ComponentData.TFontConfig) {
+  return {
+    ...textStyle,
+    color: getRgbaString(textStyle.color),
+  };
 }

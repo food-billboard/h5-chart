@@ -7,10 +7,12 @@ export type TCountUpNumberConfig = {
   addonBefore: {
     show: boolean;
     content: string;
+    textStyle: ComponentData.TFontConfig;
   };
   addonAfter: {
     show: boolean;
     content: string;
+    textStyle: ComponentData.TFontConfig;
   };
   thousands: {
     show: boolean;
@@ -25,5 +27,6 @@ export type TCountUpNumberConfig = {
     easingFn: 'easeOutExpo' | 'outQuintic' | 'outCubic';
   };
   decimal: string;
+  fontStyle: 'digital-number' | 'inherit';
   condition: ComponentData.ComponentConditionConfig;
 };

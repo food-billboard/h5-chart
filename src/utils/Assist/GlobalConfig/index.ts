@@ -87,8 +87,8 @@ class GlobalConfig {
     | 'auto'
     | 'manual'
     | 'auto-all'
-    | 'auto-all-storage' = 'manual';
-  // isStatic || isImportBackend ? 'auto-all-storage' : 'auto';
+    | 'auto-all-storage' =
+    isStatic || isImportBackend ? 'auto-all-storage' : 'auto';
 
   // 是否为自动保存类型
   isAutoSaveType() {

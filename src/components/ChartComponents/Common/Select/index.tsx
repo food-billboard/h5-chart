@@ -10,7 +10,7 @@ const Select = (
     children?: React.ReactNode;
   },
 ) => {
-  const { value, onChange, onBlur, ...nextProps } = props;
+  const { value, onChange, onBlur, mode, ...nextProps } = props;
 
   const [stateValue, setStateValue] = useState<string[]>(value);
 
@@ -18,12 +18,13 @@ const Select = (
 
   const handleBlur = useCallback(
     (e) => {
-      if (!isEqual(value, stateValue))
+      if (mode && !isEqual(value, stateValue)) {
         onChange?.(stateValue, { label: '', value: '' });
+      }
       onBlur?.(e);
       isFocus.current = false;
     },
-    [onChange, stateValue, onBlur, value],
+    [onChange, stateValue, onBlur, value, mode],
   );
 
   const handleFocus = useCallback(() => {
@@ -44,6 +45,9 @@ const Select = (
   );
 
   const handleChange = useCallback((value) => {
+    if (!mode) {
+      onChange?.(value, { label: '', value: '' });
+    }
     setStateValue(value);
   }, []);
 
@@ -55,6 +59,7 @@ const Select = (
     <AntSelect
       size="small"
       {...nextProps}
+      mode={mode}
       value={stateValue}
       onFocus={handleFocus}
       onChange={handleChange}
