@@ -9,6 +9,7 @@ import LayerSearch from './components/LayerSearch';
 import LayerShowIcon from './components/LayerShowControl';
 import LensManage from './components/LensConfig';
 import LocalConfigManage from './components/LocalConfigMange';
+import ModelManage from './components/ModelManage';
 import RequestDefaultConfig from './components/RequestDefaultConfig';
 import ThemeConfig from './components/ThemeConfig';
 import styles from './index.less';
@@ -29,6 +30,7 @@ const ActionList = () => {
       <RequestDefaultConfig />
       <LensManage />
       <ThemeConfig />
+      <ModelManage />
     </Space>
   );
 };

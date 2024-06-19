@@ -2,7 +2,7 @@ import { InfoCircleOutlined } from '@ant-design/icons';
 import { Input, Switch } from 'antd';
 import classnames from 'classnames';
 import { set } from 'lodash';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { connect } from 'umi';
 import BackgroundSelect from '@/components/BackgroundSelect';
 import ConfigWrapper, {
@@ -30,7 +30,14 @@ const GlobalConfig = (props: {
   const {
     config: {
       style: { width, height, padding },
-      attr: { poster, grid, componentBorder, scale = 'fit-height', waterMark },
+      attr: {
+        poster,
+        grid,
+        componentBorder,
+        scale = 'fit-height',
+        waterMark,
+        model: { show: modelShow = false } = {},
+      },
       flag: { type },
     },
     description,
@@ -170,17 +177,39 @@ const GlobalConfig = (props: {
                     </FullForm>
                   </Item>
                   {type === 'PC' && (
-                    <Item label="页面缩放方式">
-                      <FullForm>
-                        <ScaleConfig
-                          value={scale}
-                          onChange={onValueChange.bind(
-                            null,
-                            'config.attr.scale',
-                          )}
-                        />
-                      </FullForm>
-                    </Item>
+                    <>
+                      <Item label="页面缩放方式">
+                        <FullForm>
+                          <ScaleConfig
+                            value={scale}
+                            onChange={onValueChange.bind(
+                              null,
+                              'config.attr.scale',
+                            )}
+                          />
+                        </FullForm>
+                      </Item>
+                      <Item
+                        label={
+                          <>
+                            模板布局显示
+                            <IconTooltip title="可在上方工具栏，通过“模板选择”后显示模板的布局，方便大屏整体的排版">
+                              <InfoCircleOutlined />
+                            </IconTooltip>
+                          </>
+                        }
+                      >
+                        <FullForm>
+                          <Switch
+                            checked={!!modelShow}
+                            onChange={onValueChange.bind(
+                              null,
+                              'config.attr.model.show',
+                            )}
+                          />
+                        </FullForm>
+                      </Item>
+                    </>
                   )}
                   <Item label="水印">
                     <FullForm>

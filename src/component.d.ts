@@ -288,6 +288,14 @@ declare namespace ComponentData {
     [version: string]: VersionChangeTooltipItem;
   };
 
+  // 模板的位置尺寸信息
+  export type ModelValueType = {
+    left: number;
+    top: number;
+    width: number;
+    height: number;
+  }[][];
+
   // 大屏配置
   export type TScreenData = {
     _id?: string;
@@ -310,6 +318,10 @@ declare namespace ComponentData {
         guideLine: TGuideLineConfig;
         theme: TScreenTheme;
         grid: number;
+        model: {
+          show: boolean;
+          value: ModelValueType;
+        };
         componentBorder: {
           width: number;
           padding: [number, number];
