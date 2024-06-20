@@ -1,5 +1,7 @@
+import { useSize } from 'ahooks';
 import classnames from 'classnames';
-import { CSSProperties, Fragment, useMemo } from 'react';
+import { uniqueId } from 'lodash';
+import { CSSProperties, Fragment, useMemo, useRef } from 'react';
 import { usePrimaryColor } from '@/hooks';
 import styles from './index.less';
 
@@ -65,18 +67,25 @@ const ModelThumbRender = (props: {
   onClick?: () => void;
   style?: CSSProperties;
   className?: string;
-  label: string;
+  label?: string;
   value: ComponentData.ModelValueType;
 }) => {
   const { onClick, style, className, label, value } = props;
 
   const primaryColor = usePrimaryColor();
 
+  const elementRef = useRef<HTMLDivElement>(null);
+
+  const { width = 0 } =
+    useSize(() => {
+      return elementRef.current;
+    }) || {};
+
   const children = useMemo(() => {
     return (
       <div className="w-100 h-100 pos-ab">
         <div
-          className="ali-cen"
+          className="dis-flex-cen"
           style={{
             width: ((WIDTH - PADDING * 2) / WIDTH) * 100 + '%',
             position: 'relative',
@@ -121,16 +130,33 @@ const ModelThumbRender = (props: {
     );
   }, [value]);
 
+  const scale = useMemo(() => {
+    return width / WIDTH || 1;
+  }, [width]);
+
   return (
     <div
+      ref={elementRef}
       onClick={onClick}
       style={style}
       className={classnames(styles['model-thumb-render'], className, 'w-100')}
     >
       <div
-        className={classnames(styles['model-thumb-render-main'], 'w-100 m-b-8')}
+        className={classnames(
+          styles['model-thumb-render-main'],
+          'w-100 m-b-8 over-hide',
+        )}
       >
-        <div className={styles['model-thumb-render-main-content']}>
+        <div
+          className={styles['model-thumb-render-main-content']}
+          style={{
+            width: WIDTH,
+            height: HEIGHT,
+            transform: `scale(${scale})`,
+            transformOrigin: 'left top',
+            fontSize: `${Math.min(12 / scale, 75)}px`,
+          }}
+        >
           {children}
         </div>
       </div>

@@ -1,8 +1,14 @@
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useControllableValue } from 'ahooks';
+import { Switch } from 'antd';
+import { set } from 'lodash';
 import { forwardRef, useCallback, useImperativeHandle, useMemo } from 'react';
+import { connect } from 'umi';
+import Tooltip from '@/components/ChartComponents/Common/Tooltip';
 import Modal from '@/components/FocusModal';
 import IconTooltip from '@/components/IconTooltip';
+import { useAnyDva } from '@/hooks';
+import { ConnectState } from '@/models/connect';
 import GlobalConfig from '@/utils/Assist/GlobalConfig';
 import ModelList from './components/ModelList';
 import styles from './index.less';
@@ -13,10 +19,16 @@ export type ModelConfigRef = {
 
 type Props = {
   visible?: boolean;
+  modelShow: boolean;
   onVisibleChange?: (visible: boolean) => void;
+  setScreenData: (value: SuperPartial<ComponentData.TScreenData>) => void;
 };
 
 const ModelConfig = forwardRef<ModelConfigRef, Props>((props, ref) => {
+  const { modelShow, setScreenData } = props;
+
+  const { getState } = useAnyDva();
+
   const [visible, setVisible] = useControllableValue<boolean>(props, {
     trigger: 'onVisibleChange',
     valuePropName: 'visible',
@@ -42,11 +54,23 @@ const ModelConfig = forwardRef<ModelConfigRef, Props>((props, ref) => {
       <>
         模板选择
         <IconTooltip title={tooltip}>
-          <InfoCircleOutlined className="m-l-4" />
+          <InfoCircleOutlined className="m-lr-4" />
         </IconTooltip>
+        <Tooltip title="在大屏画布中显示模板占位符">
+          <Switch
+            checked={modelShow}
+            onChange={(checked) => {
+              const newScreenData = {
+                ...getState().global.screenData,
+              };
+              set(newScreenData, 'config.attr.model.show', checked);
+              setScreenData(newScreenData);
+            }}
+          />
+        </Tooltip>
       </>
     );
-  }, []);
+  }, [modelShow]);
 
   useImperativeHandle(
     ref,
@@ -80,4 +104,20 @@ const ModelConfig = forwardRef<ModelConfigRef, Props>((props, ref) => {
   );
 });
 
-export default ModelConfig;
+export default connect(
+  (state: ConnectState) => {
+    return {
+      modelShow: state.global.screenData.config.attr.model.show,
+    };
+  },
+  (dispatch) => {
+    return {
+      setScreenData: (value: any) =>
+        dispatch({ type: 'global/setScreen', value }),
+    };
+  },
+  null,
+  {
+    forwardRef: true,
+  },
+)(ModelConfig);

@@ -26,7 +26,7 @@ const ModelManageIcon = (props: { flag: ComponentData.ScreenFlagType }) => {
     <>
       <Tooltip title="模板选择">
         <DebounceButton
-          icon={<BookOutlined title="主题色" />}
+          icon={<BookOutlined title="模板选择" />}
           onClick={handleOpen}
           type={visible ? 'primary' : 'default'}
         />

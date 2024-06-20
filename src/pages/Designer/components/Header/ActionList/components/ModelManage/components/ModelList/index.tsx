@@ -5,7 +5,7 @@ import { useCallback, useRef, useState } from 'react';
 import { connect } from 'umi';
 import Modal from '@/components/FocusModal';
 import { useAnyDva } from '@/hooks';
-import DataChangePool from '@/utils/Assist/DataChangePool';
+import { changeComponentsPositionAccordingModel } from '../../utils';
 import { Thumb as Model1 } from './components/Model1';
 import { Thumb as Model2 } from './components/Model2';
 import { Thumb as Model3 } from './components/Model3';
@@ -60,32 +60,11 @@ const ModelList = (props: {
 
     // 将一级组及组件放置到距离其最近的区块左上角
     if (changeComponents) {
-      const components = globalData.components;
-      const actions: ComponentMethod.SetComponentMethodParamsData[] =
-        components.map((component, index) => {
-          const {
-            id,
-            config: {
-              style: { left, top },
-            },
-          } = component;
-          return {
-            value: {
-              config: {
-                style: {
-                  left: 0,
-                  top: 0,
-                },
-              },
-            },
-            id,
-            path: index.toString(),
-            action: 'update',
-          };
-        });
-      DataChangePool.setComponent(actions);
+      changeComponentsPositionAccordingModel({
+        model: modelDataRef.current,
+      });
     }
-
+    setVisible(false);
     message.info('操作成功，请等待~');
   }, [message]);
 
@@ -110,7 +89,7 @@ const ModelList = (props: {
       >
         <div className={styles['modal-tooltip']}>
           <div className="f-b c-f-s-big m-b-8">
-            应用模板后会新增该模板的宫格背景来方便排版，且只在设计截断显示，也可以手动通过全局配置的“模板布局显示”控制显示隐藏~
+            应用模板后会新增该模板的宫格背景来方便排版，且只在设计阶段显示，也可以手动通过全局配置的“模板布局显示”控制显示隐藏~
           </div>
           <Form form={form}>
             <Form.Item
