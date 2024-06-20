@@ -69,7 +69,7 @@ const ModelList = (props: {
   }, [message]);
 
   return (
-    <div className={classnames(styles['model-list'])}>
+    <div className={classnames(styles['model-list'], 'p-lr-12')}>
       <Row gutter={12}>
         {MODEL_LIST.map((Model, index) => {
           return (

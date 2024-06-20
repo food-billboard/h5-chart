@@ -1,6 +1,6 @@
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useControllableValue } from 'ahooks';
-import { Switch } from 'antd';
+import { Switch, App } from 'antd';
 import { set } from 'lodash';
 import { forwardRef, useCallback, useImperativeHandle, useMemo } from 'react';
 import { connect } from 'umi';
@@ -12,6 +12,7 @@ import { ConnectState } from '@/models/connect';
 import GlobalConfig from '@/utils/Assist/GlobalConfig';
 import ModelList from './components/ModelList';
 import styles from './index.less';
+import { changeComponentsPositionAccordingModel } from './utils';
 
 export type ModelConfigRef = {
   open: () => void;
@@ -20,12 +21,15 @@ export type ModelConfigRef = {
 type Props = {
   visible?: boolean;
   modelShow: boolean;
+  modelValue: ComponentData.ModelValueType;
   onVisibleChange?: (visible: boolean) => void;
   setScreenData: (value: SuperPartial<ComponentData.TScreenData>) => void;
 };
 
 const ModelConfig = forwardRef<ModelConfigRef, Props>((props, ref) => {
-  const { modelShow, setScreenData } = props;
+  const { modelShow, setScreenData, modelValue } = props;
+
+  const { modal } = App.useApp();
 
   const { getState } = useAnyDva();
 
@@ -41,6 +45,18 @@ const ModelConfig = forwardRef<ModelConfigRef, Props>((props, ref) => {
   const onClose = useCallback(() => {
     setVisible(false);
   }, []);
+
+  const handleAdjust = useCallback(() => {
+    setVisible(false);
+    modal.confirm({
+      title: '提示',
+      content:
+        '应用后会更改画布当中组件的位置至距离其最近的模板的区块范围内，是否应用',
+      onOk: () => {
+        changeComponentsPositionAccordingModel();
+      },
+    });
+  }, [modal]);
 
   const title = useMemo(() => {
     let tooltip = '';
@@ -96,6 +112,12 @@ const ModelConfig = forwardRef<ModelConfigRef, Props>((props, ref) => {
           position: 'relative',
         },
       }}
+      cancelText="关闭"
+      okText="调整组件位置"
+      okButtonProps={{
+        disabled: !modelValue.length,
+      }}
+      onOk={handleAdjust}
     >
       <div className={styles['model-manage-form']}>
         <ModelList onClose={onClose} />
@@ -106,8 +128,10 @@ const ModelConfig = forwardRef<ModelConfigRef, Props>((props, ref) => {
 
 export default connect(
   (state: ConnectState) => {
+    const model = state.global.screenData.config.attr.model;
     return {
-      modelShow: state.global.screenData.config.attr.model.show,
+      modelShow: model.show,
+      modelValue: model.value,
     };
   },
   (dispatch) => {
