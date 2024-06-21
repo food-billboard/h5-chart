@@ -33,6 +33,7 @@ import PictorialBarBasic from './Chart/PictorialBar/PictorialBarBasic';
 import CirclePie from './Chart/Pie/CirclePie';
 import NightingalePie from './Chart/Pie/NightingalePie';
 import PercentPie from './Chart/Pie/PercentPie';
+import PercentPieBasic from './Chart/Pie/PercentPieBasic';
 import PieBasic from './Chart/Pie/PieBasic';
 import RadarBasic from './Chart/Radar/RadarBasic';
 import BubbleScatter from './Chart/Scatter/BubbleScatter';
@@ -198,6 +199,7 @@ COMPONENT_MAP.set(FullScreen.type, FullScreen);
 COMPONENT_MAP.set(ThreeBar.type, ThreeBar);
 COMPONENT_MAP.set(LottieAnime.type, LottieAnime);
 COMPONENT_MAP.set(HtmlFragment.type, HtmlFragment);
+COMPONENT_MAP.set(PercentPieBasic.type, PercentPieBasic);
 // component-map-insert-prefix
 
 // 根据组件类型获取组件信息
