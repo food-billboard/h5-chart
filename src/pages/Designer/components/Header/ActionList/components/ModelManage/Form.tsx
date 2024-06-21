@@ -21,7 +21,7 @@ export type ModelConfigRef = {
 type Props = {
   visible?: boolean;
   modelShow: boolean;
-  modelValue: ComponentData.ModelValueType;
+  modelValue: string;
   onVisibleChange?: (visible: boolean) => void;
   setScreenData: (value: SuperPartial<ComponentData.TScreenData>) => void;
 };
@@ -115,7 +115,7 @@ const ModelConfig = forwardRef<ModelConfigRef, Props>((props, ref) => {
       cancelText="关闭"
       okText="调整组件位置"
       okButtonProps={{
-        disabled: !modelValue.length,
+        disabled: !modelValue,
       }}
       onOk={handleAdjust}
     >

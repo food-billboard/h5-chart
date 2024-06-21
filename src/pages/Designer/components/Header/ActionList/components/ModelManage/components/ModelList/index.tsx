@@ -1,28 +1,22 @@
 import { App, Col, Row, Form, Switch } from 'antd';
 import classnames from 'classnames';
 import { set } from 'lodash';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { connect } from 'umi';
 import Modal from '@/components/FocusModal';
 import { useAnyDva } from '@/hooks';
 import { changeComponentsPositionAccordingModel } from '../../utils';
-import { Thumb as Model1 } from './components/Model1';
-import { Thumb as Model2 } from './components/Model2';
-import { Thumb as Model3 } from './components/Model3';
-import { Thumb as Model4 } from './components/Model4';
-import { Thumb as Model5 } from './components/Model5';
-import { Thumb as Model6 } from './components/Model6';
-import { Thumb as Model7 } from './components/Model7';
+import ModelThumbRender from './components/ModelThumbRender';
 import { mapDispatchToProps, mapStateToProps } from './connect';
+import { MODEL_BASE_DATA } from './constant';
 import styles from './index.less';
 
-const MODEL_LIST = [Model1, Model2, Model3, Model4, Model5, Model6, Model7];
-
 const ModelList = (props: {
+  modelValue: string;
   onClose?: () => void;
   setScreenData: (value: SuperPartial<ComponentData.TScreenData>) => void;
 }) => {
-  const { onClose, setScreenData } = props;
+  const { onClose, setScreenData, modelValue } = props;
 
   const { getState } = useAnyDva();
 
@@ -32,11 +26,11 @@ const ModelList = (props: {
 
   const { message } = App.useApp();
 
-  const modelDataRef = useRef<ComponentData.ModelValueType>();
+  const modelDataRef = useRef<string>();
 
   const handleSelect = useCallback(
-    (modelData) => {
-      modelDataRef.current = modelData;
+    (modelKey) => {
+      modelDataRef.current = modelKey;
       onClose?.();
       setVisible(true);
     },
@@ -68,17 +62,26 @@ const ModelList = (props: {
     message.info('操作成功，请等待~');
   }, [message]);
 
+  const list = useMemo(() => {
+    return MODEL_BASE_DATA.map((item) => {
+      const { key, label } = item;
+      return (
+        <Col key={key} span={12} className="m-b-12">
+          <ModelThumbRender
+            label={label}
+            onClick={handleSelect}
+            className="w-100"
+            value={key}
+            active={modelValue === key}
+          />
+        </Col>
+      );
+    });
+  }, [handleSelect, modelValue]);
+
   return (
     <div className={classnames(styles['model-list'], 'p-lr-12')}>
-      <Row gutter={12}>
-        {MODEL_LIST.map((Model, index) => {
-          return (
-            <Col key={index} span={12} className="m-b-12">
-              <Model onSelect={handleSelect} className="w-100" />
-            </Col>
-          );
-        })}
-      </Row>
+      <Row gutter={12}>{list}</Row>
       <Modal
         title="提示"
         open={visible}

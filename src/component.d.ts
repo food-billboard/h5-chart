@@ -320,7 +320,7 @@ declare namespace ComponentData {
         grid: number;
         model: {
           show: boolean;
-          value: ModelValueType;
+          value: string;
         };
         componentBorder: {
           width: number;

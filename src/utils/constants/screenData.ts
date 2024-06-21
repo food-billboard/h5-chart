@@ -170,7 +170,7 @@ const DEFAULT_SCREEN_DATA: ComponentData.TScreenData = {
       waterMark: false,
       model: {
         show: false,
-        value: [],
+        value: '',
       },
     },
     flag: {

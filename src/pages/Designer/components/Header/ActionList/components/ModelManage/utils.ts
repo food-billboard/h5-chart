@@ -1,8 +1,9 @@
 import { useAnyDva } from '@/hooks';
 import DataChangePool from '@/utils/Assist/DataChangePool';
+import { MODEL_BASE_DATA } from './components/ModelList/constant';
 
 export function changeComponentsPositionAccordingModel(config?: {
-  model?: ComponentData.ModelValueType;
+  model?: string;
   components?: ComponentData.TComponentData[];
 }) {
   let model = config?.model;
@@ -11,10 +12,13 @@ export function changeComponentsPositionAccordingModel(config?: {
     const { getState } = useAnyDva();
     const globalData = getState().global;
     if (!components) components = globalData.components;
-    if (!model) model = globalData.screenData.config.attr.model.value || [];
+    if (!model) model = globalData.screenData.config.attr.model.value || '';
   }
+  if (!model) return;
+  const modelGridValue =
+    MODEL_BASE_DATA.find((item) => item.key === model)?.gridValue || [];
   const blockCenterList =
-    model.reduce<
+    modelGridValue.reduce<
       {
         left: number;
         top: number;

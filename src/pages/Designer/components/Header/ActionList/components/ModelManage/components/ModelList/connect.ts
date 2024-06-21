@@ -1,7 +1,9 @@
 import { ConnectState } from '@/models/connect';
 
 export const mapStateToProps = (state: ConnectState) => {
-  return {};
+  return {
+    modelValue: state.global.screenData.config.attr.model.value,
+  };
 };
 
 export const mapDispatchToProps = (dispatch: any) => ({

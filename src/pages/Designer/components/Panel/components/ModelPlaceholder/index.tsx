@@ -6,10 +6,11 @@ import styles from './index.less';
 
 const ModelPlaceholder = (props: {
   modelShow: boolean;
-  modelValue: ComponentData.ModelValueType;
+  modelValue: string;
+  scale: number;
   screenType: ComponentData.ScreenType;
 }) => {
-  const { modelShow, modelValue, screenType } = props;
+  const { modelShow, modelValue, screenType, scale = 100 } = props;
 
   if (!modelShow || screenType !== 'edit' || !modelValue.length) return null;
 
@@ -20,6 +21,7 @@ const ModelPlaceholder = (props: {
       <ModelThumbRender
         value={modelValue}
         className={styles['model-placeholder-main']}
+        scale={scale / 100}
       />
     </div>
   );
@@ -32,6 +34,7 @@ export default connect(
       modelShow: model.show,
       modelValue: model.value,
       screenType: state.global.screenType,
+      scale: state.global.scale,
     };
   },
   (dispatch: any) => {

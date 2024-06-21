@@ -1,78 +1,32 @@
 import { useSize } from 'ahooks';
 import classnames from 'classnames';
-import { uniqueId } from 'lodash';
 import { CSSProperties, Fragment, useMemo, useRef } from 'react';
-import { usePrimaryColor } from '@/hooks';
+import { useColorThemeList } from '@/hooks';
+import { MODEL_BASE_DATA } from '../../constant';
+import { WIDTH, HEIGHT, HEADER_HEIGHT, PADDING } from '../../utils';
 import styles from './index.less';
 
-// 总宽度
-export const WIDTH = 1920;
-// 总高度
-export const HEIGHT = 1080;
-// 标题行的高度
-export const HEADER_HEIGHT = 150;
-// 各个模块之间的间距
-export const PADDING = 20;
-// 列数
-export const COLUMNS = 4;
-// 行数
-export const ROW = 3;
-
-// 将grid信息转变为实际的位置尺寸信息
-export function parseGridData(
-  value: number[][][],
-): ComponentData.ModelValueType {
-  const totalColumn = value.filter((item) => item.length).length;
-  const totalColumnPadding = (totalColumn + 1) * PADDING;
-  const unitHeight = (HEIGHT - totalColumnPadding - HEADER_HEIGHT) / ROW;
-
-  return new Array(ROW)
-    .fill(0)
-    .map((_, rowIndex) => {
-      const targetColumn = value[rowIndex];
-
-      if (!targetColumn.length) return null;
-      const prevColumnCount = value
-        .slice(0, rowIndex)
-        .filter((item) => item.length).length;
-      const prevColumnPadding = PADDING * (prevColumnCount + 1);
-
-      const currentRowTotalColumn = targetColumn.filter(
-        (item) => item.length,
-      ).length;
-      const currentRowTotalPadding = (currentRowTotalColumn + 1) * PADDING;
-      const unitWidth = (WIDTH - currentRowTotalPadding) / COLUMNS;
-      return new Array(COLUMNS)
-        .fill(0)
-        .map((_, columnIndex) => {
-          const [colSpan, rowSpan] = targetColumn[columnIndex];
-          if (!colSpan) return null;
-          const prevRowCount = targetColumn
-            .slice(0, columnIndex)
-            .filter((item) => item.length).length;
-          const prevRowPadding = PADDING * (prevRowCount + 1);
-          return {
-            left: prevRowPadding + unitWidth * columnIndex,
-            top: prevColumnPadding + unitHeight * rowIndex + HEADER_HEIGHT,
-            width: unitWidth * colSpan,
-            height: unitHeight * rowSpan + (rowSpan - 1) * PADDING,
-          };
-        })
-        .filter(Boolean);
-    })
-    .filter(Boolean) as ComponentData.ModelValueType;
-}
-
 const ModelThumbRender = (props: {
-  onClick?: () => void;
+  onClick?: (key: string) => void;
   style?: CSSProperties;
   className?: string;
   label?: string;
-  value: ComponentData.ModelValueType;
+  value: string;
+  active?: boolean;
+  scale?: number;
 }) => {
-  const { onClick, style, className, label, value } = props;
+  const {
+    onClick,
+    style,
+    className,
+    label,
+    value,
+    active = false,
+    scale: propsScale = 1,
+  } = props;
 
-  const primaryColor = usePrimaryColor();
+  const [primaryColor, ...nextColorList] = useColorThemeList();
+  const [lastColor] = nextColorList.slice(-1);
 
   const elementRef = useRef<HTMLDivElement>(null);
 
@@ -80,6 +34,22 @@ const ModelThumbRender = (props: {
     useSize(() => {
       return elementRef.current;
     }) || {};
+
+  const scale = useMemo(() => {
+    return width / WIDTH || 1;
+  }, [width]);
+
+  const fontScale = useMemo(() => {
+    return scale * propsScale;
+  }, [scale, propsScale]);
+
+  const activeColor = useMemo(() => {
+    return active ? lastColor : primaryColor;
+  }, [active, primaryColor, lastColor]);
+
+  const gridValue = useMemo(() => {
+    return MODEL_BASE_DATA.find((item) => item.key === value)?.gridValue || [];
+  }, [value]);
 
   const children = useMemo(() => {
     return (
@@ -92,12 +62,12 @@ const ModelThumbRender = (props: {
             left: '50%',
             transform: 'translateX(-50%)',
             height: (HEADER_HEIGHT / HEIGHT) * 100 + '%',
-            border: `1px solid ${primaryColor}`,
+            border: `${Math.max(1, 1 / fontScale)}px solid ${activeColor}`,
           }}
         >
           标题栏
         </div>
-        {value.map((row, rowIndex) => {
+        {gridValue.map((row, rowIndex) => {
           if (!row) return null;
           return (
             <Fragment key={rowIndex}>
@@ -116,7 +86,11 @@ const ModelThumbRender = (props: {
                       display: 'flex',
                       justifyContent: 'center',
                       alignItems: 'center',
-                      border: `1px solid ${primaryColor}`,
+                      border: `${Math.max(
+                        1,
+                        1 / fontScale,
+                      )}px solid ${activeColor}`,
+                      fontWeight: active ? 'bold' : 'normal',
                     }}
                   >
                     宫格
@@ -128,16 +102,12 @@ const ModelThumbRender = (props: {
         })}
       </div>
     );
-  }, [value]);
-
-  const scale = useMemo(() => {
-    return width / WIDTH || 1;
-  }, [width]);
+  }, [gridValue, active, activeColor, scale]);
 
   return (
     <div
       ref={elementRef}
-      onClick={onClick}
+      onClick={onClick?.bind(null, value)}
       style={style}
       className={classnames(styles['model-thumb-render'], className, 'w-100')}
     >
@@ -154,7 +124,7 @@ const ModelThumbRender = (props: {
             height: HEIGHT,
             transform: `scale(${scale})`,
             transformOrigin: 'left top',
-            fontSize: `${Math.min(12 / scale, 75)}px`,
+            fontSize: `${Math.min(12 / fontScale, 75)}px`,
           }}
         >
           {children}
