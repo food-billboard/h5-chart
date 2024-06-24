@@ -13,13 +13,10 @@ export type Props = TourProps & {
   expire?: number;
   tourUniqueKey: string;
   localKey: string;
+  userId: string;
 };
 
-const ShepherdWrapper = (
-  props: Props & {
-    userId: string;
-  },
-) => {
+const ShepherdWrapper = (props: Props) => {
   const {
     onStart,
     onComplete,
@@ -35,7 +32,7 @@ const ShepherdWrapper = (
   const tourDoneRef = useRef(false);
 
   // 缓存中是否存在
-  const [value = {}, setValue, initialDone] = useLocalStorage<{
+  const [value = {}, setValue, _, initialDone] = useLocalStorage<{
     [key: string]: {
       timestamps: number;
     };

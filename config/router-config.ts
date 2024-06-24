@@ -69,6 +69,10 @@ export const normalRouter = [
             component: '@/pages/Previewer',
           },
           {
+            path: '/reset',
+            component: '@/pages/Reset',
+          },
+          {
             redirect: '/',
             component: '@/pages/Home',
           },
@@ -94,6 +98,10 @@ export const staticRouter = [
       {
         path: '/viewer',
         component: '@/pages/Viewer',
+      },
+      {
+        path: '/static-share',
+        component: '@/pages/StaticShare',
       },
       {
         path: '/',

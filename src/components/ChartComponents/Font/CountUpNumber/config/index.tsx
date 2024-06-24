@@ -1,17 +1,17 @@
 import { Component } from 'react';
-import Select from '@/components/ChartComponents/Common/Select';
+import { SingleCollapse as Collapse } from '@/components/ChartComponents/Common/Collapse';
 import ComponentOptionConfig, {
   Tab,
 } from '@/components/ChartComponents/Common/ComponentOptionConfig';
-import ConfigList from '@/components/ChartComponents/Common/Structure/ConfigList';
-import { SingleCollapse as Collapse } from '@/components/ChartComponents/Common/Collapse';
-import Input from '@/components/ChartComponents/Common/Input';
-import FullForm from '@/components/ChartComponents/Common/Structure/FullForm';
 import { FontConfigList } from '@/components/ChartComponents/Common/FontConfig';
+import Input from '@/components/ChartComponents/Common/Input';
 import InputNumber from '@/components/ChartComponents/Common/InputNumber';
+import Select from '@/components/ChartComponents/Common/Select';
+import ConfigList from '@/components/ChartComponents/Common/Structure/ConfigList';
+import FullForm from '@/components/ChartComponents/Common/Structure/FullForm';
 import TextAlignConfig from '@/components/ChartComponents/Common/TextAlignConfig';
-import ConditionConfig from './Condition';
 import { TCountUpNumberConfig } from '../type';
+import ConditionConfig from './Condition';
 
 const { Item } = ConfigList;
 class Config extends Component<
@@ -41,6 +41,7 @@ class Config extends Component<
           thousands,
           condition,
           align,
+          fontStyle,
         },
       },
     } = value;
@@ -78,6 +79,25 @@ class Config extends Component<
             label: <Tab>数字</Tab>,
             children: (
               <ConfigList level={1}>
+                <Item label="风格">
+                  <FullForm>
+                    <Select
+                      value={fontStyle}
+                      onChange={this.onKeyChange.bind(this, 'fontStyle')}
+                      options={[
+                        {
+                          label: '普通',
+                          value: 'inherit',
+                        },
+                        {
+                          label: '数字风格',
+                          value: 'digital-number',
+                        },
+                      ]}
+                      className="w-100"
+                    />
+                  </FullForm>
+                </Item>
                 <Item label="小数符号">
                   <FullForm>
                     <Input
@@ -141,6 +161,24 @@ class Config extends Component<
                       />
                     </FullForm>
                   </Item>
+                  <Collapse
+                    child={{
+                      header: '文字样式',
+                      key: 'textStyle',
+                    }}
+                    parent={{
+                      defaultActiveKey: ['textStyle'],
+                    }}
+                  >
+                    <FontConfigList
+                      value={addonBefore.textStyle}
+                      onChange={(value) => {
+                        this.onKeyChange('addonBefore', {
+                          textStyle: value,
+                        });
+                      }}
+                    />
+                  </Collapse>
                 </Collapse>
                 <Collapse
                   child={{
@@ -168,6 +206,24 @@ class Config extends Component<
                       />
                     </FullForm>
                   </Item>
+                  <Collapse
+                    child={{
+                      header: '文字样式',
+                      key: 'textStyle',
+                    }}
+                    parent={{
+                      defaultActiveKey: ['textStyle'],
+                    }}
+                  >
+                    <FontConfigList
+                      value={addonAfter.textStyle}
+                      onChange={(value) => {
+                        this.onKeyChange('addonAfter', {
+                          textStyle: value,
+                        });
+                      }}
+                    />
+                  </Collapse>
                 </Collapse>
                 <Collapse
                   child={{

@@ -8,13 +8,11 @@ import {
   useCondition,
 } from '@/components/ChartComponents/Common/Component/hook';
 import FetchFragment from '@/components/ChartComponents/Common/FetchFragment';
-import ColorSelect from '@/components/ColorSelect';
+import { parseTextStyle } from '@/components/ChartComponents/Common/utils';
 import FilterDataUtil from '@/utils/Assist/FilterData';
 import { CHART_ID } from '../id';
 import { TCountUpNumberConfig } from '../type';
 import styles from './index.less';
-
-const { getRgbaString } = ColorSelect;
 
 const EASING_FN_MAP = {
   easeOutExpo: undefined,
@@ -51,6 +49,7 @@ const CountUpNumberBasic = (
     round,
     decimal,
     condition,
+    fontStyle,
     ...nextOptions
   } = options;
 
@@ -103,10 +102,9 @@ const CountUpNumberBasic = (
   const componentStyle = useMemo(() => {
     const { textStyle, align } = nextOptions;
     let baseStyle: CSSProperties = {
-      ...textStyle,
+      ...parseTextStyle(textStyle),
       alignItems: align.vertical,
       justifyContent: align.horizontal,
-      color: getRgbaString(textStyle.color),
     };
     return baseStyle;
   }, [nextOptions]);
@@ -159,14 +157,20 @@ const CountUpNumberBasic = (
       >
         <Wrapper border={border}>
           <div className="w-100 h-100 dis-flex" style={componentStyle}>
-            <span>{addonBefore.show ? addonBefore.content : ''}</span>
+            <span style={parseTextStyle(addonBefore.textStyle)}>
+              {addonBefore.show ? addonBefore.content : ''}
+            </span>
             <div
               id={chartId.current}
-              className={styles['component-font-count-up-number-main']}
+              style={{
+                fontFamily: fontStyle,
+              }}
             >
               {calculateValue || ''}
             </div>
-            <span>{addonAfter.show ? addonAfter.content : ''}</span>
+            <span style={parseTextStyle(addonAfter.textStyle)}>
+              {addonAfter.show ? addonAfter.content : ''}
+            </span>
           </div>
           {children}
         </Wrapper>

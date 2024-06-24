@@ -288,6 +288,14 @@ declare namespace ComponentData {
     [version: string]: VersionChangeTooltipItem;
   };
 
+  // 模板的位置尺寸信息
+  export type ModelValueType = {
+    left: number;
+    top: number;
+    width: number;
+    height: number;
+  }[][];
+
   // 大屏配置
   export type TScreenData = {
     _id?: string;
@@ -310,6 +318,10 @@ declare namespace ComponentData {
         guideLine: TGuideLineConfig;
         theme: TScreenTheme;
         grid: number;
+        model: {
+          show: boolean;
+          value: string;
+        };
         componentBorder: {
           width: number;
           padding: [number, number];
@@ -690,6 +702,11 @@ declare namespace ComponentData {
     children?: React.ReactNode;
     wrapper: any;
   };
+
+  export type StaticExportData = {
+    value: TScreenData;
+    screenShot: API_IMPROVE.LocalScreenShotDataValue[];
+  };
 }
 
 declare namespace ComponentClipboard {
@@ -765,7 +782,7 @@ declare namespace Logger {
 
 declare namespace ComponentType {
   export type ComponentChildren = {
-    type: string;
+    type: ComponentData.TComponentSelfType;
     title: string;
     icon: any;
     description: string;

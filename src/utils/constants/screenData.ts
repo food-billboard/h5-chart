@@ -168,6 +168,10 @@ const DEFAULT_SCREEN_DATA: ComponentData.TScreenData = {
       },
       scale: 'fit-height',
       waterMark: false,
+      model: {
+        show: false,
+        value: '',
+      },
     },
     flag: {
       type: isMobile ? 'H5' : 'PC',

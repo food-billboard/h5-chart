@@ -5,8 +5,8 @@ import { Captcha, Email, Password } from '../Login';
 import CommonBackground from '../Login/components/Background';
 import { mapDispatchToProps, mapStateToProps } from './connect';
 
-const Forget = (props: { forger: (value: any) => any }) => {
-  const { forger } = props;
+const Forget = (props: { forget: (value: any) => any }) => {
+  const { forget } = props;
 
   const { message } = App.useApp();
 
@@ -31,13 +31,13 @@ const Forget = (props: { forger: (value: any) => any }) => {
 
     setFetchLoading(true);
     try {
-      await forger({ password, captcha: realCaptcha, email: realEmail });
+      await forget({ password, captcha: realCaptcha, email: realEmail });
     } catch (err) {
       message.info('提交错误');
     } finally {
       setFetchLoading(false);
     }
-  }, [password, forger, email, captcha]);
+  }, [password, forget, email, captcha]);
 
   const action = useMemo(() => {
     return (

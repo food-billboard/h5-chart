@@ -1,6 +1,7 @@
 import { Button, App } from 'antd';
 import { useCallback, useMemo, useState } from 'react';
 import { connect } from 'umi';
+import GlobalConfig from '@/utils/Assist/GlobalConfig';
 import { Captcha, Email, Mobile, Password } from '../Login';
 import CommonBackground from '../Login/components/Background';
 import { mapDispatchToProps, mapStateToProps } from './connect';
@@ -21,7 +22,7 @@ const Register = (props: { register: (value: any) => any }) => {
     const realMobile = mobile.trim();
     const realEmail = email.trim();
     const realCaptcha = captcha.trim();
-    if (!realMobile) {
+    if (!realMobile && !GlobalConfig.IS_IMPROVE_BACKEND) {
       return message.info('请输入手机号');
     }
     if (!password) {
@@ -30,7 +31,7 @@ const Register = (props: { register: (value: any) => any }) => {
     if (!realEmail) {
       return message.info('请输入邮箱');
     }
-    if (!realCaptcha) {
+    if (!realCaptcha && !GlobalConfig.IS_IMPROVE_BACKEND) {
       return message.info('请输入验证码');
     }
 
@@ -65,15 +66,19 @@ const Register = (props: { register: (value: any) => any }) => {
 
   return (
     <CommonBackground title="注册" action={action} onSubmit={handleRegister}>
-      <Mobile value={mobile} onChange={setMobile} />
-      <Password value={password} onChange={setPassword} />
+      {!GlobalConfig.IS_IMPROVE_BACKEND && (
+        <Mobile value={mobile} onChange={setMobile} />
+      )}
       <Email value={email} onChange={setEmail} />
-      <Captcha
-        email={email}
-        value={captcha}
-        onChange={setCaptcha}
-        status="register"
-      />
+      <Password value={password} onChange={setPassword} />
+      {!GlobalConfig.IS_IMPROVE_BACKEND && (
+        <Captcha
+          email={email}
+          value={captcha}
+          onChange={setCaptcha}
+          status="register"
+        />
+      )}
     </CommonBackground>
   );
 };

@@ -14,7 +14,7 @@ export default {
     layerCollapse: true,
     debug: {
       show: true,
-      showComponentId: true,
+      showComponentId: false,
     },
     // ? 设计器的操作loading 属于是操作禁用，不会有ui的效果
     globalActionLoading: false,

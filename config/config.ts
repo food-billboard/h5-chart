@@ -27,6 +27,7 @@ const commonConfig = {
   define: {
     'process.env.REACT_APP': process.env.REACT_APP,
     'process.env.REACT_DEBUG': process.env.REACT_DEBUG,
+    'process.env.API_IMPROVE_URL': process.env.API_IMPROVE_URL,
   },
   hash: true,
   antd: {},
@@ -64,7 +65,7 @@ const commonConfig = {
   chainWebpack(config: any) {
     config.plugin('monaco-editor').use(MonacoWebpackPlugin, [
       {
-        languages: ['javascript', 'json'],
+        languages: ['javascript', 'json', 'html'],
       },
     ]);
     // config.plugin('sentry-plugin').use(SentryCliPlugin, [

@@ -11,7 +11,7 @@ function covertComponentsThemeColor(
       const { id, componentType, config } = component;
       const { convert } = (getComponentThemeConfigByType(componentType) ||
         {}) as any;
-      const options = convert(colorList, config.options);
+      const options = convert?.(colorList, config.options);
       if (!Object.keys(options || {}).length) return false;
       return {
         value: !!convert

@@ -23,10 +23,10 @@ import {
   deleteClassic,
   addClassic,
   updateClassic,
-  addMediaData,
   deleteMediaData,
 } from '@/services';
 import GlobalConfig from '@/utils/Assist/GlobalConfig';
+import { createImproveUploadResultFileUrl } from '@/utils/Assist/Upload';
 import ImageUpload from '../../../ImageUpload';
 import BackgroundMap from '../Background';
 import BackgroundRender from '../BackgroundRender';
@@ -43,7 +43,7 @@ export type BackgroundData = {
 };
 
 export type BackgroundSelectRef = {
-  open: () => void;
+  open: (visible?: boolean) => void;
 };
 
 export type BackgroundSelectProps = {
@@ -155,12 +155,23 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
       async ({ current, classic }: { current: number; classic: string }) => {
         if (!GlobalConfig.IS_IMPROVE_BACKEND) return;
         setFetchLoading(true);
-        const data: any = await getMediaList({
+        const data = await getMediaList({
           current,
           pageSize: pageSize.current,
           classic,
         });
-        setImproveDataSource(data.list as BackgroundData[]);
+        setImproveDataSource(
+          data.list.map((item) => {
+            return {
+              ...item,
+              value: createImproveUploadResultFileUrl(item),
+              image: createImproveUploadResultFileUrl(item),
+              classic: item.collectionId,
+              // 没有label
+              label: '',
+            };
+          }),
+        );
         setTotal(data.total);
         setFetchLoading(false);
       },
@@ -240,10 +251,16 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
     }, []);
 
     // 编辑模式下的图片删除
-    const onDeleteBackground = useCallback(async ({ value, classic }) => {
-      await deleteMediaData({ value, classic });
-      setCurrentPage(1);
-    }, []);
+    const onDeleteBackground = useCallback(
+      async ({ file, id, collectionId }) => {
+        await deleteMediaData({ file, id, collectionId });
+        if (currentPage === 1) {
+          fetchData({ current: currentPage, classic: currentClassic });
+        }
+        setCurrentPage(1);
+      },
+      [currentPage, currentClassic],
+    );
 
     // 图片上传完成
     const onBackgroundChange = useCallback(
@@ -251,21 +268,26 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
         const [target] = fileList;
         if (target?.status === 'done') {
           const fileUrl = target.url as string;
-          await addMediaData({ classic: currentClassic, value: fileUrl });
+          // ! 如果上传和新增不是一步走的话，需要在这里添加媒体资源
+          if (currentPage === 1) {
+            fetchData({ current: currentPage, classic: currentClassic });
+          }
           setCurrentPage(1);
         }
       },
-      [currentClassic],
+      [currentClassic, currentPage],
     );
 
     useImperativeHandle(
       ref,
       () => {
         return {
-          open: () => {
-            setVisible(true);
-            setCurrentClassic('');
-            setCurrentPage(1);
+          open: (visible = true) => {
+            if (visible) {
+              setCurrentClassic('');
+              setCurrentPage(1);
+            }
+            setVisible(visible);
           },
         };
       },
@@ -278,10 +300,11 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
 
     useEffect(() => {
       if (!GlobalConfig.IS_IMPROVE_BACKEND) return;
-      getMediaClassicList().then((data) => {
-        // TODO
-        setImproveClassicDataSource([]);
-      });
+      // ? 因为没有分类，所以直接设置一个全部
+      // 后面有需要把这个注释打开
+      // getMediaClassicList().then((data) => {
+      //   setImproveClassicDataSource([]);
+      // });
     }, []);
 
     useEffect(() => {
@@ -301,24 +324,25 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
         style={style}
       >
         <Tabs
-          type={mode === 'editable' ? 'editable-card' : 'line'}
+          // ? 现在没有分类，所以先去掉，后面如果加了分类再改回来
+          // type={mode === 'editable' ? 'editable-card' : 'line'}
           onEdit={onTabEdit}
           items={classicItems}
           onChange={onTabChange}
           tabBarExtraContent={tabBarExtraContent}
         />
         <Row gutter={24}>
-          {GlobalConfig.IS_IMPROVE_BACKEND ||
-            (mode === 'editable' && (
-              <Col span={6}>
-                <ImageUpload
-                  defaultFileList={[]}
-                  onChange={onBackgroundChange}
-                  inputVisible={false}
-                  height={'80px'}
-                />
-              </Col>
-            ))}
+          {GlobalConfig.IS_IMPROVE_BACKEND && mode === 'editable' && (
+            <Col span={6}>
+              <ImageUpload
+                value={[]}
+                onChange={onBackgroundChange}
+                inputVisible={false}
+                height={'80px'}
+                style={{ marginBottom: 12 }}
+              />
+            </Col>
+          )}
           {dataSource.map((item) => {
             const { label, value } = item;
             return (

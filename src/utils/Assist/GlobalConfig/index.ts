@@ -5,7 +5,7 @@ import {
 } from '../../constants';
 
 const isStatic = process.env.REACT_APP === 'static';
-const isImportBackend = process.env.REACT_APP === 'improve_prod';
+const isImportBackend = process.env.REACT_APP === 'improve';
 const isDebug = process.env.REACT_DEBUG === 'debug';
 
 class GlobalConfig {
@@ -50,16 +50,37 @@ class GlobalConfig {
   };
 
   // 是否开启 mock数据配置
-  ENABLE_MOCK_DATA_CONFIG = true;
+  ENABLE_MOCK_DATA_CONFIG = !isImportBackend;
 
   // mock数据请求的url地址
-  MOCK_REQUEST_URL = DEFAULT_MOCK_REQUEST_URL;
+  // ? 不知道为什么赋值不了，改成get/set
+  _MOCK_REQUEST_URL = DEFAULT_MOCK_REQUEST_URL;
+  get MOCK_REQUEST_URL() {
+    return this._MOCK_REQUEST_URL || DEFAULT_MOCK_REQUEST_URL;
+  }
+  set MOCK_REQUEST_URL(value) {
+    this._MOCK_REQUEST_URL = value;
+  }
 
   // 服务端请求的url地址
-  SERVICE_SIDE_REQUEST_URL = SERVICE_REQUEST_URL;
+  // ? 不知道为什么赋值不了，改成get/set
+  _SERVICE_SIDE_REQUEST_URL = SERVICE_REQUEST_URL;
+  get SERVICE_SIDE_REQUEST_URL() {
+    return this._SERVICE_SIDE_REQUEST_URL || SERVICE_REQUEST_URL;
+  }
+  set SERVICE_SIDE_REQUEST_URL(value) {
+    this._SERVICE_SIDE_REQUEST_URL = value;
+  }
 
   // 大屏的默认封面
-  DEFAULT_SCREEN_COVER = defaultScreenCover;
+  // ? 不知道为什么赋值不了，改成get/set
+  _DEFAULT_SCREEN_COVER = defaultScreenCover;
+  get DEFAULT_SCREEN_COVER() {
+    return this._DEFAULT_SCREEN_COVER || defaultScreenCover;
+  }
+  set DEFAULT_SCREEN_COVER(value) {
+    this._DEFAULT_SCREEN_COVER = value;
+  }
 
   // 大屏的保存类型
   DEFAULT_SCREEN_SAVE_TYPE:

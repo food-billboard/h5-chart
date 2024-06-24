@@ -195,13 +195,38 @@ declare namespace API_THIRD {
 }
 
 declare namespace API_IMPROVE {
+  export type ResponseListData<T = any> = {
+    data: {
+      res: {
+        list: T[];
+        total: number;
+      };
+    };
+  };
+
   export type MediaParams = {
     current: number;
     pageSize: number;
     classic?: string;
   };
 
-  export type MediaData = {};
+  export type MediaData = {
+    // 文件对应的数据id
+    collectionId: string;
+    // 文件对应的数据集名
+    collectionName: string;
+    created: string;
+    // 文件
+    file: string;
+    // 文件id
+    id: string;
+    updated: string;
+  };
+
+  export type MediaDataRes = {
+    total: number;
+    list: MediaData[];
+  };
 
   export type MediaClassicData = {
     label: string;
@@ -217,11 +242,47 @@ declare namespace API_IMPROVE {
   };
 
   export type AddMediaDataParams = {
-    classic: string;
-    value: string;
+    collectionId: string;
+    id: string;
+    file: string;
   };
 
   export type DeleteMediaDataParams = AddMediaDataParams;
+
+  export type GetScreenShotListParams = {
+    _id: string;
+  };
+
+  export type GetScreenShotListData = {
+    _id: string;
+    created: string;
+    user: string;
+    description: string;
+    isUse: boolean;
+    username?: string;
+    avatar?: string;
+  };
+
+  export type UpdateScreenShotData = {
+    description: string;
+    _id: string;
+    screen: string;
+  };
+
+  export type LocalScreenShotDataValue = GetScreenShotListData & {
+    value: ComponentData.TScreenData;
+    version: string;
+  };
+
+  export type LocalScreenShotData = {
+    [screenId: string]: LocalScreenShotDataValue[];
+  };
+
+  export type PostFeedbackParams = {
+    type: 'BUG' | 'RECOMMEND' | 'QUESTION';
+    description: string;
+    image?: File[];
+  };
 }
 
 declare namespace API_DATA_MANAGE {
@@ -299,3 +360,4 @@ declare namespace API_DATA_MANAGE {
     children?: DataSetGroupData[];
   };
 }
+declare namespace API_MEDIA_MANAGE {}

@@ -23,7 +23,7 @@ function mergeMetaData(params: { [key: string]: any }) {
   };
 }
 
-export const checkUploadFile = (
+export const checkUploadFile = async (
   params: Partial<API_UPLOAD.ICheckUploadFileParams>,
 ) => {
   const newParams = merge({}, DEFAULT_CHECK_UPLOAD_PARAMS, params);
@@ -46,7 +46,7 @@ export const checkUploadFile = (
   });
 };
 
-export const uploadFile = (params: API_UPLOAD.IUploadParams) => {
+export const uploadFile = async (params: API_UPLOAD.IUploadParams) => {
   const { file, offset, ...nextParams } = params;
   return request<{ headers: { 'Upload-Offset': number }; [key: string]: any }>(
     '/api/customer/upload/weapp',

@@ -1,11 +1,10 @@
 import { FileImageOutlined, LinkOutlined } from '@ant-design/icons';
 import { useControllableValue } from 'ahooks';
-import { Upload, UploadProps, App } from 'antd';
+import { Upload, UploadProps, App, Image as AntImage } from 'antd';
 import type { UploadFile } from 'antd/es/upload/interface';
 import classnames from 'classnames';
 import { nanoid } from 'nanoid';
 import { useCallback, CSSProperties, useState, useRef, useEffect } from 'react';
-import Modal from '@/components/FocusModal';
 import GlobalConfig from '@/utils/Assist/GlobalConfig';
 import {
   UploadImage,
@@ -120,11 +119,6 @@ const PicturesWall = (
     [UploadImage, setInputValue, onRemove, value],
   );
 
-  // improve自定义上传
-  const beforeUploadImprove = useCallback(async (file) => {
-    return false;
-  }, []);
-
   // 默认自定义上传
   const beforeUploadNormal = useCallback(
     async (file) => {
@@ -148,13 +142,11 @@ const PicturesWall = (
     async (file) => {
       if (GlobalConfig.IS_STATIC) {
         return beforeUploadStatic(file);
-      } else if (GlobalConfig.IS_IMPROVE_BACKEND) {
-        return beforeUploadImprove(file);
       } else {
         return beforeUploadNormal(file);
       }
     },
-    [beforeUploadStatic, beforeUploadNormal, beforeUploadImprove],
+    [beforeUploadStatic, beforeUploadNormal],
   );
 
   const onUrlChange = useCallback(
@@ -200,7 +192,14 @@ const PicturesWall = (
   }, [value]);
 
   return (
-    <>
+    <div
+      style={{
+        ...nextProps.style,
+        // @ts-ignore
+        '--upload-item-height': height,
+      }}
+      className={styles['component-image-upload']}
+    >
       {!!inputVisible && (
         <Input
           defaultValue={value[0]?.preview || ''}
@@ -223,23 +222,131 @@ const PicturesWall = (
         onRemove={onRemove}
         disabled={validLoading}
         {...nextProps}
-        className={classnames(styles['component-image-upload'], className)}
-        style={{
-          ...nextProps.style,
-          // @ts-ignore
-          '--upload-item-height': height,
-        }}
+        className={className}
       >
         {value.length >= 1 ? null : <UploadButton />}
       </Upload>
-      <Modal
-        open={previewVisible}
-        footer={null}
-        onCancel={handleCancel}
-        width={'90vw'}
+      <AntImage
+        width={200}
+        style={{ display: 'none' }}
+        src={previewImage}
+        preview={{
+          visible: previewVisible,
+          src: previewImage,
+          onVisibleChange: (value) => {
+            setPreviewVisible(value);
+          },
+        }}
+      />
+    </div>
+  );
+};
+
+export const CommonImageListUpload = (
+  props: Partial<Omit<UploadProps, 'fileList' | 'onChange'>> & {
+    value?: UploadFile[];
+    onChange?: (value: UploadFile[]) => void;
+    inputVisible?: boolean;
+    height?: CSSProperties['height'];
+    limit?: number;
+    needUpload?: boolean;
+  },
+) => {
+  const [value = [], setValue] = useControllableValue<UploadFile[]>(props, {
+    defaultValuePropName: 'defaultFileList',
+    defaultValue: [],
+  });
+
+  const {
+    value: propsValue,
+    onChange,
+    className,
+    inputVisible = true,
+    height = '200px',
+    limit = 1,
+    needUpload = true,
+    ...nextProps
+  } = props;
+
+  const [previewVisible, setPreviewVisible] = useState<boolean>(false);
+  const [previewImage, setPreviewImage] = useState<string>('');
+
+  // 预览
+  const handlePreview = useCallback(async (file: any) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+    setPreviewImage(file.url || file.preview);
+    setPreviewVisible(true);
+  }, []);
+
+  const onRemove = useCallback((file) => {
+    setValue((prev = []) => {
+      return prev.filter((item) => item.uid !== file.uid);
+    });
+    return true;
+  }, []);
+
+  // 自定义上传
+  const beforeUpload = useCallback(
+    async (file) => {
+      const baseUploadFile = createBaseUploadFile(file);
+      setValue((prev = []) => {
+        return [
+          ...prev,
+          {
+            ...baseUploadFile,
+            status: needUpload ? 'uploading' : 'done',
+          },
+        ];
+      });
+      if (needUpload) {
+        UploadImage(baseUploadFile, {
+          onChange: (value) => {
+            setValue((prev = []) => {
+              return prev.map((item) => {
+                if (item.uid === value.uid) return value;
+                return item;
+              });
+            });
+          },
+        });
+      }
+
+      return false;
+    },
+    [needUpload],
+  );
+
+  return (
+    <>
+      <Upload
+        listType="picture-card"
+        fileList={value.map((item) => ({
+          status: 'done',
+          ...item,
+        }))}
+        onPreview={handlePreview}
+        beforeUpload={beforeUpload}
+        accept="image/*"
+        onRemove={onRemove}
+        {...nextProps}
+        className={className}
       >
-        <img alt="background" style={{ width: '100%' }} src={previewImage} />
-      </Modal>
+        {value.length >= limit ? null : <UploadButton />}
+      </Upload>
+      <AntImage
+        width={200}
+        style={{ display: 'none' }}
+        src={previewImage}
+        preview={{
+          visible: previewVisible,
+          src: previewImage,
+          onVisibleChange: (value) => {
+            setPreviewVisible(value);
+          },
+        }}
+      />
     </>
   );
 };

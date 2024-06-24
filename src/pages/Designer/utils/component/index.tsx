@@ -36,6 +36,7 @@ import FullScreen from '../../../../../public/components/full-screen.jpg';
 import FunnelBasic from '../../../../../public/components/funnel-basic.png';
 import GaugeBasic from '../../../../../public/components/gauge-basic.png';
 import HorizontalBar from '../../../../../public/components/horizontal-bar.png';
+import HtmlFragment from '../../../../../public/components/html-fragment.png';
 import Icon from '../../../../../public/components/icon.jpg';
 import IframeBasic from '../../../../../public/components/iframe.jpg';
 import ImageBasic from '../../../../../public/components/image-basic.jpg';
@@ -52,6 +53,7 @@ import Pagination from '../../../../../public/components/pagination.jpg';
 import ParallelBarBasic from '../../../../../public/components/parallel-basic.png';
 import PathBasic from '../../../../../public/components/path-basic.jpg';
 import PercentBar from '../../../../../public/components/percent-bar.png';
+import PercentPieBasic from '../../../../../public/components/percent-pie-basic.png';
 import PercentPie from '../../../../../public/components/percent-pie.png';
 import PictorialBarBasic from '../../../../../public/components/pictorial-bar-basic.png';
 import PictureWall from '../../../../../public/components/picture-wall.jpg';
@@ -96,7 +98,7 @@ import WordCloudBasic from '../../../../../public/components/word-cloud.png';
 import ZebraBar from '../../../../../public/components/zebra-bar.png';
 import GENERATE_COMPONENT_LIST from './GenerateList';
 
-const commonClass: string = classnames('ac-i-size-m');
+export const commonClass: string = classnames('ac-i-size-m');
 
 const _COMPONENT_TYPE_LIST = [
   {
@@ -250,6 +252,12 @@ const _COMPONENT_TYPE_LIST = [
             type: 'CIRCLE_PIE',
             title: '环形图',
             icon: CirclePie,
+            description: '',
+          },
+          {
+            type: 'PERCENT_PIE_BASIC',
+            title: '基础百分比图',
+            icon: PercentPieBasic,
             description: '',
           },
           {
@@ -517,6 +525,12 @@ const _COMPONENT_TYPE_LIST = [
             type: 'LOTTIE_ANIME',
             title: 'lottie动画',
             icon: LottieAnime,
+            description: '',
+          },
+          {
+            type: 'HTML_FRAGMENT',
+            title: 'HTML片段',
+            icon: HtmlFragment,
             description: '',
           },
         ],
@@ -814,7 +828,7 @@ export const COMPONENT_TYPE_LIST: ComponentType.ComponentTypeList[] = [
     });
     return acc;
   }, []),
-];
+] as ComponentType.ComponentTypeList[];
 
 export const COMPONENT_ONLY_TYPE_LIST = COMPONENT_TYPE_LIST.reduce<
   {

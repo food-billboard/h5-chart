@@ -33,6 +33,7 @@ import PictorialBarBasic from './Chart/PictorialBar/PictorialBarBasic';
 import CirclePie from './Chart/Pie/CirclePie';
 import NightingalePie from './Chart/Pie/NightingalePie';
 import PercentPie from './Chart/Pie/PercentPie';
+import PercentPieBasic from './Chart/Pie/PercentPieBasic';
 import PieBasic from './Chart/Pie/PieBasic';
 import RadarBasic from './Chart/Radar/RadarBasic';
 import BubbleScatter from './Chart/Scatter/BubbleScatter';
@@ -68,6 +69,7 @@ import Ali3DMap from './Map/Ali3DMap';
 import ScatterMap from './Map/ScatterMap';
 import Audio from './Media/Audio';
 import Carousel from './Media/Carousel';
+import HtmlFragment from './Media/HtmlFragment';
 // media
 import Image from './Media/Image';
 import LottieAnime from './Media/LottieAnime';
@@ -196,6 +198,8 @@ COMPONENT_MAP.set(Pagination.type, Pagination);
 COMPONENT_MAP.set(FullScreen.type, FullScreen);
 COMPONENT_MAP.set(ThreeBar.type, ThreeBar);
 COMPONENT_MAP.set(LottieAnime.type, LottieAnime);
+COMPONENT_MAP.set(HtmlFragment.type, HtmlFragment);
+COMPONENT_MAP.set(PercentPieBasic.type, PercentPieBasic);
 // component-map-insert-prefix
 
 // 根据组件类型获取组件信息
@@ -204,6 +208,8 @@ export function getComponentByType(
     Pick<ComponentData.TComponentData, 'componentType'>,
 ): MapValue {
   const config = COMPONENT_MAP.get(component.componentType);
+  // @ts-ignore
+  if (!config) return {};
   const { render, ...nextConfig } = config as MapValue;
   return {
     ...nextConfig,
@@ -219,7 +225,7 @@ export function getComponentDefaultConfigByType(
   isNew = false,
 ) {
   const defaultConfig =
-    getComponentByType({ componentType })?.defaultConfig() || {};
+    getComponentByType({ componentType })?.defaultConfig?.() || {};
   // ? 合并默认的数据请求配置到默认配置中
   if (isNew && !get(defaultConfig, 'config.data.disabled')) {
     const defaultRequest =

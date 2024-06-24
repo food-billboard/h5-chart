@@ -30,6 +30,7 @@ import { ExchangePreviewerContext } from '../../../ExchangeScreenFlag/components
 import { DRAG_TYPE } from '../../../LeftContent/components/ComponentManage/components/ComponentList/item';
 import ComponentList from '../ComponentList';
 import H5AutoHeight from '../H5AutoHeight';
+import ModelPlaceholder from '../ModelPlaceholder';
 import { mapDispatchToProps, mapStateToProps } from './connect';
 import styles from './index.less';
 
@@ -212,6 +213,7 @@ const Painter = (props: PainterProps) => {
       {componentList}
       <H5AutoHeight />
       <LogWinbox />
+      <ModelPlaceholder />
     </ColorImageBackground>
   );
 };

@@ -86,5 +86,7 @@ declare type ComponentSelfType =
   | 'DECORATION_8'
   | 'PAGINATION'
   | 'FULL_SCREEN'
-  | 'LOTTIE_ANIME';
+  | 'LOTTIE_ANIME'
+  | 'PERCENT_PIE_BASIC'
+  | 'HTML_FRAGMENT';
 // component-type-insert-prefix

@@ -1,12 +1,14 @@
+import type { UploadFile, RcFile } from 'antd/es/upload/interface';
 import { Upload } from 'chunk-file-upload';
 import { nanoid } from 'nanoid';
-import type { UploadFile, RcFile } from 'antd/es/upload/interface';
 import {
   checkUploadFile,
   uploadFile,
   DEFAULT_CHECK_UPLOAD_PARAMS,
   getUploadFile,
+  uploadFileImprove,
 } from '@/services';
+import GlobalConfig from '../GlobalConfig';
 
 const UPLOAD_INSTANCE = new Upload();
 
@@ -67,6 +69,16 @@ export function UploadImage(
   },
 ) {
   const { originFileObj } = value;
+
+  // improve版本
+  if (GlobalConfig.IS_IMPROVE_BACKEND) {
+    return uploadFileImprove(originFileObj!).then((data) => {
+      value.url = createImproveUploadResultFileUrl(data);
+      value.status = 'done';
+      onChange?.(value);
+    });
+  }
+
   value.response = value.response || {};
 
   const [name] = UPLOAD_INSTANCE.add({
@@ -108,6 +120,14 @@ export function UploadImage(
     value.response.task = task;
   }
 }
+
+// improve 没有直接返回文件路径，需要自己拼
+export const createImproveUploadResultFileUrl = (
+  data: API_IMPROVE.MediaData,
+) => {
+  const { collectionId, id, file } = data;
+  return `${process.env.API_IMPROVE_URL}/api/files/${collectionId}/${id}/${file}`;
+};
 
 export const createBaseUploadFile: (file: RcFile) => UploadFile = (file) => {
   return {
