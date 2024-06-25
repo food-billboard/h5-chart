@@ -149,6 +149,7 @@ export const BASIC_DEFAULT_DATA_CONFIG: ComponentData.TBaseConfig['data'] = {
     type: 'static',
     value: [],
     valueType: 'array',
+    databaseSource: '',
   },
   filter: {
     show: false,

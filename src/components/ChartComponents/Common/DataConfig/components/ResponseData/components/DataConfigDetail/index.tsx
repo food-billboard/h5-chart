@@ -121,9 +121,13 @@ const DataConfigDetail = forwardRef<
       !!GlobalConfig.ENABLE_MOCK_DATA_CONFIG &&
       !GlobalConfig.IS_STATIC &&
       !GlobalConfig.IS_IMPROVE_BACKEND
-    )
+    ) {
       options.push({ label: 'Mock', value: 'mock' });
+    }
     options.push({ label: 'API', value: 'api' });
+    if (GlobalConfig.IS_IMPROVE_BACKEND) {
+      options.push({ label: '数据库', value: 'database' });
+    }
     return options;
   }, []);
 
@@ -170,6 +174,11 @@ const DataConfigDetail = forwardRef<
             componentId: id,
           }}
           mockProps={{
+            onChange,
+            value: props.value,
+            componentId: id,
+          }}
+          databaseProps={{
             onChange,
             value: props.value,
             componentId: id,

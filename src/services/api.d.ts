@@ -303,7 +303,7 @@ declare namespace API_DATA_MANAGE {
     _id: string;
     name: string;
     dataType: DataType;
-    jdbc: string;
+    url: string;
     memo: string;
     createdAt: string;
     updatedAt: string;
@@ -311,7 +311,7 @@ declare namespace API_DATA_MANAGE {
 
   export type PostDataSourceParams = Pick<
     DataSourceData,
-    'name' | 'dataType' | 'memo' | 'jdbc'
+    'name' | 'dataType' | 'memo' | 'url'
   > & {
     username: string;
     password: string;
@@ -346,7 +346,7 @@ declare namespace API_DATA_MANAGE {
 
   export type PostDataSetParams = Pick<
     DataSourceData,
-    'name' | 'dataType' | 'memo' | 'jdbc'
+    'name' | 'dataType' | 'memo' | 'url'
   > & {
     username: string;
     password: string;

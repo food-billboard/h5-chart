@@ -1,7 +1,7 @@
-import { preRequestData } from '@/services';
 import json5 from 'json5';
 import { cloneDeep, get } from 'lodash';
 import mustache from 'mustache';
+import { preRequestData, getTestDataSource } from '@/services';
 import {
   API_CONTAIN_PARAMS_IMMEDIATELY_REQUEST_URL_FLAG,
   API_CONTAIN_PARAMS_LAZY_REQUEST_URL_FLAG,
@@ -289,6 +289,7 @@ export class FilterData {
         mock,
         value: responseData,
         serviceRequest,
+        databaseSource,
       },
     } = value;
 
@@ -298,12 +299,20 @@ export class FilterData {
     let realHeaders = {};
     const realServiceRequest = type === 'api' && serviceRequest;
 
-    if (type === 'static' || (type === 'api' && !url)) {
+    if (
+      type === 'static' ||
+      (type === 'api' && !url) ||
+      (type === 'database' && (!url || !databaseSource))
+    ) {
       this.requestLog({
         type: 'request',
         url: 'static',
         method: 'static',
-        params: {},
+        params: {
+          requestType: type,
+          url,
+          databaseSource,
+        },
         headers: {},
         response: responseData,
         component: componentId,
@@ -367,6 +376,18 @@ export class FilterData {
         });
         return [];
       }
+    } else if (type === 'database') {
+      log = {
+        ...log,
+        type: 'request',
+        url: realUrl,
+        method,
+        params: {
+          databaseSource,
+        },
+        headers: {},
+        requestType: 'database',
+      };
     }
 
     try {
@@ -379,6 +400,17 @@ export class FilterData {
           body: JSON.stringify(realBody) || '{}',
           header: JSON.stringify(realHeaders) || '{}',
           url: realUrl,
+        });
+        this.requestLog({
+          ...(log as Logger.LoggerItem),
+          response: result,
+        });
+      }
+      // 数据库请求
+      else if (type === 'database') {
+        result = await getTestDataSource({
+          _id: databaseSource,
+          sql: realUrl,
         });
         this.requestLog({
           ...(log as Logger.LoggerItem),

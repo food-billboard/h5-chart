@@ -1,6 +1,7 @@
 import ApiConfig, { ApiConfigProps } from './ApiConfig';
-import StaticConfig from './StaticConfig';
+import DataBaseConfig, { DataBaseConfigProps } from './DataBaseConfig';
 import MockConfig, { MockConfigProps } from './MockConfig';
+import StaticConfig from './StaticConfig';
 import { TOnChange } from './type';
 
 const DefineConfig = (props: {
@@ -9,10 +10,13 @@ const DefineConfig = (props: {
     value?: string;
     onChange?: TOnChange;
   };
+  databaseProps?: Omit<DataBaseConfigProps, 'params' | 'constants'>;
   apiProps?: Omit<ApiConfigProps, 'params' | 'constants'>;
   mockProps?: Omit<MockConfigProps, 'params' | 'constants'>;
 }) => {
   const { type, staticProps, apiProps, mockProps } = props;
+
+  if (type === 'database') return <DataBaseConfig {...mockProps!} />;
 
   if (type === 'mock') return <MockConfig {...mockProps!} />;
 

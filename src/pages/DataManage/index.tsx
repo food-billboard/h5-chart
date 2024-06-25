@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { getDataSourceList, deleteDataSource } from '@/services';
 import columns from './columns';
 import EditModal, { EditModalRef } from './components/EditModal';
-import TestDataButton from './components/TestDataButton';
+// import TestDataButton from './components/TestDataButton';
 import styles from './index.less';
 
 const DataManage = () => {
@@ -45,7 +45,7 @@ const DataManage = () => {
         };
         return (
           <>
-            <TestDataButton _id={record._id} buttonProps={commonProps} />
+            {/* <TestDataButton _id={record._id} buttonProps={commonProps} /> */}
             <Button {...commonProps} onClick={handleAdd.bind(null, record)}>
               编辑
             </Button>
@@ -62,13 +62,13 @@ const DataManage = () => {
   ];
 
   const fetchData = async () => {
-    const { data, total } = (await getDataSourceList({
+    const { list, total } = (await getDataSourceList({
       current: currentPage,
       pageSize: 10,
       content: searchValue,
     })) as any;
     setTotal(total || 0);
-    setDataSource(data || []);
+    setDataSource(list || []);
   };
 
   const onEditOk = useCallback(() => {

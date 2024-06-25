@@ -31,6 +31,7 @@ declare namespace ComponentData {
   export type TCommonRequestConfig = {
     url: string;
     method: 'POST' | 'GET';
+    databaseSource: string;
     headers: string;
     body: string;
     serviceRequest: boolean;
@@ -47,7 +48,7 @@ declare namespace ComponentData {
       show: boolean;
       value: number;
     };
-    type: 'api' | 'static' | 'mock';
+    type: 'api' | 'static' | 'mock' | 'database';
     value: any[] | object;
     valueType?: 'object' | 'array';
   };
@@ -774,7 +775,7 @@ declare namespace Logger {
     response: object;
     error?: any;
     component: string;
-    requestType: 'static' | 'mock' | 'api';
+    requestType: ComponentData.TCommonRequestConfig['type'];
   }; // | another log type
 
   export type LoggerItemWithoutId = Omit<LoggerItem, 'id'>;

@@ -1,14 +1,14 @@
+import { InfoCircleOutlined } from '@ant-design/icons';
+import { Typography } from 'antd';
+import { merge } from 'lodash';
+import { useCallback } from 'react';
+import { connect } from 'umi';
 import Checkbox from '@/components/ChartComponents/Common/Checkbox';
 import Select from '@/components/ChartComponents/Common/Select';
 import IconTooltipBase from '@/components/IconTooltip';
 import FilterDataUtil from '@/utils/Assist/FilterData';
 import GlobalConfig from '@/utils/Assist/GlobalConfig';
 import { API_CONTAIN_PARAMS_LAZY_REQUEST_URL_FLAG } from '@/utils/constants';
-import { InfoCircleOutlined } from '@ant-design/icons';
-import { Typography } from 'antd';
-import { merge } from 'lodash';
-import { useCallback } from 'react';
-import { connect } from 'umi';
 import SubTitle, { SubForm } from '../../SubTitle';
 import CodeEditor from '../SaveCodeEditor';
 import { TOnChange } from '../type';
@@ -29,6 +29,32 @@ export type ApiConfigProps = {
   params: ComponentData.TParams[];
   constants: ComponentData.TConstants[];
   componentId: string;
+};
+
+export const RequestUrlTooltip = () => {
+  return (
+    <div className="ali-l">
+      可以使用全局变量
+      <br />
+      可以根据需要对参数添加特殊标识
+      <Typography.Paragraph
+        className={styles['api-config-copy-text']}
+        italic
+        copyable
+      >
+        {API_CONTAIN_PARAMS_LAZY_REQUEST_URL_FLAG}
+      </Typography.Paragraph>
+      表示不会根据"变量"的改变而请求数据。
+      <br />
+      比如：
+      <Typography.Paragraph style={{ marginBottom: 0 }} code>
+        /api/request/
+        {`{{${API_CONTAIN_PARAMS_LAZY_REQUEST_URL_FLAG}params}}`}
+        /url?userId=
+        {`{{${API_CONTAIN_PARAMS_LAZY_REQUEST_URL_FLAG}userId}}`}
+      </Typography.Paragraph>
+    </div>
+  );
 };
 
 const ApiConfig = (props: ApiConfigProps) => {
@@ -86,31 +112,7 @@ const ApiConfig = (props: ApiConfigProps) => {
         />
       </SubForm>
       <SubTitle>
-        <IconTooltipBase
-          title={
-            <div className="ali-l">
-              可以使用全局变量
-              <br />
-              可以根据需要对参数添加特殊标识
-              <Typography.Paragraph
-                className={styles['api-config-copy-text']}
-                italic
-                copyable
-              >
-                {API_CONTAIN_PARAMS_LAZY_REQUEST_URL_FLAG}
-              </Typography.Paragraph>
-              表示不会根据"变量"的改变而请求数据。
-              <br />
-              比如：
-              <Typography.Paragraph style={{ marginBottom: 0 }} code>
-                /api/request/
-                {`{{${API_CONTAIN_PARAMS_LAZY_REQUEST_URL_FLAG}params}}`}
-                /url?userId=
-                {`{{${API_CONTAIN_PARAMS_LAZY_REQUEST_URL_FLAG}userId}}`}
-              </Typography.Paragraph>
-            </div>
-          }
-        >
+        <IconTooltipBase title={<RequestUrlTooltip />}>
           <InfoCircleOutlined className="m-r-4" />
         </IconTooltipBase>
         URL

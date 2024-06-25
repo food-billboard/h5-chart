@@ -142,6 +142,7 @@ const DEFAULT_SCREEN_DATA: ComponentData.TScreenData = {
           'body',
           'serviceRequest',
           'frequency',
+          'databaseSource',
         ]),
       },
       grid: 1,

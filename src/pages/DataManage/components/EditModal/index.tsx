@@ -25,8 +25,7 @@ type FormData = API_DATA_MANAGE.UpdateDataSourceParams;
 const DEFAULT_FORM_DATA: FormData = {
   name: '',
   dataType: 'Mysql',
-  jdbc:
-    DATA_TYPE_MAP.find((item) => item.value === 'Mysql')?.defaultJDBCURL || '',
+  url: '',
   memo: '',
   username: 'root',
   password: '',
@@ -129,8 +128,8 @@ const EditModal = forwardRef<EditModalRef, EditModalProps>((props, ref) => {
         <Item<FormData> label="数据源名称" required name="name">
           <Input placeholder="请输入数据源名称" />
         </Item>
-        <Item<FormData> label="JDBC URL" required name="jdbc">
-          <Input.TextArea rows={5} placeholder="请输入jdbc url" />
+        <Item<FormData> label="url" required name="url">
+          <Input.TextArea rows={5} placeholder="请输入url" />
         </Item>
         <Item<FormData> label="用户名" required name="username">
           <Input placeholder="请输入用户名" />

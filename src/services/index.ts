@@ -4,6 +4,6 @@ export * from './user';
 export * from './model';
 export * from './mock';
 export * from './third';
-export * from './data-manage';
 export * from './improve/media';
+export * from './improve/data-manage';
 export * from './improve/feedback';

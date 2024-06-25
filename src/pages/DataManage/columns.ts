@@ -12,9 +12,15 @@ const columns: TableColumnType<any>[] = [
     dataIndex: 'dataType',
   },
   {
+    title: '链接',
+    key: 'url',
+    dataIndex: 'url',
+  },
+  {
     title: '备注',
     key: 'memo',
     dataIndex: 'memo',
+    width: 200,
   },
   {
     title: '最近操作时间',
