@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "monaco-loader": "node ./scripts/MonacoEditorLoader.js",
-    "build:improve": "cross-env REACT_APP=improve REACT_APP_ENV=prod max build",
+    "build:improve": "npm run monaco-loader && cross-env REACT_APP=improve REACT_APP_ENV=prod max build",
     "analyze:improve": "cross-env ANALYZE=1 REACT_APP_ENV=prod REACT_APP=improve max build",
     "start:improve": "cross-env PORT=8001 REACT_APP=improve max dev",
     "deploy:static": "gh-pages -d dist",

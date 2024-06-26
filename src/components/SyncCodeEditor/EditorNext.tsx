@@ -32,8 +32,12 @@ if (process.env.REACT_APP_ENV === 'prod') {
   }
   // improve版本
   if (process.env.REACT_APP === 'improve') {
-    // TODO
     // 把文件放到对应服务器上
+    loader.config({
+      paths: {
+        vs: `${process.env.ACCESS_IMPROVE_URL}/lib/monaco-editor/vs`,
+      },
+    });
   }
 }
 

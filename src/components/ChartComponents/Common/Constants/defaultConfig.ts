@@ -286,7 +286,7 @@ export const DEFAULT_CONDITION_CONFIG_ITEM_RULE: () => ComponentData.ComponentRu
 
 // condition
 export const DEFAULT_CONDITION_CONFIG: () => ComponentData.ComponentConditionConfig =
-  () => ({
+  (extraConfig?: Partial<ComponentData.ComponentConditionConfig>) => ({
     value: [
       {
         id: nanoid(),
@@ -315,4 +315,6 @@ export const DEFAULT_CONDITION_CONFIG: () => ComponentData.ComponentConditionCon
       },
     ],
     initialState: 'visible',
+    modalEnable: true,
+    ...extraConfig,
   });
