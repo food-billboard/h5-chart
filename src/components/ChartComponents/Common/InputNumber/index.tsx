@@ -1,8 +1,8 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useDebounceFn, useUnmount } from 'ahooks';
 import { InputNumber as AntInputNumber } from 'antd';
 import { InputNumberProps as AntInputNumberProps } from 'antd/es/input-number';
 import classnames from 'classnames';
-import { useUnmount } from 'ahooks';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { Validator, useValidatorChange } from '@/hooks';
 import FormModal from '../FormModal';
 
@@ -24,6 +24,7 @@ const InputNumber = (props: InputNumberProps) => {
     onBlur: propsOnBlur,
     className,
     onFocus: propsOnFocus,
+    onStep: propsOnStep,
   } = nextProps;
 
   const [stateValue, setStateValue] = useState<number | string>(
@@ -59,6 +60,23 @@ const InputNumber = (props: InputNumberProps) => {
     [propsOnFocus],
   );
 
+  const { run: debounceChange } = useDebounceFn(
+    (value) => {
+      propsOnChange?.(value);
+    },
+    {
+      wait: 250,
+    },
+  );
+
+  const onStep = useCallback(
+    (value, info) => {
+      debounceChange(value);
+      propsOnStep?.(value, info);
+    },
+    [propsOnStep, debounceChange],
+  );
+
   useEffect(() => {
     if (value !== undefined) {
       setStateValue(value as any);
@@ -77,6 +95,7 @@ const InputNumber = (props: InputNumberProps) => {
       onBlur={onBlur}
       value={stateValue}
       onFocus={onFocus}
+      onStep={onStep}
     />
   );
 };
