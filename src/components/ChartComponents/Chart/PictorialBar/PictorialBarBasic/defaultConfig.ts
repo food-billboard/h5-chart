@@ -1,5 +1,7 @@
 import { omit } from 'lodash';
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
+import { getDate, getNumberValue } from '@/utils/constants';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -14,8 +16,6 @@ import {
   DEFAULT_LINKAGE_CONFIG,
   DEFAULT_INTERACTIVE_BASE_CONFIG,
 } from '../../../Common/Constants/defaultConfig';
-import ThemeUtil from '@/utils/Assist/Theme';
-import { getDate, getNumberValue } from '@/utils/constants';
 import { TPictorialBarBasicConfig } from './type';
 
 const DEFAULT_DATE_LABEL = getDate(4);
@@ -139,13 +139,17 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[]) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TPictorialBarBasicConfig,
+    forceSeries = false,
+  ) => {
     return {
       tooltip: {
-        backgroundColor: DEFAULT_TOOLTIP_CONFIG().backgroundColor,
+        backgroundColor: DEFAULT_TOOLTIP_CONFIG(colorList).backgroundColor,
       },
       series: {
-        symbolColor: ThemeUtil.generateNextColor4CurrentTheme(0),
+        symbolColor: colorList[0],
       },
     };
   },

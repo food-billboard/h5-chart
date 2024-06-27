@@ -1,4 +1,6 @@
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
+import { getName, getNumberValue } from '@/utils/constants';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -12,8 +14,6 @@ import {
   DEFAULT_LINKAGE_CONFIG,
   DEFAULT_INTERACTIVE_BASE_CONFIG,
 } from '../../../Common/Constants/defaultConfig';
-import ThemeUtil from '@/utils/Assist/Theme';
-import { getName, getNumberValue } from '@/utils/constants';
 import { TTreeBasicConfig } from './type';
 
 const DEFAULT_NAME_LABEL = getName(5);
@@ -164,15 +164,23 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TTreeBasicConfig) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TTreeBasicConfig,
+    forceSeries = false,
+  ) => {
+    const itemStyleList = options.series.itemStyle.color;
     return {
       tooltip: {
-        backgroundColor: DEFAULT_TOOLTIP_CONFIG().backgroundColor,
+        backgroundColor: DEFAULT_TOOLTIP_CONFIG(colorList).backgroundColor,
       },
       series: {
         itemStyle: {
-          color: options.series.itemStyle.color.map((item, index) => {
-            return ThemeUtil.generateNextColor4CurrentTheme(index);
+          color: (itemStyleList.length || !forceSeries
+            ? itemStyleList
+            : colorList
+          ).map((item, index) => {
+            return colorList[index] || item;
           }),
         },
       },

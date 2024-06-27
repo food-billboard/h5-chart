@@ -1,3 +1,4 @@
+import { merge } from 'lodash';
 import { useCallback, useMemo } from 'react';
 import BoxShadowConfig from '@/components/ChartComponents/Common/BoxShadowConfig';
 import InputNumber from '@/components/ChartComponents/Common/InputNumber';
@@ -10,6 +11,7 @@ import SymbolSelect from '@/components/ChartComponents/Common/SymbolSelect';
 import ColorSelect from '@/components/ColorSelect';
 import GlobalConfig from '@/utils/Assist/GlobalConfig';
 import ThemeUtil from '@/utils/Assist/Theme';
+import { DEFAULT_ITEM_STYLE } from '../defaultConfig';
 import { TScatterBasicConfig } from '../type';
 
 const { Item } = ConfigList;
@@ -153,26 +155,13 @@ const SeriesConfig = (props: {
                 series: {
                   itemStyle: [
                     ...itemStyle,
-                    {
+                    merge({}, DEFAULT_ITEM_STYLE, {
                       color: ThemeUtil.generateNextColor4CurrentTheme(counter),
                       borderColor: {
                         ...ThemeUtil.generateNextColor4CurrentTheme(counter),
                         a: 0.5,
                       },
-                      borderType: 'solid',
-                      borderWidth: 0,
-                      shadow: {
-                        vShadow: 0,
-                        hShadow: 0,
-                        color: {
-                          r: 255,
-                          g: 255,
-                          b: 255,
-                          a: 0.3,
-                        },
-                        blur: 10,
-                      },
-                    },
+                    }),
                   ],
                 },
               },

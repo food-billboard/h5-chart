@@ -1,4 +1,5 @@
 import { mergeWithoutArray } from '@/utils';
+import { getText } from '@/utils/constants';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -7,7 +8,6 @@ import {
   DEFAULT_CONDITION_CONFIG,
   DEFAULT_LINKAGE_CONFIG,
 } from '../../Common/Constants/defaultConfig';
-import { getText } from '@/utils/constants';
 import { TLoopTextConfig } from './type';
 
 const DEFAULT_VALUE = {
@@ -98,5 +98,5 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[]) => {},
+  convert: (colorList: ComponentData.TColorConfig[]) => {},
 };

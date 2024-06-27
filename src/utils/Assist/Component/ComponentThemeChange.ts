@@ -1,3 +1,4 @@
+import color from 'color';
 import { getComponentThemeConfigByType } from '@/components/ChartComponents';
 import { getDvaGlobalModelData } from './index';
 
@@ -11,7 +12,16 @@ function covertComponentsThemeColor(
       const { id, componentType, config } = component;
       const { convert } = (getComponentThemeConfigByType(componentType) ||
         {}) as any;
-      const options = convert?.(colorList, config.options);
+      const objectColorList = colorList.map((item) => {
+        const object = color(item).object();
+        return {
+          r: object.r,
+          g: object.g,
+          b: object.b,
+          a: object.a || 1,
+        };
+      });
+      const options = convert?.(objectColorList, config.options, false);
       if (!Object.keys(options || {}).length) return false;
       return {
         value: !!convert

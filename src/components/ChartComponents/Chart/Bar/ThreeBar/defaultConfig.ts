@@ -170,25 +170,28 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TThreeBarConfig) => {
-    const realColorList = DEFAULT_THEME_COLOR_LIST();
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TThreeBarConfig,
+    forceSeries = false,
+  ) => {
     return {
       yAxis: {
         splitLine: {
           lineStyle: {
             color: {
-              ...ThemeUtil.generateNextColor4CurrentTheme(0),
+              ...colorList[0],
               a: options.yAxis.splitLine.lineStyle.color.a,
             },
           },
         },
       },
       tooltip: {
-        backgroundColor: DEFAULT_TOOLTIP_CONFIG().backgroundColor,
+        backgroundColor: DEFAULT_TOOLTIP_CONFIG(colorList).backgroundColor,
       },
       series: {
         itemStyle: {
-          color: realColorList,
+          color: colorList,
         },
       },
     };

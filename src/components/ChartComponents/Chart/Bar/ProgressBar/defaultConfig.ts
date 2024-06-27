@@ -1,4 +1,5 @@
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -12,7 +13,6 @@ import {
   DEFAULT_INTERACTIVE_BASE_CONFIG,
   DEFAULT_LINKAGE_CONFIG,
 } from '../../../Common/Constants/defaultConfig';
-import ThemeUtil from '@/utils/Assist/Theme';
 import { TProgressBarConfig } from './type';
 
 const DEFAULT_VALUE = {
@@ -133,17 +133,21 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TProgressBarConfig) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TProgressBarConfig,
+    forceSeries = false,
+  ) => {
     return {
       tooltip: {
-        backgroundColor: DEFAULT_TOOLTIP_CONFIG().backgroundColor,
+        backgroundColor: DEFAULT_TOOLTIP_CONFIG(colorList).backgroundColor,
       },
       series: {
         itemStyle: {
           color: {
             ...options.series.itemStyle.color,
-            start: ThemeUtil.generateNextColor4CurrentTheme(0),
-            end: ThemeUtil.generateNextColor4CurrentTheme(1),
+            start: colorList[0],
+            end: colorList[1],
           },
         },
       },

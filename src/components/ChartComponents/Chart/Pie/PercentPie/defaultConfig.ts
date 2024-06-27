@@ -127,25 +127,36 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TPercentPieConfig) => {
-    const DEFAULT_THEME_COLOR_LIST_DATA = DEFAULT_THEME_COLOR_LIST();
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TPercentPieConfig,
+    forceSeries = false,
+  ) => {
+    const lineStyleColorList = options.lineStyle.color;
+    const itemStyleColorList = options.series.itemStyle.color;
     return {
       lineStyle: {
-        color: options.lineStyle.color.map((_, index) => {
+        color: (lineStyleColorList.length || !forceSeries
+          ? lineStyleColorList
+          : colorList
+        ).map((item, index) => {
           return {
-            line: DEFAULT_THEME_COLOR_LIST_DATA[index],
-            point: DEFAULT_THEME_COLOR_LIST_DATA[index],
+            line: colorList[index] || item,
+            point: colorList[index] || item,
           };
         }),
       },
       series: {
         itemStyle: {
-          color: options.series.itemStyle.color.map((item, index) => {
-            return ThemeUtil.generateNextColor4CurrentTheme(index);
+          color: (itemStyleColorList.length || !forceSeries
+            ? itemStyleColorList
+            : colorList
+          ).map((item, index) => {
+            return colorList[index] || item;
           }),
         },
         backgroundColor: {
-          ...DEFAULT_THEME_COLOR_LIST_DATA[0],
+          ...colorList[0],
           a: options.series.backgroundColor.a,
         },
       },

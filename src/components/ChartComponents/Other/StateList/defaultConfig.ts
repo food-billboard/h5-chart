@@ -1,4 +1,6 @@
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
+import { getText } from '@/utils/constants';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -8,9 +10,7 @@ import {
   DEFAULT_LINKAGE_CONFIG,
   DEFAULT_INTERACTIVE_BASE_CONFIG,
 } from '../../Common/Constants/defaultConfig';
-import { getText } from '@/utils/constants';
-import ThemeUtil from '@/utils/Assist/Theme';
-import { TStateListConfig } from './type';
+import { TStateListConfig, TStateListConfigStateList } from './type';
 
 const DEFAULT_TEXT = getText(6);
 
@@ -21,6 +21,10 @@ const DEFAULT_VALUE = new Array(DEFAULT_TEXT.length)
       value: DEFAULT_TEXT[index],
     };
   });
+
+const DEFAULT_STATE_ITEM: Omit<TStateListConfigStateList, 'backgroundColor'> = {
+  borderRadius: [0, 0, 0, 0],
+};
 
 export default () => {
   const CUSTOM_CONFIG: ComponentData.TInternalComponentConfig<TStateListConfig> =
@@ -79,8 +83,8 @@ export default () => {
         column: 3,
         stateList: new Array(4).fill(0).map((item, index) => {
           return {
+            ...DEFAULT_STATE_ITEM,
             backgroundColor: ThemeUtil.generateNextColor4CurrentTheme(index),
-            borderRadius: [0, 0, 0, 0],
           };
         }),
       },
@@ -107,12 +111,20 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TStateListConfig) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TStateListConfig,
+    forceSeries = false,
+  ) => {
     return {
-      stateList: options.stateList.map((item, index) => {
+      stateList: (options.stateList.length || !forceSeries
+        ? options.stateList
+        : colorList
+      ).map((item, index) => {
         return {
-          ...item,
-          backgroundColor: ThemeUtil.generateNextColor4CurrentTheme(index),
+          ...(options.stateList[index] || DEFAULT_STATE_ITEM),
+          backgroundColor:
+            colorList[index] || options.stateList[index]?.backgroundColor,
         };
       }),
     };

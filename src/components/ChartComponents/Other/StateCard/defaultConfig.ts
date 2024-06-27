@@ -1,4 +1,6 @@
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
+import { getText } from '@/utils/constants';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -8,8 +10,6 @@ import {
   DEFAULT_LINKAGE_CONFIG,
   DEFAULT_INTERACTIVE_BASE_CONFIG,
 } from '../../Common/Constants/defaultConfig';
-import { getText } from '@/utils/constants';
-import ThemeUtil from '@/utils/Assist/Theme';
 import { TStateCardConfig } from './type';
 
 const DEFAULT_TEXT = getText(4);
@@ -120,13 +120,21 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TStateCardConfig) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TStateCardConfig,
+    forceSeries = false,
+  ) => {
     return {
-      stateList: options.stateList.map((item, index) => {
+      stateList: (options.stateList.length || !forceSeries
+        ? options.stateList
+        : colorList
+      ).map((item, index) => {
         return {
-          ...item,
+          value: options.stateList[index]?.value || index.toString(),
           stateIcon: {
-            color: ThemeUtil.generateNextColor4CurrentTheme(index),
+            color:
+              colorList[index] || options.stateList[index]?.stateIcon?.color,
           },
         };
       }),

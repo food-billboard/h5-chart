@@ -104,7 +104,11 @@ import Typed from './Source/Typed';
 type MapKey = ComponentData.TComponentSelfType;
 type MapValue = {
   themeConfig: {
-    convert: (colorList: string[], options: any) => any;
+    convert: (
+      colorList: ComponentData.TColorConfig[],
+      options: any,
+      forceSeries?: boolean,
+    ) => any;
   };
   defaultConfig: () => object;
   configComponent: (props: any) => JSX.Element;

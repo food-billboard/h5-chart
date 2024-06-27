@@ -1,3 +1,11 @@
+export type TScatterBasicConfigItemStyle = {
+  color: ComponentData.TColorConfig;
+  borderColor: ComponentData.TColorConfig;
+  borderType: ComponentData.ComponentLineStyle;
+  borderWidth: number;
+  shadow: Omit<ComponentData.TBoxShadow, 'spread'>;
+};
+
 export type TScatterBasicConfig = {
   grid: ComponentData.ComponentGrid;
   legend: Omit<ComponentData.ComponentLegend, 'type'>;
@@ -9,13 +17,7 @@ export type TScatterBasicConfig = {
   series: {
     symbol: ComponentData.ComponentSymbol;
     symbolSize: number;
-    itemStyle: {
-      color: ComponentData.TColorConfig;
-      borderColor: ComponentData.TColorConfig;
-      borderType: ComponentData.ComponentLineStyle;
-      borderWidth: number;
-      shadow: Omit<ComponentData.TBoxShadow, 'spread'>;
-    }[];
+    itemStyle: TScatterBasicConfigItemStyle[];
   };
   animation: ComponentData.ComponentChartAnimationConfig;
   condition: ComponentData.ComponentConditionConfig;

@@ -266,21 +266,25 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TListConfig) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TListConfig,
+    forceSeries = false,
+  ) => {
     return {
       header: {
-        backgroundColor: ThemeUtil.generateNextColor4CurrentTheme(0),
+        backgroundColor: colorList[0],
       },
       columns: {
         even: {
           backgroundColor: {
-            ...ThemeUtil.generateNextColor4CurrentTheme(0),
+            ...colorList[0],
             a: options.columns.even.backgroundColor.a,
           },
         },
         odd: {
           backgroundColor: {
-            ...ThemeUtil.generateNextColor4CurrentTheme(0),
+            ...colorList[0],
             a: options.columns.odd.backgroundColor.a,
           },
         },

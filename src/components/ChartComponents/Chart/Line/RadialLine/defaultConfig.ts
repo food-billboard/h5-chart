@@ -1,5 +1,7 @@
 import { omit, merge } from 'lodash';
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
+import { getDate, getNumberValue, getSeries } from '@/utils/constants';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -17,8 +19,6 @@ import {
   DEFAULT_LINKAGE_CONFIG,
   DEFAULT_INTERACTIVE_BASE_CONFIG,
 } from '../../../Common/Constants/defaultConfig';
-import ThemeUtil from '@/utils/Assist/Theme';
-import { getDate, getNumberValue, getSeries } from '@/utils/constants';
 import { TRadialLineConfig } from './type';
 
 const DEFAULT_DATE_LABEL = getDate(10);
@@ -29,7 +29,10 @@ export const DEFAULT_DECAL = {
   symbolSize: 4,
 };
 
-export const DEFAULT_LINE_STYLE = {
+export const DEFAULT_LINE_STYLE: {
+  width: number;
+  type: ComponentData.ComponentLineStyle;
+} = {
   width: 1,
   type: 'solid',
 };
@@ -178,9 +181,8 @@ export default () => {
           },
           lineStyle: DEFAULT_THEME_RADIAL_COLOR_LIST_DATA.map((item) => {
             return {
+              ...DEFAULT_LINE_STYLE,
               color: item,
-              width: 1,
-              type: 'solid',
             };
           }),
         },
@@ -207,40 +209,57 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TRadialLineConfig) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TRadialLineConfig,
+    forceSeries = false,
+  ) => {
     const DEFAULT_THEME_RADIAL_COLOR_LIST_DATA =
-      DEFAULT_THEME_RADIAL_COLOR_LIST();
+      DEFAULT_THEME_RADIAL_COLOR_LIST(colorList);
     const length = DEFAULT_THEME_RADIAL_COLOR_LIST_DATA.length;
+    const itemStyleColorList = options.series.itemStyle.color;
+    const areaStyleColorList = options.series.areaStyle.color;
+    const lineStyleColorList = options.series.lineStyle;
     return {
       yAxis: {
         splitLine: {
           lineStyle: {
             color: {
-              ...ThemeUtil.generateNextColor4CurrentTheme(0),
+              ...colorList[0],
               a: options.yAxis.splitLine.lineStyle.color.a,
             },
           },
         },
       },
       tooltip: {
-        backgroundColor: DEFAULT_TOOLTIP_CONFIG().backgroundColor,
+        backgroundColor: DEFAULT_TOOLTIP_CONFIG(colorList).backgroundColor,
       },
       series: {
         itemStyle: {
-          color: options.series.itemStyle.color.map((item, index) => {
-            return ThemeUtil.generateNextColor4CurrentTheme(index);
+          color: (itemStyleColorList.length || !forceSeries
+            ? itemStyleColorList
+            : colorList
+          ).map((item, index) => {
+            return colorList[index] || item;
           }),
         },
         areaStyle: {
-          color: options.series.areaStyle.color.map((item, index) => {
-            return ThemeUtil.generateNextColor4CurrentTheme(index);
+          color: (areaStyleColorList.length || !forceSeries
+            ? areaStyleColorList
+            : colorList
+          ).map((item, index) => {
+            return colorList[index] || item;
           }),
         },
-        lineStyle: options.series.lineStyle.map((item, index) => {
+        lineStyle: (lineStyleColorList.length || !forceSeries
+          ? lineStyleColorList
+          : DEFAULT_THEME_RADIAL_COLOR_LIST_DATA
+        ).map((_, index) => {
+          const item = lineStyleColorList[index] || DEFAULT_LINE_STYLE;
           return {
             ...item,
             color: {
-              ...item.color,
+              ...(item.color || DEFAULT_THEME_RADIAL_COLOR_LIST_DATA[0]),
               start: DEFAULT_THEME_RADIAL_COLOR_LIST_DATA[index % length].start,
               end: DEFAULT_THEME_RADIAL_COLOR_LIST_DATA[index % length].end,
             },

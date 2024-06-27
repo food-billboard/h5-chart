@@ -1,4 +1,6 @@
+import { merge } from 'lodash';
 import { mergeWithoutArray } from '@/utils';
+import { getName } from '@/utils/constants';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -13,7 +15,6 @@ import {
   DEFAULT_LINKAGE_CONFIG,
   DEFAULT_INTERACTIVE_BASE_CONFIG,
 } from '../../../Common/Constants/defaultConfig';
-import { getName } from '@/utils/constants';
 import { TPercentBarConfig } from './type';
 
 const DEFAULT_NAME = getName(3);
@@ -54,6 +55,11 @@ export const DEFAULT_LABEL = {
       },
     },
   },
+};
+
+const DEFAULT_SERIES_ITEM_STYLE = {
+  label: DEFAULT_LABEL,
+  color: DEFAULT_RADIAL_CONFIG,
 };
 
 export default () => {
@@ -126,14 +132,12 @@ export default () => {
         },
         series: {
           itemStyle: new Array(3).fill(0).map((_, index) => {
-            return {
-              label: DEFAULT_LABEL,
+            return merge({}, DEFAULT_SERIES_ITEM_STYLE, {
               color: {
-                ...DEFAULT_RADIAL_CONFIG,
                 start: DEFAULT_THEME_COLOR_LIST_DATA[index * 2],
                 end: DEFAULT_THEME_COLOR_LIST_DATA[index * 2 + 1],
               },
-            };
+            });
           }),
           barWidth: 20,
         },
@@ -161,23 +165,29 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TPercentBarConfig) => {
-    const DEFAULT_THEME_COLOR_LIST_DATA = DEFAULT_THEME_COLOR_LIST();
-    const length = Math.floor(DEFAULT_THEME_COLOR_LIST_DATA.length / 2);
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TPercentBarConfig,
+    forceSeries = false,
+  ) => {
+    const length = Math.floor(colorList.length / 2);
+    const itemStyle = options.series.itemStyle;
     return {
       tooltip: {
-        backgroundColor: DEFAULT_TOOLTIP_CONFIG().backgroundColor,
+        backgroundColor: DEFAULT_TOOLTIP_CONFIG(colorList).backgroundColor,
       },
       series: {
-        itemStyle: options.series.itemStyle.map((item, index) => {
-          return {
-            ...item,
+        itemStyle: (itemStyle.length || !forceSeries
+          ? itemStyle
+          : colorList
+        ).map((_, index) => {
+          const item = itemStyle[index] || DEFAULT_SERIES_ITEM_STYLE;
+          return merge({}, item, {
             color: {
-              ...item.color,
-              start: DEFAULT_THEME_COLOR_LIST_DATA[(index % length) * 2],
-              end: DEFAULT_THEME_COLOR_LIST_DATA[(index % length) * 2 + 1],
+              start: colorList[(index % length) * 2] || item.color?.start,
+              end: colorList[(index % length) * 2 + 1] || item.color?.end,
             },
-          };
+          });
         }),
       },
     };

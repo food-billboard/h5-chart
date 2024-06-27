@@ -1,3 +1,8 @@
+export type TStateListConfigStateList = {
+  backgroundColor: ComponentData.TColorConfig;
+  borderRadius: [number, number, number, number];
+};
+
 export type TStateListConfig = {
   margin: [number, number];
   count: number;
@@ -8,9 +13,6 @@ export type TStateListConfig = {
     horizontal: 'flex-start' | 'flex-end' | 'center';
   };
   textStyle: ComponentData.TFontConfig;
-  stateList: {
-    backgroundColor: ComponentData.TColorConfig;
-    borderRadius: [number, number, number, number];
-  }[];
+  stateList: TStateListConfigStateList[];
   condition: ComponentData.ComponentConditionConfig;
 };

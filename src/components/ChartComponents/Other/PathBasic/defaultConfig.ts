@@ -1,4 +1,5 @@
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -6,7 +7,6 @@ import {
   DEFAULT_CONDITION_CONFIG,
   DEFAULT_LINKAGE_CONFIG,
 } from '../../Common/Constants/defaultConfig';
-import ThemeUtil from '@/utils/Assist/Theme';
 import { TPathBasicConfig } from './type';
 
 const DEFAULT_VALUE = {
@@ -107,7 +107,7 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[]) => {
+  convert: (colorList: ComponentData.TColorConfig[]) => {
     return {};
   },
 };

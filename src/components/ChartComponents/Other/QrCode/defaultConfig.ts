@@ -105,10 +105,14 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[]) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TQrCodeConfig,
+    forceSeries = false,
+  ) => {
     return {
       base: {
-        codeColor: ThemeUtil.generateNextColor4CurrentTheme(0),
+        codeColor: colorList[0],
       },
     };
   },

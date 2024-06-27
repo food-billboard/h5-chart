@@ -1,6 +1,7 @@
 import { omit } from 'lodash';
 import { mergeWithoutArray } from '@/utils';
 import ThemeUtil from '@/utils/Assist/Theme';
+import { getDate, getNumberValue } from '@/utils/constants';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -15,7 +16,6 @@ import {
   DEFAULT_LINKAGE_CONFIG,
   DEFAULT_INTERACTIVE_BASE_CONFIG,
 } from '../../../Common/Constants/defaultConfig';
-import { getDate, getNumberValue } from '@/utils/constants';
 import { TBoxPlotBasicConfig } from './type';
 
 const DEFAULT_DATE_LABEL = getDate(6);
@@ -150,17 +150,25 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TBoxPlotBasicConfig) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TBoxPlotBasicConfig,
+    forceSeries = false,
+  ) => {
+    const itemStyleList = options.series.itemStyle;
     return {
       tooltip: {
-        backgroundColor: DEFAULT_TOOLTIP_CONFIG().backgroundColor,
+        backgroundColor: DEFAULT_TOOLTIP_CONFIG(colorList).backgroundColor,
       },
       series: {
-        itemStyle: options.series.itemStyle.map((item, index) => {
+        itemStyle: (itemStyleList.length || !forceSeries
+          ? itemStyleList
+          : colorList
+        ).map((item, index) => {
           return {
             ...item,
-            color: ThemeUtil.generateNextColor4CurrentTheme(index),
-            borderColor: ThemeUtil.generateNextColor4CurrentTheme(index),
+            color: colorList[index] || item,
+            borderColor: colorList[index] || item,
           };
         }),
       },

@@ -1,4 +1,6 @@
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
+import { getName, getNumberValue } from '@/utils/constants';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -7,8 +9,6 @@ import {
   DEFAULT_ANIMATION_CONFIG,
   DEFAULT_CONDITION_CONFIG,
 } from '../../../Common/Constants/defaultConfig';
-import { getName, getNumberValue } from '@/utils/constants';
-import ThemeUtil from '@/utils/Assist/Theme';
 import { TGaugeBasicConfig } from './type';
 
 const [DEFAULT_NAME_LABEL] = getName(1);
@@ -145,34 +145,38 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TGaugeBasicConfig) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TGaugeBasicConfig,
+    forceSeries = false,
+  ) => {
     return {
       series: {
         axisLine: {
           lineStyle: {
             color: {
               ...options.series.axisLine.lineStyle.color,
-              ...ThemeUtil.generateNextColor4CurrentTheme(0),
+              ...colorList[0],
             },
           },
         },
         progress: {
-          color: ThemeUtil.generateNextColor4CurrentTheme(0),
+          color: colorList[0],
         },
         splitLine: {
           color: {
             ...options.series.splitLine.color,
-            ...ThemeUtil.generateNextColor4CurrentTheme(0),
+            ...colorList[0],
           },
         },
         axisTick: {
           lineStyle: {
-            color: ThemeUtil.generateNextColor4CurrentTheme(0),
+            color: colorList[0],
           },
         },
         pointer: {
           itemStyle: {
-            color: ThemeUtil.generateNextColor4CurrentTheme(0),
+            color: colorList[0],
           },
         },
       },

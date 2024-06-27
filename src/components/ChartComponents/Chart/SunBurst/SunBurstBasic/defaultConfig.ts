@@ -1,4 +1,5 @@
 import { mergeWithoutArray } from '@/utils';
+import { getName, getNumberValue } from '@/utils/constants';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -10,7 +11,6 @@ import {
   DEFAULT_LINKAGE_CONFIG,
   DEFAULT_INTERACTIVE_BASE_CONFIG,
 } from '../../../Common/Constants/defaultConfig';
-import { getName, getNumberValue } from '@/utils/constants';
 import { TSunBurstBasicConfig } from './type';
 
 function generateList(count = 10): any {
@@ -138,10 +138,14 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[]) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TSunBurstBasicConfig,
+    forceSeries = false,
+  ) => {
     return {
       tooltip: {
-        backgroundColor: DEFAULT_TOOLTIP_CONFIG().backgroundColor,
+        backgroundColor: DEFAULT_TOOLTIP_CONFIG(colorList).backgroundColor,
       },
     };
   },

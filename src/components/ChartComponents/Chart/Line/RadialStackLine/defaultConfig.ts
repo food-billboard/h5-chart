@@ -1,5 +1,6 @@
 import { omit } from 'lodash';
 import { mergeWithoutArray } from '@/utils';
+import { getDate, getNumberValue, getSeries } from '@/utils/constants';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -15,7 +16,6 @@ import {
   DEFAULT_LINKAGE_CONFIG,
   DEFAULT_INTERACTIVE_BASE_CONFIG,
 } from '../../../Common/Constants/defaultConfig';
-import { getDate, getNumberValue, getSeries } from '@/utils/constants';
 import { TRadialStackLineConfig } from './type';
 
 const DEFAULT_DATE_LABEL = getDate(10);
@@ -159,20 +159,29 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TRadialStackLineConfig) => {
-    const realColorList = DEFAULT_THEME_RADIAL_COLOR_LIST();
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TRadialStackLineConfig,
+    forceSeries = false,
+  ) => {
+    const realColorList = DEFAULT_THEME_RADIAL_COLOR_LIST(colorList);
     const length = realColorList.length;
+    const areaStyleColorList = options.series.areaStyle.color;
     return {
       tooltip: {
-        backgroundColor: DEFAULT_TOOLTIP_CONFIG().backgroundColor,
+        backgroundColor: DEFAULT_TOOLTIP_CONFIG(colorList).backgroundColor,
       },
       series: {
         areaStyle: {
-          color: options.series.areaStyle.color.map((item, index) => {
+          color: (areaStyleColorList.length || !forceSeries
+            ? areaStyleColorList
+            : realColorList
+          ).map((item, index) => {
+            const data = realColorList[index] || item;
             return {
-              ...item,
-              start: realColorList[index % length].start,
-              end: realColorList[index % length].end,
+              ...data,
+              start: realColorList[index % length]?.start || data.start,
+              end: realColorList[index % length]?.end || data.end,
             };
           }),
         },

@@ -1,4 +1,5 @@
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -6,7 +7,6 @@ import {
   DEFAULT_FONT_CONFIG,
   DEFAULT_LINKAGE_CONFIG,
 } from '../../Common/Constants/defaultConfig';
-import ThemeUtil from '@/utils/Assist/Theme';
 import { TTimeMachineConfig } from './type';
 
 export default () => {
@@ -71,10 +71,14 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[]) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TTimeMachineConfig,
+    forceSeries = false,
+  ) => {
     return {
       icon: {
-        color: ThemeUtil.generateNextColor4CurrentTheme(0),
+        color: colorList[0],
       },
     };
   },

@@ -1,4 +1,6 @@
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
+import { getName } from '@/utils/constants';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -7,8 +9,6 @@ import {
   DEFAULT_LINKAGE_CONFIG,
   DEFAULT_INTERACTIVE_BASE_CONFIG,
 } from '../../Common/Constants/defaultConfig';
-import { getName } from '@/utils/constants';
-import ThemeUtil from '@/utils/Assist/Theme';
 import { TTabConfig } from './type';
 
 const DEFAULT_NAME_LABEL = getName(3);
@@ -158,14 +158,18 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[]) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TTabConfig,
+    forceSeries = false,
+  ) => {
     return {
       active: {
         textStyle: {
-          color: ThemeUtil.generateNextColor4CurrentTheme(0),
+          color: colorList[0],
         },
         border: {
-          color: ThemeUtil.generateNextColor4CurrentTheme(0),
+          color: colorList[0],
         },
       },
     };

@@ -1,5 +1,6 @@
 import { omit } from 'lodash';
 import { mergeWithoutArray } from '@/utils';
+import { getName, getNumberValue } from '@/utils/constants';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -10,7 +11,6 @@ import {
   DEFAULT_LINKAGE_CONFIG,
   DEFAULT_INTERACTIVE_BASE_CONFIG,
 } from '../../Common/Constants/defaultConfig';
-import { getName, getNumberValue } from '@/utils/constants';
 import { TWordCloudBasicConfig } from './type';
 
 const DEFAULT_NAME_LABEL = getName(100);
@@ -126,7 +126,7 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[]) => {
+  convert: (colorList: ComponentData.TColorConfig[]) => {
     return {};
   },
 };

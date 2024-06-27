@@ -1,4 +1,5 @@
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -7,7 +8,6 @@ import {
   DEFAULT_BORDER_RADIUS,
   DEFAULT_INTERACTIVE_BASE_CONFIG,
 } from '../../Common/Constants/defaultConfig';
-import ThemeUtil from '@/utils/Assist/Theme';
 import { TCheckboxConfig } from './type';
 
 const DEFAULT_VALUE = [
@@ -121,11 +121,15 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[]) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TCheckboxConfig,
+    forceSeries = false,
+  ) => {
     return {
       active: {
-        borderColor: ThemeUtil.generateNextColor4CurrentTheme(0),
-        backgroundColor: ThemeUtil.generateNextColor4CurrentTheme(0),
+        borderColor: colorList[0],
+        backgroundColor: colorList[0],
       },
     };
   },

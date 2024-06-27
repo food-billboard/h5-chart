@@ -1,4 +1,10 @@
 import { mergeWithoutArray } from '@/utils';
+import prizes1 from '../../../../../public/other/prizes-1.png';
+import prizes2 from '../../../../../public/other/prizes-2.png';
+import prizes3 from '../../../../../public/other/prizes-3.png';
+import prizes4 from '../../../../../public/other/prizes-4.png';
+import prizes5 from '../../../../../public/other/prizes-5.png';
+import prizes6 from '../../../../../public/other/prizes-6.png';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -10,12 +16,6 @@ import {
   DEFAULT_INTERACTIVE_BASE_CONFIG,
 } from '../../Common/Constants/defaultConfig';
 import { TLuckyDrawConfig } from './type';
-import prizes1 from '../../../../../public/other/prizes-1.png';
-import prizes2 from '../../../../../public/other/prizes-2.png';
-import prizes3 from '../../../../../public/other/prizes-3.png';
-import prizes4 from '../../../../../public/other/prizes-4.png';
-import prizes5 from '../../../../../public/other/prizes-5.png';
-import prizes6 from '../../../../../public/other/prizes-6.png';
 
 const DEFAULT_VALUE = [
   {
@@ -179,7 +179,11 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[]) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TLuckyDrawConfig,
+    forceSeries = false,
+  ) => {
     return {
       global: {
         style: {

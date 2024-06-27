@@ -1,5 +1,6 @@
 import { omit } from 'lodash';
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -12,7 +13,6 @@ import {
   DEFAULT_LINKAGE_CONFIG,
   DEFAULT_INTERACTIVE_BASE_CONFIG,
 } from '../../Common/Constants/defaultConfig';
-import ThemeUtil from '@/utils/Assist/Theme';
 import { TScatterMapConfig } from './type';
 
 const DEFAULT_VALUE = [
@@ -177,36 +177,40 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[]) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TScatterMapConfig,
+    forceSeries = false,
+  ) => {
     const DEFAULT_THEME_RADIAL_COLOR_LIST_DATA =
-      DEFAULT_THEME_RADIAL_COLOR_LIST();
+      DEFAULT_THEME_RADIAL_COLOR_LIST(colorList);
     return {
       tooltip: {
-        backgroundColor: DEFAULT_TOOLTIP_CONFIG().backgroundColor,
+        backgroundColor: DEFAULT_TOOLTIP_CONFIG(colorList).backgroundColor,
       },
       geo: {
         itemStyle: {
           normal: {
-            borderColor: ThemeUtil.generateNextColor4CurrentTheme(0),
+            borderColor: colorList[0],
             areaColor: {
               start: DEFAULT_THEME_RADIAL_COLOR_LIST_DATA[0].end,
               end: DEFAULT_THEME_RADIAL_COLOR_LIST_DATA[0].start,
             },
-            shadowColor: ThemeUtil.generateNextColor4CurrentTheme(0),
+            shadowColor: colorList,
           },
           emphasis: {
-            borderColor: ThemeUtil.generateNextColor4CurrentTheme(0),
+            borderColor: colorList[0],
             areaColor: DEFAULT_THEME_RADIAL_COLOR_LIST_DATA[0],
-            shadowColor: ThemeUtil.generateNextColor4CurrentTheme(0),
+            shadowColor: colorList[0],
           },
         },
       },
       scatter: {
         rippleEffect: {
-          color: ThemeUtil.generateNextColor4CurrentTheme(3),
+          color: colorList[3],
         },
         itemStyle: {
-          color: ThemeUtil.generateNextColor4CurrentTheme(3),
+          color: colorList[3],
         },
       },
     };

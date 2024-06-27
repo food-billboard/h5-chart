@@ -1,5 +1,6 @@
 import { omit } from 'lodash';
 import { mergeWithoutArray } from '@/utils';
+import { getDate, getNumberValue } from '@/utils/constants';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -17,7 +18,6 @@ import {
   DEFAULT_LINKAGE_CONFIG,
   DEFAULT_INTERACTIVE_BASE_CONFIG,
 } from '../../../Common/Constants/defaultConfig';
-import { getDate, getNumberValue } from '@/utils/constants';
 import { TCachetBarConfig } from './type';
 
 const DEFAULT_DATE_LABEL = getDate(10);
@@ -167,20 +167,28 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TCachetBarConfig) => {
-    const componentColorList = DEFAULT_THEME_RADIAL_COLOR_LIST();
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TCachetBarConfig,
+    forceSeries = false,
+  ) => {
+    const componentColorList = DEFAULT_THEME_RADIAL_COLOR_LIST(colorList);
     const length = componentColorList.length;
+    const itemColorList = options.series.itemStyle.color;
     return {
       tooltip: {
-        backgroundColor: DEFAULT_TOOLTIP_CONFIG().backgroundColor,
+        backgroundColor: DEFAULT_TOOLTIP_CONFIG(colorList).backgroundColor,
       },
       series: {
         itemStyle: {
-          color: options.series.itemStyle.color.map((item, index) => {
+          color: (itemColorList.length || !forceSeries
+            ? itemColorList
+            : componentColorList
+          ).map((item, index) => {
             return {
               ...item,
-              start: componentColorList[index % length].start,
-              end: componentColorList[index % length].end,
+              start: componentColorList[index % length]?.start || item.start,
+              end: componentColorList[index % length]?.end || item.end,
             };
           }),
         },

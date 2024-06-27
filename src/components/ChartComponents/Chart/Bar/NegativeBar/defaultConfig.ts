@@ -1,5 +1,7 @@
 import { merge, omit } from 'lodash';
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
+import { getDate, getNumberValue } from '@/utils/constants';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -16,8 +18,6 @@ import {
   DEFAULT_LINKAGE_CONFIG,
   DEFAULT_INTERACTIVE_BASE_CONFIG,
 } from '../../../Common/Constants/defaultConfig';
-import ThemeUtil from '@/utils/Assist/Theme';
-import { getDate, getNumberValue } from '@/utils/constants';
 import { TNegativeBarConfig } from './type';
 
 const DEFAULT_DATE_LABEL = getDate(5);
@@ -182,15 +182,23 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TNegativeBarConfig) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TNegativeBarConfig,
+    forceSeries = false,
+  ) => {
+    const itemColorList = options.series.itemStyle.color;
     return {
       tooltip: {
-        backgroundColor: DEFAULT_TOOLTIP_CONFIG().backgroundColor,
+        backgroundColor: DEFAULT_TOOLTIP_CONFIG(colorList).backgroundColor,
       },
       series: {
         itemStyle: {
-          color: options.series.itemStyle.color.map((item, index) => {
-            return ThemeUtil.generateNextColor4CurrentTheme(index);
+          color: (itemColorList.length || !forceSeries
+            ? itemColorList
+            : colorList
+          ).map((item, index) => {
+            return colorList[index] || item;
           }),
         },
       },

@@ -1,5 +1,6 @@
 import { omit } from 'lodash';
 import { mergeWithoutArray } from '@/utils';
+import { getDate, getNumberValue } from '@/utils/constants';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -14,7 +15,6 @@ import {
   DEFAULT_TOOLTIP_ANIMATION_CONFIG,
   DEFAULT_GRID_CONFIG,
 } from '../../../Common/Constants/defaultConfig';
-import { getDate, getNumberValue } from '@/utils/constants';
 import { TCandlestickBasicConfig } from './type';
 
 const DEFAULT_DATE_LABEL = getDate(10);
@@ -175,10 +175,14 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TCandlestickBasicConfig) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TCandlestickBasicConfig,
+    forceSeries = false,
+  ) => {
     return {
       tooltip: {
-        backgroundColor: DEFAULT_TOOLTIP_CONFIG().backgroundColor,
+        backgroundColor: DEFAULT_TOOLTIP_CONFIG(colorList).backgroundColor,
       },
     };
   },

@@ -120,13 +120,16 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TPercentPieBasicConfig) => {
-    const color = ThemeUtil.generateNextColor4CurrentTheme(0);
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TPercentPieBasicConfig,
+    forceSeries = false,
+  ) => {
     return {
       series: {
-        colorPrimary: color,
+        colorPrimary: colorList[0],
         colorSecondary: {
-          ...color,
+          ...colorList[0],
           a: 0.3,
         },
       },

@@ -5,8 +5,8 @@ import {
   BASIC_DEFAULT_INTERACTIVE_CONFIG,
   DEFAULT_INTERACTIVE_BASE_CONFIG,
 } from '../../Common/Constants/defaultConfig';
-import { TIFrameConfig } from './type';
 import { OnMessageTooltipName } from './component/MessageTooltip';
+import { TIFrameConfig } from './type';
 
 const DEFAULT_VALUE = {
   value: 'http://47.97.27.23/api/backend/screen/index.html#/',
@@ -77,7 +77,7 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[]) => {
+  convert: (colorList: ComponentData.TColorConfig[]) => {
     return {};
   },
 };

@@ -1,5 +1,7 @@
 import { merge } from 'lodash';
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
+import { getDate, getNumberValue } from '@/utils/constants';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -16,8 +18,6 @@ import {
   DEFAULT_LINKAGE_CONFIG,
   DEFAULT_INTERACTIVE_BASE_CONFIG,
 } from '../../../Common/Constants/defaultConfig';
-import ThemeUtil from '@/utils/Assist/Theme';
-import { getDate, getNumberValue } from '@/utils/constants';
 import { TWaterFallBarConfig } from './type';
 
 const DEFAULT_DATE_LABEL = getDate(10);
@@ -153,24 +153,28 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TWaterFallBarConfig) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TWaterFallBarConfig,
+    forceSeries = false,
+  ) => {
     return {
       yAxis: {
         splitLine: {
           lineStyle: {
             color: {
-              ...ThemeUtil.generateNextColor4CurrentTheme(0),
+              ...colorList[0],
               a: options.yAxis.splitLine.lineStyle.color.a,
             },
           },
         },
       },
       tooltip: {
-        backgroundColor: DEFAULT_TOOLTIP_CONFIG().backgroundColor,
+        backgroundColor: DEFAULT_TOOLTIP_CONFIG(colorList).backgroundColor,
       },
       series: {
         itemStyle: {
-          color: ThemeUtil.generateNextColor4CurrentTheme(0),
+          color: colorList[0],
         },
       },
     };

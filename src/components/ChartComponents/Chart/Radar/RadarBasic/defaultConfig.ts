@@ -1,5 +1,7 @@
 import { omit } from 'lodash';
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
+import { getName, getNumberValue } from '@/utils/constants';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -13,8 +15,6 @@ import {
   DEFAULT_THEME_COLOR_LIST,
   DEFAULT_LINKAGE_CONFIG,
 } from '../../../Common/Constants/defaultConfig';
-import ThemeUtil from '@/utils/Assist/Theme';
-import { getName, getNumberValue } from '@/utils/constants';
 import { TRadarBasicConfig } from './type';
 
 const MIN = 20;
@@ -30,6 +30,11 @@ const DEFAULT_VALUE = DEFAULT_NAME_LABEL.map((item, index) => {
     max: MAX,
   };
 });
+
+const DEFAULT_LINE_STYLE = {
+  width: 1,
+  type: 'solid',
+};
 
 export default () => {
   const DEFAULT_THEME_COLOR_LIST_DATA = DEFAULT_THEME_COLOR_LIST();
@@ -186,21 +191,28 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TRadarBasicConfig) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TRadarBasicConfig,
+    forceSeries = false,
+  ) => {
+    const itemStyleColorList = options.series.itemStyle.color;
+    const lineStyleColorList = options.series.lineStyle;
+    const areaStyleColorList = options.series.areaStyle.color;
     return {
       tooltip: {
-        backgroundColor: DEFAULT_TOOLTIP_CONFIG().backgroundColor,
+        backgroundColor: DEFAULT_TOOLTIP_CONFIG(colorList).backgroundColor,
       },
       radar: {
         axisLine: {
           lineStyle: {
-            color: ThemeUtil.generateNextColor4CurrentTheme(0),
+            color: colorList[0],
           },
         },
         splitLine: {
           lineStyle: {
             color: {
-              ...ThemeUtil.generateNextColor4CurrentTheme(0),
+              ...colorList[0],
               a: options.radar.splitLine.lineStyle.color.a,
             },
           },
@@ -209,11 +221,11 @@ export const themeConfig = {
           areaStyle: {
             color: [
               {
-                ...ThemeUtil.generateNextColor4CurrentTheme(0),
+                ...colorList[0],
                 a: options.radar.splitArea.areaStyle.color[0].a,
               },
               {
-                ...ThemeUtil.generateNextColor4CurrentTheme(1),
+                ...colorList[1],
                 a: options.radar.splitArea.areaStyle.color[1].a,
               },
             ],
@@ -222,19 +234,28 @@ export const themeConfig = {
       },
       series: {
         itemStyle: {
-          color: options.series.itemStyle.color.map((item, index) => {
-            return ThemeUtil.generateNextColor4CurrentTheme(index);
+          color: (itemStyleColorList.length || !forceSeries
+            ? itemStyleColorList
+            : colorList
+          ).map((item, index) => {
+            return colorList[index] || item;
           }),
         },
-        lineStyle: options.series.lineStyle.map((item, index) => {
+        lineStyle: (lineStyleColorList.length || !forceSeries
+          ? lineStyleColorList
+          : colorList
+        ).map((item, index) => {
           return {
-            ...item,
-            color: ThemeUtil.generateNextColor4CurrentTheme(index),
+            ...(lineStyleColorList[index] || DEFAULT_LINE_STYLE),
+            color: colorList[index] || lineStyleColorList[index]?.color,
           };
         }),
         areaStyle: {
-          color: options.series.areaStyle.color.map((item, index) => {
-            return ThemeUtil.generateNextColor4CurrentTheme(index);
+          color: (areaStyleColorList.length || !forceSeries
+            ? areaStyleColorList
+            : colorList
+          ).map((item, index) => {
+            return colorList[index] || item;
           }),
         },
       },

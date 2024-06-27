@@ -52,9 +52,12 @@ export const DEFAULT_THEME_COLOR_LIST: () => ComponentData.TColorConfig[] =
       return ThemeUtil.generateNextColor4CurrentTheme(index);
     });
 
-export const DEFAULT_THEME_RADIAL_COLOR_LIST: () => ComponentData.TGradientColorConfig[] =
-  () =>
-    new Array(ThemeUtil.currentThemeColorLength).fill(0).map((_, index) => {
+export const DEFAULT_THEME_RADIAL_COLOR_LIST: (
+  colorList?: ComponentData.TColorConfig[],
+) => ComponentData.TGradientColorConfig[] = (colorList) => {
+  return new Array(colorList?.length || ThemeUtil.currentThemeColorLength)
+    .fill(0)
+    .map((_, index) => {
       return {
         ...DEFAULT_RADIAL_CONFIG,
         linearPosition: {
@@ -63,13 +66,16 @@ export const DEFAULT_THEME_RADIAL_COLOR_LIST: () => ComponentData.TGradientColor
           endX: 0.4,
           endY: 1,
         },
-        start: ThemeUtil.generateNextColor4CurrentTheme(index),
+        start:
+          colorList?.[index] || ThemeUtil.generateNextColor4CurrentTheme(index),
         end: {
-          ...ThemeUtil.generateNextColor4CurrentTheme(index),
+          ...(colorList?.[index] ||
+            ThemeUtil.generateNextColor4CurrentTheme(index)),
           a: 0.2,
         },
       };
     });
+};
 
 export const DEFAULT_GROUP_COMPONENT_TRANSFORM: ComponentData.TGroupComponentTransformConfig =
   {
@@ -220,26 +226,27 @@ export const DEFAULT_Y_AXIS_CONFIG: ComponentData.ComponentYAxis = {
 };
 
 // tooltip
-export const DEFAULT_TOOLTIP_CONFIG: () => ComponentData.ComponentTooltip =
-  () => {
-    return {
-      show: true,
-      formatter: '',
-      backgroundColor: {
-        ...ThemeUtil.generateNextColor4CurrentTheme(0),
-        a: 0.6,
+export const DEFAULT_TOOLTIP_CONFIG: (
+  colorList?: ComponentData.TColorConfig[],
+) => ComponentData.ComponentTooltip = (colorList) => {
+  return {
+    show: true,
+    formatter: '',
+    backgroundColor: {
+      ...(colorList?.[0] || ThemeUtil.generateNextColor4CurrentTheme(0)),
+      a: 0.6,
+    },
+    textStyle: {
+      ...DEFAULT_FONT_CONFIG,
+      color: {
+        r: 255,
+        g: 255,
+        b: 255,
       },
-      textStyle: {
-        ...DEFAULT_FONT_CONFIG,
-        color: {
-          r: 255,
-          g: 255,
-          b: 255,
-        },
-        fontSize: 14,
-      },
-    };
+      fontSize: 14,
+    },
   };
+};
 
 // tooltip animation
 export const DEFAULT_TOOLTIP_ANIMATION_CONFIG: ComponentData.ComponentTooltipAnimation =

@@ -1,10 +1,10 @@
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
   BASIC_DEFAULT_INTERACTIVE_CONFIG,
 } from '../../Common/Constants/defaultConfig';
-import ThemeUtil from '@/utils/Assist/Theme';
 import { TTicketConfig } from './type';
 
 export default () => {
@@ -59,9 +59,13 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[]) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TTicketConfig,
+    forceSeries = false,
+  ) => {
     return {
-      color: ThemeUtil.generateNextColor4CurrentTheme(0),
+      color: colorList[0],
     };
   },
 };

@@ -64,7 +64,7 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[]) => {
+  convert: (colorList: ComponentData.TColorConfig[]) => {
     return {};
   },
 };

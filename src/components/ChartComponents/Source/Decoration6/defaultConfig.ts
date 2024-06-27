@@ -1,10 +1,10 @@
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
   BASIC_DEFAULT_INTERACTIVE_CONFIG,
 } from '../../Common/Constants/defaultConfig';
-import ThemeUtil from '@/utils/Assist/Theme';
 import { TDecoration6Config } from './type';
 
 export default () => {
@@ -53,12 +53,13 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[]) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TDecoration6Config,
+    forceSeries = false,
+  ) => {
     return {
-      color: [
-        ThemeUtil.generateNextColor4CurrentTheme(0),
-        ThemeUtil.generateNextColor4CurrentTheme(1),
-      ],
+      color: [colorList[0], colorList[1]],
     };
   },
 };

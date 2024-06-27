@@ -1,5 +1,7 @@
 import { omit, merge } from 'lodash';
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
+import { getDate, getNumberValue, getSeries } from '@/utils/constants';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -16,8 +18,6 @@ import {
   DEFAULT_LINKAGE_CONFIG,
   DEFAULT_INTERACTIVE_BASE_CONFIG,
 } from '../../../Common/Constants/defaultConfig';
-import ThemeUtil from '@/utils/Assist/Theme';
-import { getDate, getNumberValue, getSeries } from '@/utils/constants';
 import { TLineBasicConfig } from './type';
 
 const DEFAULT_DATE_LABEL = getDate(10);
@@ -189,31 +189,44 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TLineBasicConfig) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TLineBasicConfig,
+    forceSeries = false,
+  ) => {
+    const itemStyleColorList = options.series.itemStyle.color;
+    const lineStyleList = options.series.lineStyle;
     return {
       yAxis: {
         splitLine: {
           lineStyle: {
             color: {
-              ...ThemeUtil.generateNextColor4CurrentTheme(0),
+              ...colorList[0],
               a: options.yAxis.splitLine.lineStyle.color.a,
             },
           },
         },
       },
       tooltip: {
-        backgroundColor: DEFAULT_TOOLTIP_CONFIG().backgroundColor,
+        backgroundColor: DEFAULT_TOOLTIP_CONFIG(colorList).backgroundColor,
       },
       series: {
         itemStyle: {
-          color: options.series.itemStyle.color.map((item, index) => {
-            return ThemeUtil.generateNextColor4CurrentTheme(index);
+          color: (itemStyleColorList.length || !forceSeries
+            ? itemStyleColorList
+            : colorList
+          ).map((item, index) => {
+            return colorList[index] || item;
           }),
         },
-        lineStyle: options.series.lineStyle.map((item, index) => {
+        lineStyle: (lineStyleList.length || !forceSeries
+          ? lineStyleList
+          : colorList
+        ).map((_, index) => {
+          const item = lineStyleList[index] || DEFAULT_LINE_STYLE;
           return {
             ...item,
-            color: ThemeUtil.generateNextColor4CurrentTheme(index),
+            color: colorList[index] || item.color,
           };
         }),
       },

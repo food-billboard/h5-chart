@@ -1,4 +1,5 @@
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -10,7 +11,6 @@ import {
   DEFAULT_LINKAGE_CONFIG,
   DEFAULT_INTERACTIVE_BASE_CONFIG,
 } from '../../Common/Constants/defaultConfig';
-import ThemeUtil from '@/utils/Assist/Theme';
 import { TWaterBallConfig } from './type';
 
 export const DEFAULT_DECAL = {
@@ -122,13 +122,17 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TWaterBallConfig) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TWaterBallConfig,
+    forceSeries = false,
+  ) => {
     return {
       series: {
         color: {
           ...options.series.color,
-          start: ThemeUtil.generateNextColor4CurrentTheme(0),
-          end: ThemeUtil.generateNextColor4CurrentTheme(1),
+          start: colorList[0],
+          end: colorList[1],
         },
       },
     };

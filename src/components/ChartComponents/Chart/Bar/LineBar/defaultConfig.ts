@@ -1,5 +1,6 @@
-import { omit } from 'lodash';
+import { omit, merge } from 'lodash';
 import { mergeWithoutArray } from '@/utils';
+import { getDate, getNumberValue } from '@/utils/constants';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -17,7 +18,6 @@ import {
   DEFAULT_LINKAGE_CONFIG,
   DEFAULT_INTERACTIVE_BASE_CONFIG,
 } from '../../../Common/Constants/defaultConfig';
-import { getDate, getNumberValue } from '@/utils/constants';
 import { TLineBarConfig } from './type';
 
 const DEFAULT_DATE_LABEL = getDate(10);
@@ -37,6 +37,16 @@ const DEFAULT_VALUE = DEFAULT_DATE_LABEL.reduce<any>((acc, item, index) => {
   );
   return acc;
 }, []);
+
+const DEFAULT_ITEM_STYLE = {
+  line: {
+    smooth: true,
+    lineWidth: 1,
+  },
+  bar: {
+    barWidth: 'auto',
+  },
+};
 
 export default () => {
   const CUSTOM_CONFIG: ComponentData.TInternalComponentConfig<TLineBarConfig> =
@@ -192,18 +202,15 @@ export default () => {
             },
           },
           itemStyle: DEFAULT_THEME_RADIAL_COLOR_LIST().map((item) => {
-            return {
+            return merge({}, DEFAULT_ITEM_STYLE, {
               line: {
                 color: item.start,
-                smooth: true,
-                lineWidth: 1,
                 areaColor: item,
               },
               bar: {
-                barWidth: 'auto',
                 color: item,
               },
-            };
+            });
           }),
         },
         condition: DEFAULT_CONDITION_CONFIG(),
@@ -230,27 +237,34 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TLineBarConfig) => {
-    const realColorList = DEFAULT_THEME_RADIAL_COLOR_LIST();
-    const length = realColorList.length;
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TLineBarConfig,
+    forceSeries = false,
+  ) => {
+    const componentColorList = DEFAULT_THEME_RADIAL_COLOR_LIST(colorList);
+    const length = componentColorList.length;
+    const itemColorList = options.series.itemStyle;
     return {
       tooltip: {
         backgroundColor: DEFAULT_TOOLTIP_CONFIG().backgroundColor,
       },
       series: {
-        itemStyle: options.series.itemStyle.map((item, index) => {
-          const color = realColorList[index % length];
-          return {
+        itemStyle: (itemColorList.length || !forceSeries
+          ? itemColorList
+          : colorList
+        ).map((_, index) => {
+          const item = itemColorList[index] || DEFAULT_ITEM_STYLE;
+          const color = componentColorList[index % length];
+          return merge({}, item, {
             line: {
-              ...item.line,
               color: color.start,
               areaColor: color,
             },
             bar: {
-              ...item.bar,
               color,
             },
-          };
+          });
         }),
       },
     };

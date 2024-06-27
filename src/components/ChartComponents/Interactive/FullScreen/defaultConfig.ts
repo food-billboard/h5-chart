@@ -1,10 +1,10 @@
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
   BASIC_DEFAULT_INTERACTIVE_CONFIG,
 } from '../../Common/Constants/defaultConfig';
-import ThemeUtil from '@/utils/Assist/Theme';
 import { TFullScreenConfig } from './type';
 
 export default () => {
@@ -56,10 +56,14 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[]) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TFullScreenConfig,
+    forceSeries = false,
+  ) => {
     return {
       backgroundColor: {
-        ...ThemeUtil.generateNextColor4CurrentTheme(0),
+        ...colorList[0],
         a: 0.2,
       },
     };

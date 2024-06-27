@@ -152,13 +152,17 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[]) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TAli3DMapConfig,
+    forceSeries = false,
+  ) => {
     return {
       tooltip: {
-        backgroundColor: ThemeUtil.generateNextColor4CurrentTheme(0),
+        backgroundColor: colorList[0],
       },
       scatter: {
-        color: ThemeUtil.generateNextColor4CurrentTheme(0),
+        color: colorList[0],
       },
     };
   },

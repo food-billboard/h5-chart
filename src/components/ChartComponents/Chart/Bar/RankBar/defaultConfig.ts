@@ -1,4 +1,6 @@
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
+import { getName, getNumberValue } from '@/utils/constants';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -14,8 +16,6 @@ import {
   DEFAULT_BAR_CAROUSEL_CONFIG,
   DEFAULT_INTERACTIVE_BASE_CONFIG,
 } from '../../../Common/Constants/defaultConfig';
-import { getName, getNumberValue } from '@/utils/constants';
-import ThemeUtil from '@/utils/Assist/Theme';
 import { TRankBarConfig } from './type';
 
 const DEFAULT_DATE_LABEL = getName(5);
@@ -182,25 +182,33 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TRankBarConfig) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TRankBarConfig,
+    forceSeries = false,
+  ) => {
     const DEFAULT_THEME_RADIAL_COLOR_LIST_DATA =
-      DEFAULT_THEME_RADIAL_COLOR_LIST();
+      DEFAULT_THEME_RADIAL_COLOR_LIST(colorList);
     const length = DEFAULT_THEME_RADIAL_COLOR_LIST_DATA.length;
+    const itemStyleColorList = options.series.itemStyle.color;
     return {
       tooltip: {
-        backgroundColor: DEFAULT_TOOLTIP_CONFIG().backgroundColor,
+        backgroundColor: DEFAULT_TOOLTIP_CONFIG(colorList).backgroundColor,
       },
       series: {
         backgroundStyle: {
           color: {
-            ...ThemeUtil.generateNextColor4CurrentTheme(0),
+            ...colorList[0],
             a: 0.3,
           },
         },
         itemStyle: {
-          color: options.series.itemStyle.color.map((item, index) => {
+          color: (itemStyleColorList.length || !forceSeries
+            ? itemStyleColorList
+            : DEFAULT_THEME_RADIAL_COLOR_LIST_DATA
+          ).map((item, index) => {
             const { start, end } =
-              DEFAULT_THEME_RADIAL_COLOR_LIST_DATA[index % length];
+              DEFAULT_THEME_RADIAL_COLOR_LIST_DATA[index % length] || item;
             return {
               ...item,
               start,

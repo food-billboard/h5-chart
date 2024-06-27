@@ -1,5 +1,7 @@
 import { omit } from 'lodash';
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
+import { getDate, getNumberValue, getSeries } from '@/utils/constants';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -10,8 +12,6 @@ import {
   DEFAULT_CONDITION_CONFIG,
   DEFAULT_LINKAGE_CONFIG,
 } from '../../../Common/Constants/defaultConfig';
-import ThemeUtil from '@/utils/Assist/Theme';
-import { getDate, getNumberValue, getSeries } from '@/utils/constants';
 import { TParallelBasicConfig } from './type';
 
 export const DEFAULT_LINE_STYLE = {
@@ -154,21 +154,30 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TParallelBasicConfig) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TParallelBasicConfig,
+    forceSeries = false,
+  ) => {
+    const lineStyleList = options.series.lineStyle;
     return {
       parallelAxis: {
         areaSelectStyle: {
           color: {
-            ...ThemeUtil.generateNextColor4CurrentTheme(0),
+            ...colorList[0],
             a: options.parallelAxis.areaSelectStyle.color.a,
           },
         },
       },
       series: {
-        lineStyle: options.series.lineStyle.map((item, index) => {
+        lineStyle: (lineStyleList.length || !forceSeries
+          ? lineStyleList
+          : colorList
+        ).map((item, index) => {
           return {
-            ...item,
-            color: ThemeUtil.generateNextColor4CurrentTheme(index),
+            ...DEFAULT_LINE_STYLE,
+            ...lineStyleList[index],
+            color: colorList[index] || lineStyleList[index]?.color,
           };
         }),
       },

@@ -1,4 +1,5 @@
 import { mergeWithoutArray } from '@/utils';
+import { getName } from '@/utils/constants/defaultValue';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -7,7 +8,6 @@ import {
   DEFAULT_LINKAGE_CONFIG,
   DEFAULT_INTERACTIVE_BASE_CONFIG,
 } from '../../Common/Constants/defaultConfig';
-import { getName } from '@/utils/constants/defaultValue';
 import { TCarouselConfig } from './type';
 
 const DEFAULT_VALUE = new Array(3).fill({
@@ -100,7 +100,7 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[]) => {
+  convert: (colorList: ComponentData.TColorConfig[]) => {
     return {};
   },
 };

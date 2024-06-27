@@ -89,12 +89,12 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: T{{COMPONENT_NAME}}Config) => {
+  convert: (colorList: ComponentData.TColorConfig[], options: T{{COMPONENT_NAME}}Config, forceSeries=false) => {
     // 为了能在大屏主题色修改时，将一些与主题色关联的配置进行快速更改
     // 在这里重置options配置里的一些颜色
     // 比如例子中的color
     return {
-      color: DEFAULT_THEME_COLOR_LIST()[0]
+      color: colorList[0]
     };
   },
 };

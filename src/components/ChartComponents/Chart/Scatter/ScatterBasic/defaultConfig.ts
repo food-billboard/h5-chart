@@ -1,5 +1,7 @@
-import { omit } from 'lodash';
+import { omit, merge } from 'lodash';
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
+import { getDate, getNumberValue } from '@/utils/constants';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -14,9 +16,7 @@ import {
   DEFAULT_GRID_CONFIG,
   DEFAULT_LINKAGE_CONFIG,
 } from '../../../Common/Constants/defaultConfig';
-import ThemeUtil from '@/utils/Assist/Theme';
-import { getDate, getNumberValue } from '@/utils/constants';
-import { TScatterBasicConfig } from './type';
+import { TScatterBasicConfig, TScatterBasicConfigItemStyle } from './type';
 
 const DEFAULT_NAME_LABEL = getDate(100);
 const DEFAULT_DATE_VALUE = getNumberValue(100, 0, 20);
@@ -27,6 +27,22 @@ const DEFAULT_VALUE = DEFAULT_NAME_LABEL.map((item, index) => {
     value: DEFAULT_DATE_VALUE[index],
   };
 });
+
+export const DEFAULT_ITEM_STYLE: Partial<TScatterBasicConfigItemStyle> = {
+  borderType: 'solid',
+  borderWidth: 0,
+  shadow: {
+    vShadow: 0,
+    hShadow: 0,
+    color: {
+      r: 255,
+      g: 255,
+      b: 255,
+      a: 0.3,
+    },
+    blur: 10,
+  },
+};
 
 export default () => {
   const CUSTOM_CONFIG: ComponentData.TInternalComponentConfig<TScatterBasicConfig> =
@@ -117,26 +133,35 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TScatterBasicConfig) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TScatterBasicConfig,
+    forceSeries = false,
+  ) => {
+    const itemStyleList = options.series.itemStyle;
     return {
       tooltip: {
-        backgroundColor: DEFAULT_TOOLTIP_CONFIG().backgroundColor,
+        backgroundColor: DEFAULT_TOOLTIP_CONFIG(colorList).backgroundColor,
       },
       series: {
-        itemStyle: options.series.itemStyle.map((item, index) => {
+        itemStyle: (itemStyleList.length || !forceSeries
+          ? itemStyleList
+          : colorList
+        ).map((_, index) => {
+          const item = itemStyleList[index] || DEFAULT_ITEM_STYLE;
           return {
             ...item,
-            color: ThemeUtil.generateNextColor4CurrentTheme(index),
+            color: colorList[index] || item.color,
             shadow: {
               ...item.shadow,
               color: {
-                ...ThemeUtil.generateNextColor4CurrentTheme(index),
-                a: item.shadow.color.a,
+                ...colorList[index],
+                a: item.shadow?.color?.a || 0.3,
               },
             },
             borderColor: {
-              ...ThemeUtil.generateNextColor4CurrentTheme(index),
-              a: item.borderColor.a,
+              ...colorList[index],
+              a: item.borderColor?.a || 0.3,
             },
           };
         }),

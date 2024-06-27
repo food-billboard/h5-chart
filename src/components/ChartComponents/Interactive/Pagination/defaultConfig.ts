@@ -1,4 +1,5 @@
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -8,7 +9,6 @@ import {
   DEFAULT_BORDER_RADIUS,
   DEFAULT_INTERACTIVE_BASE_CONFIG,
 } from '../../Common/Constants/defaultConfig';
-import ThemeUtil from '@/utils/Assist/Theme';
 import { TPaginationConfig } from './type';
 
 export default () => {
@@ -173,22 +173,26 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TPaginationConfig) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TPaginationConfig,
+    forceSeries = false,
+  ) => {
     return {
       active: {
         textStyle: {
-          color: ThemeUtil.generateNextColor4CurrentTheme(0),
+          color: colorList[0],
         },
         border: {
-          color: ThemeUtil.generateNextColor4CurrentTheme(0),
+          color: colorList[0],
         },
       },
       pageButton: {
-        color: ThemeUtil.generateNextColor4CurrentTheme(0),
+        color: colorList[0],
       },
       pageNumChanger: {
         arrow: {
-          color: ThemeUtil.generateNextColor4CurrentTheme(0),
+          color: colorList[0],
         },
       },
     };

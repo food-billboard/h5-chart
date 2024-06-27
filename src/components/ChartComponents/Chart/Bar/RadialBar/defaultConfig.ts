@@ -1,5 +1,7 @@
 import { merge, omit } from 'lodash';
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
+import { getDate, getNumberValue } from '@/utils/constants';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -19,8 +21,6 @@ import {
   DEFAULT_BAR_CAROUSEL_CONFIG,
   DEFAULT_INTERACTIVE_BASE_CONFIG,
 } from '../../../Common/Constants/defaultConfig';
-import ThemeUtil from '@/utils/Assist/Theme';
-import { getDate, getNumberValue } from '@/utils/constants';
 import { TRadialBarConfig } from './type';
 
 const DEFAULT_DATE_LABEL = getDate(10);
@@ -188,30 +188,38 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TRadialBarConfig) => {
-    const realColorList = DEFAULT_THEME_RADIAL_COLOR_LIST();
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TRadialBarConfig,
+    forceSeries = false,
+  ) => {
+    const realColorList = DEFAULT_THEME_RADIAL_COLOR_LIST(colorList);
     const length = realColorList.length;
+    const itemStyleColorList = options.series.itemStyle.color;
     return {
       yAxis: {
         splitLine: {
           lineStyle: {
             color: {
-              ...ThemeUtil.generateNextColor4CurrentTheme(0),
+              ...colorList[0],
               a: options.yAxis.splitLine.lineStyle.color.a,
             },
           },
         },
       },
       tooltip: {
-        backgroundColor: DEFAULT_TOOLTIP_CONFIG().backgroundColor,
+        backgroundColor: DEFAULT_TOOLTIP_CONFIG(colorList).backgroundColor,
       },
       series: {
         itemStyle: {
-          color: options.series.itemStyle.color.map((item, index) => {
+          color: (itemStyleColorList.length || !forceSeries
+            ? itemStyleColorList
+            : realColorList
+          ).map((item, index) => {
             return {
               ...item,
-              start: realColorList[index % length].start,
-              end: realColorList[index % length].end,
+              start: realColorList[index % length]?.start || item.start,
+              end: realColorList[index % length]?.end || item.end,
             };
           }),
         },

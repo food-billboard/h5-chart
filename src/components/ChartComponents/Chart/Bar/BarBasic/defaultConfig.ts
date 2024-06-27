@@ -1,5 +1,7 @@
 import { merge, omit } from 'lodash';
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
+import { getDate, getNumberValue } from '@/utils/constants';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -17,8 +19,6 @@ import {
   DEFAULT_BAR_CAROUSEL_CONFIG,
   DEFAULT_INTERACTIVE_BASE_CONFIG,
 } from '../../../Common/Constants/defaultConfig';
-import ThemeUtil from '@/utils/Assist/Theme';
-import { getDate, getNumberValue } from '@/utils/constants';
 import { TBarBasicConfig } from './type';
 
 const DEFAULT_DATE_LABEL = getDate(10);
@@ -181,25 +181,33 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TBarBasicConfig) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TBarBasicConfig,
+    forceSeries = false,
+  ) => {
+    const itemColorList = options.series.itemStyle.color;
     return {
       yAxis: {
         splitLine: {
           lineStyle: {
             color: {
-              ...ThemeUtil.generateNextColor4CurrentTheme(0),
+              ...colorList[0],
               a: options.yAxis.splitLine.lineStyle.color.a,
             },
           },
         },
       },
       tooltip: {
-        backgroundColor: DEFAULT_TOOLTIP_CONFIG().backgroundColor,
+        backgroundColor: DEFAULT_TOOLTIP_CONFIG(colorList).backgroundColor,
       },
       series: {
         itemStyle: {
-          color: options.series.itemStyle.color.map((item, index) => {
-            return ThemeUtil.generateNextColor4CurrentTheme(index);
+          color: (itemColorList.length || !forceSeries
+            ? itemColorList
+            : colorList
+          ).map((item, index) => {
+            return colorList[index] || item;
           }),
         },
       },

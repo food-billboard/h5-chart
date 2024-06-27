@@ -1,5 +1,7 @@
 import { omit, merge } from 'lodash';
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
+import { getDate, getNumberValue, getSeries } from '@/utils/constants';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -15,8 +17,6 @@ import {
   DEFAULT_GRID_CONFIG,
   DEFAULT_LINKAGE_CONFIG,
 } from '../../../Common/Constants/defaultConfig';
-import ThemeUtil from '@/utils/Assist/Theme';
-import { getDate, getNumberValue, getSeries } from '@/utils/constants';
 import { TStepLineConfig } from './type';
 
 const DEFAULT_DATE_LABEL = getDate(10);
@@ -156,26 +156,34 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TStepLineConfig) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TStepLineConfig,
+    forceSeries = false,
+  ) => {
+    const lineStyleList = options.series.lineStyle;
     return {
       yAxis: {
         splitLine: {
           lineStyle: {
             color: {
-              ...ThemeUtil.generateNextColor4CurrentTheme(0),
+              ...colorList[0],
               a: options.yAxis.splitLine.lineStyle.color.a,
             },
           },
         },
       },
       tooltip: {
-        backgroundColor: DEFAULT_TOOLTIP_CONFIG().backgroundColor,
+        backgroundColor: DEFAULT_TOOLTIP_CONFIG(colorList).backgroundColor,
       },
       series: {
-        lineStyle: options.series.lineStyle.map((item, index) => {
+        lineStyle: (lineStyleList.length || !forceSeries
+          ? lineStyleList
+          : colorList
+        ).map((item, index) => {
           return {
-            ...item,
-            color: ThemeUtil.generateNextColor4CurrentTheme(index),
+            ...(item || DEFAULT_LINE_STYLE),
+            color: colorList[index] || lineStyleList[index]?.color,
           };
         }),
       },

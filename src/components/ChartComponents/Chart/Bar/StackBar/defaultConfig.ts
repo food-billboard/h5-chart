@@ -1,5 +1,7 @@
 import { merge } from 'lodash';
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
+import { getDate, getNumberValue, getSeries } from '@/utils/constants';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -17,8 +19,6 @@ import {
   DEFAULT_LINKAGE_CONFIG,
   DEFAULT_INTERACTIVE_BASE_CONFIG,
 } from '../../../Common/Constants/defaultConfig';
-import ThemeUtil from '@/utils/Assist/Theme';
-import { getDate, getNumberValue, getSeries } from '@/utils/constants';
 import { TStackBarConfig } from './type';
 
 const DEFAULT_DATE_LABEL = getDate(5);
@@ -196,26 +196,34 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TStackBarConfig) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TStackBarConfig,
+    forceSeries = false,
+  ) => {
+    const itemStyle = options.series.itemStyle;
     return {
       yAxis: {
         splitLine: {
           lineStyle: {
             color: {
-              ...ThemeUtil.generateNextColor4CurrentTheme(0),
+              ...colorList[0],
               a: options.yAxis.splitLine.lineStyle.color.a,
             },
           },
         },
       },
       tooltip: {
-        backgroundColor: DEFAULT_TOOLTIP_CONFIG().backgroundColor,
+        backgroundColor: DEFAULT_TOOLTIP_CONFIG(colorList).backgroundColor,
       },
       series: {
-        itemStyle: options.series.itemStyle.map((item, index) => {
+        itemStyle: (itemStyle.length || !forceSeries
+          ? itemStyle
+          : colorList
+        ).map((item, index) => {
           return {
             ...item,
-            color: ThemeUtil.generateNextColor4CurrentTheme(index),
+            color: colorList[index] || itemStyle[index]?.color,
           };
         }),
       },

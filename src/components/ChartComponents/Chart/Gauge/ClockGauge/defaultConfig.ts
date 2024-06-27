@@ -1,11 +1,11 @@
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
   BASIC_DEFAULT_INTERACTIVE_CONFIG,
   DEFAULT_FONT_CONFIG,
 } from '../../../Common/Constants/defaultConfig';
-import ThemeUtil from '@/utils/Assist/Theme';
 import { TClockGaugeConfig } from './type';
 
 export default () => {
@@ -112,48 +112,52 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: string[], options: TClockGaugeConfig) => {
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TClockGaugeConfig,
+    forceSeries = false,
+  ) => {
     return {
       series: {
         axisLine: {
           lineStyle: {
-            color: ThemeUtil.generateNextColor4CurrentTheme(0),
+            color: colorList[0],
           },
         },
         splitLine: {
           color: {
             ...options.series.splitLine.color,
-            ...ThemeUtil.generateNextColor4CurrentTheme(0),
+            ...colorList[0],
           },
         },
         axisTick: {
           lineStyle: {
-            color: ThemeUtil.generateNextColor4CurrentTheme(0),
+            color: colorList[0],
           },
         },
         hourPointer: {
           itemStyle: {
-            color: ThemeUtil.generateNextColor4CurrentTheme(0),
+            color: colorList[0],
           },
         },
         minutePointer: {
           itemStyle: {
-            color: ThemeUtil.generateNextColor4CurrentTheme(0),
+            color: colorList[0],
           },
         },
         secondPointer: {
           itemStyle: {
-            color: ThemeUtil.generateNextColor4CurrentTheme(0),
+            color: colorList[0],
           },
         },
         minuteAnchor: {
           itemStyle: {
-            borderColor: ThemeUtil.generateNextColor4CurrentTheme(0),
+            borderColor: colorList[0],
           },
         },
         secondAnchor: {
           itemStyle: {
-            color: ThemeUtil.generateNextColor4CurrentTheme(0),
+            color: colorList[0],
           },
         },
       },
