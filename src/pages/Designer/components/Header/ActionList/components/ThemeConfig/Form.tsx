@@ -1,20 +1,14 @@
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useControllableValue } from 'ahooks';
-import { Drawer, Space, Tabs } from 'antd';
+import { Drawer, Tabs } from 'antd';
 import classnames from 'classnames';
-import {
-  forwardRef,
-  useCallback,
-  useImperativeHandle,
-  useMemo,
-  useState,
-} from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useState } from 'react';
 import { connect } from 'umi';
 import { Loading } from '@/components/PageLoading';
 import { sleep } from '@/utils';
 import ThemeUtil from '@/utils/Assist/Theme';
-import ColorItem from './components/ColorItem';
 import CustomConfig from './components/CustomConfig';
+import DefaultThemeConfig from './components/DefaultThemeConfig';
 import Tour from './components/Tour';
 import { mapDispatchToProps, mapStateToProps } from './connect';
 import styles from './index.less';
@@ -45,16 +39,6 @@ const ThemeConfig = forwardRef<ThemeConfigRef, Props>((props, ref) => {
   );
 
   const [tourLoading, setTourLoading] = useState(true);
-
-  const COLOR_MAP: {
-    [key: string]: string[];
-  } = useMemo(() => {
-    return ThemeUtil.themeNameList.reduce<any>((acc, cur) => {
-      if (ThemeUtil.isInternalThemeName(cur))
-        acc[cur] = ThemeUtil.getThemeColorList(cur).slice(0, 6);
-      return acc;
-    }, {});
-  }, []);
 
   const onStepChange = useCallback((index) => {
     // 自定义主题
@@ -148,24 +132,11 @@ const ThemeConfig = forwardRef<ThemeConfigRef, Props>((props, ref) => {
             key: 'internal',
             label: '主题色选择',
             children: (
-              <Space
+              <DefaultThemeConfig
                 id={'designer-theme-config-internal'}
-                direction="vertical"
-                className="w-100 h-100"
-              >
-                {Object.entries(COLOR_MAP).map((item) => {
-                  const [theme, colorList] = item;
-                  return (
-                    <ColorItem
-                      value={colorList}
-                      name={theme}
-                      onClick={onChange.bind(null, theme)}
-                      checked={value === theme}
-                      key={theme}
-                    />
-                  );
-                })}
-              </Space>
+                value={value}
+                onChange={onChange}
+              />
             ),
           },
           {

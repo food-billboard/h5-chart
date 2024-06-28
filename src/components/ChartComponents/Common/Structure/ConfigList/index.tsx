@@ -1,8 +1,8 @@
-import { CSSProperties, ReactNode, useMemo } from 'react';
 import classnames from 'classnames';
+import { CSSProperties, ReactNode, useMemo } from 'react';
 import Switch from '../../Switch';
-import PlaceHolder from '../PlaceHolder';
 import Container from '../Container';
+import PlaceHolder from '../PlaceHolder';
 import styles from './index.less';
 
 // 基础配置的外部容器
@@ -51,6 +51,8 @@ export type TConfigListItemProps = {
     level?: 1 | 2 | 3;
   };
   children?: ReactNode;
+  style?: CSSProperties;
+  className?: string;
 };
 
 // 基础配置的容器的每一项
@@ -62,6 +64,8 @@ const ConfigListItem = (props: TConfigListItemProps) => {
     children,
     disabled,
     onDisabledChange,
+    style: outerStyle,
+    className: outerClassName,
   } = props;
 
   const disabledPlaceHoler = useMemo(() => {
@@ -80,7 +84,9 @@ const ConfigListItem = (props: TConfigListItemProps) => {
         {
           [styles['design-config-field-disabled']]: !!disabled,
         },
+        outerClassName,
       )}
+      style={outerStyle}
     >
       <PlaceHolder>{disabledPlaceHoler}</PlaceHolder>
 

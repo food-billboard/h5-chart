@@ -3,6 +3,7 @@ import { Button } from 'antd';
 import classnames from 'classnames';
 import { useCallback, useMemo } from 'react';
 import { SingleCollapse as Collapse } from '@/components/ChartComponents/Common/Collapse';
+import ConfigList from '@/components/ChartComponents/Common/Structure/ConfigList';
 import ColorSelect from '@/components/ColorSelect';
 import GhostButton from '@/components/GhostButton';
 import ThemeUtil from '@/utils/Assist/Theme';
@@ -10,6 +11,8 @@ import ChartGradientSelect from '../ChartGradientSelect';
 import { DEFAULT_RADIAL_CONFIG } from '../Constants/defaultConfig';
 import FullForm from '../Structure/FullForm';
 import styles from './index.less';
+
+const { Item } = ConfigList;
 
 export const SimpleHueRadialSelect = (props: {
   value: ComponentData.TGradientColorConfig[];
@@ -41,9 +44,14 @@ export const SimpleHueRadialSelect = (props: {
   const addButton = useMemo(() => {
     if (max === -1 || max > length) {
       return (
-        <GhostButton icon={<PlusOutlined />} onClick={handleAdd}>
-          新增
-        </GhostButton>
+        <Item
+          label={
+            <GhostButton icon={<PlusOutlined />} onClick={handleAdd}>
+              新增
+            </GhostButton>
+          }
+          className={styles['custom-form-item']}
+        />
       );
     }
     return null;
@@ -112,10 +120,15 @@ const SimpleHueSelect = (props: {
     return value.length;
   }, [value]);
 
+  // 新增
   const addButton = useMemo(() => {
     if (max === -1 || max > length) {
       return (
-        <GhostButton icon={<PlusOutlined />} onClick={handleAdd}>
+        <GhostButton
+          className="m-l-4"
+          icon={<PlusOutlined />}
+          onClick={handleAdd}
+        >
           新增
         </GhostButton>
       );

@@ -4,9 +4,10 @@ import {
   InfoCircleOutlined,
 } from '@ant-design/icons';
 import { Row, Col, Button, Popconfirm, Input, App, Typography } from 'antd';
+import type { RowProps } from 'antd';
 import classnames from 'classnames';
 import Color from 'color';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState, ReactNode } from 'react';
 import ColorSelect from '@/components/ColorSelect';
 import Tooltip from '@/components/Tooltip';
 import { getHexString } from '@/utils/Assist/Theme';
@@ -14,14 +15,8 @@ import styles from './index.less';
 
 const { Paragraph } = Typography;
 
-const ColorItem = ({
-  value,
-  checked,
-  name,
-  onClick,
-  editable = false,
-  onChange,
-}: {
+export type ColorItemProps = {
+  rowProps?: Partial<RowProps>;
   value: string[];
   checked: boolean;
   name: string;
@@ -35,7 +30,25 @@ const ColorItem = ({
       label: string;
     }>,
   ) => void;
-}) => {
+  actionRender?:
+    | false
+    | ((doms: {
+        edit: ReactNode;
+        delete: ReactNode;
+        info: ReactNode;
+      }) => ReactNode);
+};
+
+const ColorItem = ({
+  value,
+  checked,
+  name,
+  onClick,
+  editable = false,
+  onChange,
+  actionRender: propsActionRender,
+  rowProps,
+}: ColorItemProps) => {
   const span = Math.floor(24 / value.length);
   const prefixSpan = 24 - span * value.length;
 
@@ -70,6 +83,75 @@ const ColorItem = ({
     });
   }, [onChange]);
 
+  const editNameButton = useMemo(() => {
+    return (
+      <Popconfirm
+        title="编辑主题名称"
+        description={
+          <>
+            <Input
+              value={themeName}
+              onChange={(e) => setThemeName(e.target.value)}
+            />
+            <span style={{ opacity: 0.6 }}>避免名称重复</span>
+          </>
+        }
+        onOpenChange={onEditOpenChange}
+        onConfirm={onEditConfirm}
+      >
+        <Button
+          type="link"
+          icon={<EditOutlined />}
+          title="编辑主题名称"
+          disabled={!editable}
+        />
+      </Popconfirm>
+    );
+  }, [themeName, onEditOpenChange, onEditConfirm, editable]);
+
+  const deleteButton = useMemo(() => {
+    return (
+      <Popconfirm
+        title="提示"
+        description="是否确认删除该自定义主题"
+        onConfirm={handleDelete}
+      >
+        <Button
+          type="link"
+          icon={<DeleteOutlined />}
+          title="删除主题"
+          disabled={!editable}
+        />
+      </Popconfirm>
+    );
+  }, [handleDelete, editable]);
+
+  const infoButton = useMemo(() => {
+    return (
+      <Tooltip title={<Paragraph copyable>{name}</Paragraph>}>
+        <Button type="link" icon={<InfoCircleOutlined />} title="主题名称" />
+      </Tooltip>
+    );
+  }, [name]);
+
+  const actionRender = useMemo(() => {
+    if (propsActionRender === false) return null;
+    if (propsActionRender) {
+      return propsActionRender({
+        edit: editNameButton,
+        delete: deleteButton,
+        info: infoButton,
+      });
+    }
+    return (
+      <>
+        {editNameButton}
+        {deleteButton}
+        {infoButton}
+      </>
+    );
+  }, [propsActionRender, editNameButton, deleteButton, infoButton]);
+
   return (
     <div
       className={classnames(
@@ -85,6 +167,7 @@ const ColorItem = ({
         className={'f-1'}
         key={name}
         onClick={onClick?.bind(null, name)}
+        {...rowProps}
       >
         {value.map((item, index) => {
           const children = (
@@ -127,44 +210,11 @@ const ColorItem = ({
         })}
         {!!prefixSpan && <Col span={prefixSpan}></Col>}
       </Row>
-      <div className="p-l-8" id="designer-theme-config-edit">
-        <Popconfirm
-          title="编辑主题名称"
-          description={
-            <>
-              <Input
-                value={themeName}
-                onChange={(e) => setThemeName(e.target.value)}
-              />
-              <span style={{ opacity: 0.6 }}>避免名称重复</span>
-            </>
-          }
-          onOpenChange={onEditOpenChange}
-          onConfirm={onEditConfirm}
-        >
-          <Button
-            type="link"
-            icon={<EditOutlined />}
-            title="编辑主题名称"
-            disabled={!editable}
-          />
-        </Popconfirm>
-        <Popconfirm
-          title="提示"
-          description="是否确认删除该自定义主题"
-          onConfirm={handleDelete}
-        >
-          <Button
-            type="link"
-            icon={<DeleteOutlined />}
-            title="删除主题"
-            disabled={!editable}
-          />
-        </Popconfirm>
-        <Tooltip title={<Paragraph copyable>{name}</Paragraph>}>
-          <Button type="link" icon={<InfoCircleOutlined />} title="主题名称" />
-        </Tooltip>
-      </div>
+      {propsActionRender !== false && (
+        <div className="p-l-8" id="designer-theme-config-edit">
+          {actionRender}
+        </div>
+      )}
     </div>
   );
 };

@@ -11,9 +11,11 @@ import DataChangePool from '@/utils/Assist/DataChangePool';
 import GroupUtil from '@/utils/Assist/Group';
 import { DEFAULT_BORDER, InternalBorderSelect } from '../../../InternalBorder';
 import AngleSelect from '../AngleSelect';
+import EasyThemeSelect from '../EasyThemeSelect';
 import InputNumber, { InputNumberProps } from '../InputNumber';
 import Opacity from '../Opacity';
 import ConfigList from '../Structure/ConfigList';
+import FullForm from '../Structure/FullForm';
 import HalfForm from '../Structure/HalfForm';
 import { mapDispatchToProps, mapStateToProps } from './connect';
 import styles from './index.less';
@@ -53,16 +55,18 @@ const BaseConfig = (props: {
 }) => {
   const { id, components, isGroupComponent, flag } = props;
 
-  const {
-    config: { style, attr },
-    parent,
-  } = useMemo(() => {
+  const component = useMemo(() => {
     const component: ComponentData.TComponentData = getComponent(
       id,
       components,
     );
     return component;
   }, [components, id]);
+
+  const {
+    config: { style, attr },
+    parent,
+  } = component;
 
   const {
     width,
@@ -75,7 +79,7 @@ const BaseConfig = (props: {
     margin,
     border = { show: false, value: DEFAULT_BORDER, disabled: false },
   } = style;
-  const { scaleX, scaleY } = attr;
+  const { scaleX, scaleY, fastThemeEnable = false } = attr;
 
   const { x: selfScaleX, y: selfScaleY } = useMemo(() => {
     const scale = {
@@ -354,6 +358,13 @@ const BaseConfig = (props: {
                 />
               </HalfForm>
             )}
+          </Item>
+        )}
+        {fastThemeEnable && (
+          <Item label="快速样式">
+            <FullForm>
+              <EasyThemeSelect component={component} />
+            </FullForm>
           </Item>
         )}
       </ConfigList>

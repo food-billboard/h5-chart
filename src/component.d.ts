@@ -184,6 +184,8 @@ declare namespace ComponentData {
       lock: boolean;
       scaleX?: number;
       scaleY?: number;
+      // 是否启用快速应用主题配置 2024-06-08 1.22
+      fastThemeEnable?: boolean;
     };
     interactive?: TInteractiveConfig;
     data?: TComponentApiDataConfig;

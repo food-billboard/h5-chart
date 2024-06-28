@@ -133,6 +133,7 @@ export const BASIC_DEFAULT_CONFIG: ComponentData.TBaseConfig = {
   attr: {
     visible: true,
     lock: false,
+    fastThemeEnable: true,
   },
 };
 

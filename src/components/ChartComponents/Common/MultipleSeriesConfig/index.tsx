@@ -65,9 +65,12 @@ const MultipleSeriesConfig = (props: {
 
   return (
     <>
-      {!hideAdd && (
+      {hideAdd && (
         <div
           className={classnames('p-8', styles['multiple-series-config-add'])}
+          style={{
+            paddingLeft: 0,
+          }}
         >
           <GhostButton icon={<PlusOutlined />} onClick={add} block>
             {buttonLabel || '新增系列'}

@@ -65,6 +65,9 @@ class Config extends Component<
                   <FontConfigList
                     value={textStyle}
                     onChange={this.onKeyChange.bind(null, 'textStyle')}
+                    ignore={
+                      fontStyle === 'digital-number' ? ['fontFamily'] : []
+                    }
                   />
                   <TextAlignConfig
                     value={align}

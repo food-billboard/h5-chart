@@ -188,6 +188,17 @@ class ThemeUtil {
     return this.themeDataSource[name || this.currentTheme]?.color || [];
   }
 
+  getThemeColorObjectList(name?: string): ComponentData.TColorConfig[] {
+    const colorList = this.getThemeColorList(name);
+    return colorList.map((item) => {
+      const { a, alpha, ...nextColor } = color(item).object();
+      return {
+        ...nextColor,
+        a: a || 1,
+      } as ComponentData.TColorConfig;
+    });
+  }
+
   isThemeNameValid(name: string) {
     return !!this.themeDataSource[name];
   }

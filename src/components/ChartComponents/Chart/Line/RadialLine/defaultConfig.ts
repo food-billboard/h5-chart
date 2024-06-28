@@ -248,7 +248,12 @@ export const themeConfig = {
             ? areaStyleColorList
             : colorList
           ).map((item, index) => {
-            return colorList[index] || item;
+            return colorList[index]
+              ? {
+                  ...colorList[index],
+                  a: 0,
+                }
+              : item;
           }),
         },
         lineStyle: (lineStyleColorList.length || !forceSeries
