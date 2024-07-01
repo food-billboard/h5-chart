@@ -18,3 +18,9 @@ declare namespace React {
     deps: readonly any[],
   ): T;
 }
+
+declare namespace JSX {
+  interface IntrinsicElements {
+    'model-viewer': any;
+  }
+}

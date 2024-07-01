@@ -519,7 +519,6 @@ const _COMPONENT_TYPE_LIST = [
             title: '模型',
             icon: Model,
             description: '',
-            disabled: GlobalConfig.IS_STATIC || GlobalConfig.IS_IMPROVE_BACKEND,
           },
           {
             type: 'LOTTIE_ANIME',
