@@ -318,6 +318,11 @@ declare namespace ComponentData {
         params: TParams[];
         constants: TConstants[];
         guideLine: TGuideLineConfig;
+        gridLine: {
+          show: boolean;
+          size: number;
+          followGrid: boolean;
+        };
         theme: TScreenTheme;
         grid: number;
         model: {

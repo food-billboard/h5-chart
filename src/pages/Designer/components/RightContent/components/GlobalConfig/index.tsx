@@ -12,6 +12,7 @@ import InputNumber from '@/components/ChartComponents/Common/InputNumber';
 import ConfigList from '@/components/ChartComponents/Common/Structure/ConfigList';
 import FullForm from '@/components/ChartComponents/Common/Structure/FullForm';
 import HalfForm from '@/components/ChartComponents/Common/Structure/HalfForm';
+import Tooltip from '@/components/ChartComponents/Common/Tooltip';
 import CoverSelect from '@/components/CoverSelect';
 import IconTooltip from '@/components/IconTooltip';
 import ScaleConfig from './components/ScaleConfig';
@@ -37,6 +38,7 @@ const GlobalConfig = (props: {
         scale = 'fit-height',
         waterMark,
         model: { show: modelShow = false } = {},
+        gridLine: { show: gridLineShow, size: gridSize, followGrid } = {},
       },
       flag: { type },
     },
@@ -175,6 +177,39 @@ const GlobalConfig = (props: {
                         onChange={onValueChange.bind(null, 'config.attr.grid')}
                       />
                     </FullForm>
+                  </Item>
+                  <Item label="网格线">
+                    <HalfForm label="是否显示">
+                      <Switch
+                        checked={!!gridLineShow}
+                        onChange={onValueChange.bind(
+                          null,
+                          'config.attr.gridLine.show',
+                        )}
+                      />
+                    </HalfForm>
+                    <HalfForm label="跟随栅格大小">
+                      <Tooltip title="最小网格大小为10">
+                        <Switch
+                          checked={!!followGrid}
+                          onChange={onValueChange.bind(
+                            null,
+                            'config.attr.gridLine.followGrid',
+                          )}
+                        />
+                      </Tooltip>
+                    </HalfForm>
+                    {!followGrid && (
+                      <FullForm label="网格线大小">
+                        <InputNumber
+                          value={gridSize}
+                          onChange={onValueChange.bind(
+                            null,
+                            'config.attr.gridLine.gridSize',
+                          )}
+                        />
+                      </FullForm>
+                    )}
                   </Item>
                   {type === 'PC' && (
                     <>

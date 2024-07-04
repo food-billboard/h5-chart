@@ -29,6 +29,7 @@ import { PANEL_ABSOLUTE_POSITION } from '@/utils/constants/index';
 import { ExchangePreviewerContext } from '../../../ExchangeScreenFlag/components/MobilePreviewer/context';
 import { DRAG_TYPE } from '../../../LeftContent/components/ComponentManage/components/ComponentList/item';
 import ComponentList from '../ComponentList';
+import GridLine from '../GridLine';
 import H5AutoHeight from '../H5AutoHeight';
 import ModelPlaceholder from '../ModelPlaceholder';
 import { mapDispatchToProps, mapStateToProps } from './connect';
@@ -213,6 +214,7 @@ const Painter = (props: PainterProps) => {
       {componentList}
       <H5AutoHeight />
       <LogWinbox />
+      <GridLine />
       <ModelPlaceholder />
     </ColorImageBackground>
   );

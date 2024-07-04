@@ -153,6 +153,11 @@ const DEFAULT_SCREEN_DATA: ComponentData.TScreenData = {
         show: true,
         value: [],
       },
+      gridLine: {
+        show: false,
+        size: 10,
+        followGrid: false,
+      },
       componentBorder: {
         width: 10,
         padding: [0, 0],
