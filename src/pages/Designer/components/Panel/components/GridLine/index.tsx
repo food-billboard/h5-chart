@@ -15,7 +15,8 @@ const GridLine = (props: {
   const gridLineColor = '#ccc';
 
   const borderSize = useMemo(() => {
-    return Math.min(20, Math.max(1, (100 / scale) * 5));
+    return 5;
+    // return Math.min(8, Math.max(5, (100 / scale) * 5));
   }, [scale]);
 
   if (!gridLineShow || screenType !== 'edit') return <></>;
@@ -36,9 +37,19 @@ export default connect(
     const config = state.global.screenData.config.attr;
     const gridLine = config.gridLine;
     const grid = config.grid;
+    const baseSize = gridLine.followGrid ? grid : gridLine.size;
+    const scale = state.global.scale;
+    let minGridSize = 10;
+    if (scale <= 50) {
+      minGridSize = 100;
+    } else if (scale <= 100) {
+      minGridSize = 50;
+    } else {
+      minGridSize = 10;
+    }
     return {
       gridLineShow: gridLine.show,
-      gridLineSize: Math.max(gridLine.followGrid ? grid : gridLine.size, 10),
+      gridLineSize: Math.max(baseSize, minGridSize),
       screenType: state.global.screenType,
       scale: state.global.scale,
     };
