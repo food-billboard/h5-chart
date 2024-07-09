@@ -5,7 +5,6 @@ import ComponentOptionConfig, {
 } from '@/components/ChartComponents/Common/ComponentOptionConfig';
 import InputNumber from '@/components/ChartComponents/Common/InputNumber';
 import JsonDataUpload from '@/components/ChartComponents/Common/JsonDataUpload';
-import Select from '@/components/ChartComponents/Common/Select';
 import ConfigList from '@/components/ChartComponents/Common/Structure/ConfigList';
 import FullForm from '@/components/ChartComponents/Common/Structure/FullForm';
 import { TLottieAnimeConfig } from '../type';

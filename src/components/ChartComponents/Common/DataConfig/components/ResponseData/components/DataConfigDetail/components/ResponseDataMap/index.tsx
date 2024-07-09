@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import SubTitle, { SubForm } from '../SubTitle';
 import MapTable from '../../../../../../../MapTable';
+import SubTitle, { SubForm } from '../SubTitle';
 
 const ResponseDataMap = (props: {
   value: ComponentData.TComponentMapData[];
