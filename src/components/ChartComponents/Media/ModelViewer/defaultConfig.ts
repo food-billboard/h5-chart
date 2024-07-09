@@ -1,4 +1,5 @@
 import { mergeWithoutArray } from '@/utils';
+import ThemeUtil from '@/utils/Assist/Theme';
 import {
   BASIC_DEFAULT_CONFIG,
   BASIC_DEFAULT_DATA_CONFIG,
@@ -7,14 +8,15 @@ import {
 import { TModelConfig } from './type';
 
 const DEFAULT_VALUE = {
-  value: '',
-  poster: '',
+  value: 'https://modelviewer.dev/shared-assets/models/shishkebab.glb',
+  poster: 'https://modelviewer.dev/assets/poster-shishkebab.webp',
 };
 
 export default () => {
   const CUSTOM_CONFIG: ComponentData.TInternalComponentConfig<TModelConfig> = {
     interactive: {
       base: [],
+      linkage: [],
     },
     data: {
       request: {
@@ -26,7 +28,7 @@ export default () => {
           {
             field: 'value',
             map: '',
-            description: '模型地址(gltf)',
+            description: '模型地址(支持"gltf"、"glb")',
             id: 'value',
             type: 'string',
           },
@@ -41,12 +43,18 @@ export default () => {
       },
     },
     options: {
+      progress: {
+        from: ThemeUtil.generateNextColor4CurrentTheme(0),
+        to: ThemeUtil.generateNextColor4CurrentTheme(1),
+      },
       rotate: {
         show: true,
         delay: 3000,
         speed: 30,
       },
-      cameraControls: true,
+      cameraControls: {
+        show: true,
+      },
       position: {
         x: 0,
         y: 0,
@@ -80,7 +88,16 @@ export default () => {
 };
 
 export const themeConfig = {
-  convert: (colorList: ComponentData.TColorConfig[]) => {
-    return {};
+  convert: (
+    colorList: ComponentData.TColorConfig[],
+    options: TModelConfig,
+    forceSeries = false,
+  ) => {
+    return {
+      progress: {
+        from: colorList[0],
+        to: colorList[1],
+      },
+    };
   },
 };

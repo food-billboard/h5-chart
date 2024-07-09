@@ -6,10 +6,10 @@ export default {
   defaultConfig,
   themeConfig,
   configComponent: LazyLoadWrapper(() => {
-    return import(/* webpackChunkName: "MODEL" */ './config');
+    return import(/* webpackChunkName: "MODEL_VIEWER" */ './config');
   }),
   render: LazyLoadWrapper(() => {
-    return import(/* webpackChunkName: "MODEL" */ './component');
+    return import(/* webpackChunkName: "MODEL_VIEWER" */ './component');
   }),
   type: CHART_ID,
 };

@@ -1,11 +1,16 @@
+import { InfoCircleOutlined } from '@ant-design/icons';
 import { Component } from 'react';
 import { SingleCollapse as Collapse } from '@/components/ChartComponents/Common/Collapse';
 import ComponentOptionConfig, {
   Tab,
 } from '@/components/ChartComponents/Common/ComponentOptionConfig';
+import Input from '@/components/ChartComponents/Common/Input';
 import InputNumber from '@/components/ChartComponents/Common/InputNumber';
 import ConfigList from '@/components/ChartComponents/Common/Structure/ConfigList';
 import FullForm from '@/components/ChartComponents/Common/Structure/FullForm';
+import Switch from '@/components/ChartComponents/Common/Switch';
+import ColorSelect from '@/components/ColorSelect';
+import IconTooltip from '@/components/IconTooltip';
 import { TModelConfig } from '../type';
 
 const { Item } = ConfigList;
@@ -26,7 +31,14 @@ class Config extends Component<
     const { value } = this.props;
     const {
       config: {
-        options: { position, focus, scale, color, rotate },
+        options: {
+          position,
+          cameraControls,
+          scale,
+          animation,
+          rotate,
+          progress,
+        },
       },
     } = value;
 
@@ -63,32 +75,19 @@ class Config extends Component<
                     />
                   </FullForm>
                 </Item>
-                {/* <Item label="聚焦">
-              <FullForm label="x">
-                <InputNumber
-                  value={focus.x}
-                  onChange={(value) =>
-                    this.onKeyChange('focus', { ...focus, x: value })
-                  }
-                />
-              </FullForm>
-              <FullForm label="y">
-                <InputNumber
-                  value={focus.y}
-                  onChange={(value) =>
-                    this.onKeyChange('focus', { ...focus, y: value })
-                  }
-                />
-              </FullForm>
-              <FullForm label="z">
-                <InputNumber
-                  value={focus.z}
-                  onChange={(value) =>
-                    this.onKeyChange('focus', { ...focus, z: value })
-                  }
-                />
-              </FullForm>
-            </Item> */}
+                <Item label="是否可控">
+                  <FullForm>
+                    <Switch
+                      checked={cameraControls.show}
+                      onChange={(value) =>
+                        this.onKeyChange('cameraControls', {
+                          ...cameraControls,
+                          show: value,
+                        })
+                      }
+                    />
+                  </FullForm>
+                </Item>
               </ConfigList>
             ),
             key: '1',
@@ -97,7 +96,7 @@ class Config extends Component<
             label: <Tab>模型</Tab>,
             children: (
               <ConfigList level={1}>
-                <Item label="缩放">
+                <Item label="初始缩放">
                   <FullForm>
                     <InputNumber
                       value={scale}
@@ -105,14 +104,6 @@ class Config extends Component<
                     />
                   </FullForm>
                 </Item>
-                {/* <Item label="颜色">
-              <FullForm>
-                <ColorSelect
-                  value={color}
-                  onChange={this.onKeyChange.bind(this, 'color')}
-                />
-              </FullForm>
-            </Item> */}
                 <Collapse
                   child={{
                     header: '旋转',
@@ -120,8 +111,8 @@ class Config extends Component<
                     visibleRender: true,
                     onChange: (value) =>
                       this.onKeyChange('rotate', {
+                        ...rotate,
                         show: value,
-                        speed: rotate.speed,
                       }),
                     value: rotate.show,
                   }}
@@ -135,8 +126,21 @@ class Config extends Component<
                         value={rotate.speed}
                         onChange={(value) =>
                           this.onKeyChange('rotate', {
-                            show: rotate.show,
+                            ...rotate,
                             speed: value,
+                          })
+                        }
+                      />
+                    </FullForm>
+                  </Item>
+                  <Item label="延迟旋转">
+                    <FullForm>
+                      <InputNumber
+                        value={rotate.delay}
+                        onChange={(value) =>
+                          this.onKeyChange('rotate', {
+                            ...rotate,
+                            delay: value,
                           })
                         }
                       />
@@ -146,6 +150,63 @@ class Config extends Component<
               </ConfigList>
             ),
             key: '2',
+          },
+          {
+            label: <Tab>动画</Tab>,
+            children: (
+              <ConfigList level={1}>
+                <Item
+                  label="动画名称"
+                  placeholder={
+                    <IconTooltip title="动画名称为模型当中定义的名称">
+                      <InfoCircleOutlined />
+                    </IconTooltip>
+                  }
+                >
+                  <FullForm>
+                    <Input
+                      value={animation.name}
+                      onChange={(value) =>
+                        this.onKeyChange('animation', {
+                          ...animation,
+                          name: value,
+                        })
+                      }
+                    />
+                  </FullForm>
+                </Item>
+              </ConfigList>
+            ),
+            key: '3',
+          },
+          {
+            label: <Tab>进度条</Tab>,
+            children: (
+              <ConfigList level={1}>
+                <Item label="颜色">
+                  <FullForm label="from">
+                    <ColorSelect
+                      value={progress.from}
+                      onChange={(value) =>
+                        this.onKeyChange('progress', {
+                          ...progress,
+                          from: value,
+                        })
+                      }
+                    />
+                  </FullForm>
+                  <FullForm label="to">
+                    <ColorSelect
+                      value={progress.to}
+                      onChange={(value) =>
+                        this.onKeyChange('progress', { ...progress, to: value })
+                      }
+                    />
+                  </FullForm>
+                </Item>
+              </ConfigList>
+            ),
+            key: '4',
           },
         ]}
       />

@@ -1,36 +1,31 @@
 import '@google/model-viewer';
-import { useUpdateEffect } from 'ahooks';
+import { Progress, App } from 'antd';
 import classnames from 'classnames';
 import { uniqueId, merge, noop } from 'lodash';
 import { useMemo, useRef, useCallback, useState, useEffect } from 'react';
-import GridLoader from 'react-spinners/GridLoader';
 import { useComponent } from '@/components/ChartComponents/Common/Component/hook';
 import FetchFragment from '@/components/ChartComponents/Common/FetchFragment';
-import { usePrimaryColor } from '@/hooks';
+import ColorSelect from '@/components/ColorSelect';
 import FilterDataUtil from '@/utils/Assist/FilterData';
-import { DEFAULT_THREE_D_MODEL_URL } from '@/utils/constants';
 import { CHART_ID } from '../id';
 import { TModelConfig } from '../type';
 import styles from './index.less';
 
-const getDomain = (url: string) => {
-  try {
-    return new URL(url).origin;
-  } catch (err) {
-    return '';
-  }
-};
-
-const BASE_DOMAIN = getDomain(DEFAULT_THREE_D_MODEL_URL);
+const { getRgbaString } = ColorSelect;
 
 const ModelBasic = (
   props: ComponentData.CommonComponentProps<TModelConfig>,
 ) => {
   const { className, style, value, global, children, wrapper: Wrapper } = props;
 
-  const [pageLoading, setPageLoading] = useState<boolean>(true);
+  const { screenType } = global;
 
-  const color = usePrimaryColor();
+  const { message } = App.useApp();
+
+  const [pageLoading, setPageLoading] = useState<boolean>(true);
+  const [loadingProgress, setLoadingProgress] = useState(0);
+
+  const modelViewerRef = useRef<any>(null);
 
   const {
     id,
@@ -39,7 +34,8 @@ const ModelBasic = (
       style: { border },
     },
   } = value;
-  const { rotate, cameraControls, position, animation, scale } = options;
+  const { rotate, cameraControls, position, animation, scale, progress } =
+    options;
 
   const chartId = useRef<string>(uniqueId(CHART_ID));
 
@@ -55,20 +51,6 @@ const ModelBasic = (
     component: value,
     global,
   });
-
-  const onModelViewerLoad = useCallback((e) => {
-    setPageLoading(false);
-    console.log('load');
-  }, []);
-
-  const onModelViewerError = useCallback(() => {
-    setPageLoading(false);
-    console.log('error');
-  }, []);
-
-  const onModelViewerProgress = useCallback(() => {
-    console.log('progress');
-  }, []);
 
   const finalValue = useMemo(() => {
     return FilterDataUtil.getFieldMapValue(processedValue, {
@@ -86,6 +68,47 @@ const ModelBasic = (
     return classnames(className, styles['component-media-model']);
   }, [className]);
 
+  useEffect(() => {
+    const modelViewer = modelViewerRef.current;
+
+    const onModelViewerLoad = (e: any) => {
+      setTimeout(() => {
+        setPageLoading(false);
+      }, 2000);
+      console.log(`3d模型${id}加载完成`);
+    };
+
+    const onModelViewerError = (error: any) => {
+      setPageLoading(false);
+      message.error('模型加载出错');
+      console.error(`3d模型${id}加载出错: ${error}`);
+    };
+
+    const onModelViewerProgress = (event: any) => {
+      const currentProgress = event.detail.totalProgress || 0;
+      setLoadingProgress(currentProgress);
+    };
+
+    const onModelViewerClick = (event: any) => {
+      // TODO
+      // 需要一个具体的逻辑来暴露点击的位置信息
+    };
+
+    modelViewer.addEventListener('load', onModelViewerLoad);
+    modelViewer.addEventListener('error', onModelViewerError);
+    modelViewer.addEventListener('progress', onModelViewerProgress);
+    if (screenType !== 'edit') {
+      modelViewer.addEventListener('click', onModelViewerClick);
+    }
+
+    return () => {
+      modelViewer.removeEventListener('load', onModelViewerLoad);
+      modelViewer.removeEventListener('error', onModelViewerError);
+      modelViewer.removeEventListener('progress', onModelViewerProgress);
+      modelViewer.removeEventListener('click', onModelViewerClick);
+    };
+  }, [message, id, screenType]);
+
   return (
     <>
       <div
@@ -102,19 +125,16 @@ const ModelBasic = (
       >
         <Wrapper border={border}>
           {children}
-          {/* {pageLoading && (
-            <div className={styles['component-media-model-loading']}>
-              <GridLoader loading color={color} />
-            </div>
-          )} */}
           <model-viewer
+            ref={modelViewerRef}
+            class="w-100 h-100"
             id={chartId.current}
             src={finalValue.value}
             poster={finalValue.poster}
             // 抗锯齿
             antialias
             // 相机控制
-            camera-controls={cameraControls}
+            camera-controls={cameraControls.show}
             // 自动旋转
             auto-rotate={rotate.show}
             // 延迟旋转
@@ -128,17 +148,28 @@ const ModelBasic = (
             // 动画自动播放
             autoplay
             loading="auto"
-            onLoad={onModelViewerLoad}
-            onError={onModelViewerError}
-            onProgress={onModelViewerProgress}
             scale={`${scale} ${scale} ${scale}`}
-
             // 禁止放大缩小
             // disable-zoom
             // 放大缩小的速度
             // zoom-sensitivity
           >
-            <div slot="progress-bar">2222222</div>
+            {pageLoading && (
+              <div
+                className={classnames(styles['model-viewer-progress'])}
+                slot="progress-bar"
+              >
+                <Progress
+                  showInfo={false}
+                  percent={loadingProgress * 100}
+                  status="active"
+                  strokeColor={{
+                    from: getRgbaString(progress.from),
+                    to: getRgbaString(progress.to),
+                  }}
+                />
+              </div>
+            )}
           </model-viewer>
         </Wrapper>
       </div>

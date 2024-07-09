@@ -1,6 +1,7 @@
 import { get, omit } from 'lodash';
 import { getDvaGlobalModelData } from '@/utils/Assist/Component';
 import { isGroupComponent } from '@/utils/Assist/Component';
+import GlobalConfig from '@/utils/Assist/GlobalConfig';
 import { DEFAULT_GROUP_CONFIG } from '@/utils/constants/screenData';
 import { mergeWithoutArray } from '@/utils/tool';
 // Chart
@@ -74,6 +75,7 @@ import HtmlFragment from './Media/HtmlFragment';
 import Image from './Media/Image';
 import LottieAnime from './Media/LottieAnime';
 import Model from './Media/Model';
+import ModelViewer from './Media/ModelViewer';
 import PictureWall from './Media/PictureWall';
 import Video from './Media/Video';
 import Iframe from './Other/Iframe';
@@ -182,7 +184,6 @@ COMPONENT_MAP.set(Rate.type, Rate);
 COMPONENT_MAP.set(Tag.type, Tag);
 COMPONENT_MAP.set(Weather.type, Weather);
 COMPONENT_MAP.set(Audio.type, Audio);
-COMPONENT_MAP.set(Model.type, Model);
 COMPONENT_MAP.set(Ali3DMap.type, Ali3DMap);
 COMPONENT_MAP.set(PathBasic.type, PathBasic);
 COMPONENT_MAP.set(QrCode.type, QrCode);
@@ -204,6 +205,12 @@ COMPONENT_MAP.set(ThreeBar.type, ThreeBar);
 COMPONENT_MAP.set(LottieAnime.type, LottieAnime);
 COMPONENT_MAP.set(HtmlFragment.type, HtmlFragment);
 COMPONENT_MAP.set(PercentPieBasic.type, PercentPieBasic);
+// improve 和 static使用model-viewer来展示模型
+if (GlobalConfig.IS_IMPROVE_BACKEND || GlobalConfig.IS_STATIC) {
+  COMPONENT_MAP.set(ModelViewer.type, ModelViewer);
+} else {
+  COMPONENT_MAP.set(Model.type, Model);
+}
 // component-map-insert-prefix
 
 // 根据组件类型获取组件信息
