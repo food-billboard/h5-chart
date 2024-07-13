@@ -4,6 +4,7 @@ import CallbackManage from './components/CallbackManage';
 import CollapseConfigPanel from './components/CollapseConfigPanel';
 import ComponentListCollapse from './components/ComponentListCollapse';
 import ConstantManage from './components/ConstantManage';
+import CurrentLayerSelect from './components/CurrentLayerSelect';
 import DebugConfig from './components/DebugConfig';
 import LayerSearch from './components/LayerSearch';
 import LayerShowIcon from './components/LayerShowControl';
@@ -31,6 +32,7 @@ const ActionList = () => {
       <LensManage />
       <ThemeConfig />
       <ModelManage />
+      <CurrentLayerSelect />
     </Space>
   );
 };
