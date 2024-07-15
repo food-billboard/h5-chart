@@ -142,7 +142,10 @@ const FontConfig = (props: {
           defaultValue={fontWeight}
           onChange={onChange.bind(null, 'fontWeight')}
           className="w-100"
-          options={FONT_WEIGHT_ENUM.map((item) => ({ label: item }))}
+          options={FONT_WEIGHT_ENUM.map((item) => ({
+            label: item,
+            value: item,
+          }))}
         />
       </HalfForm>
     );

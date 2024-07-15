@@ -1,14 +1,14 @@
+import { InfoCircleOutlined } from '@ant-design/icons';
+import { Typography } from 'antd';
+import { merge } from 'lodash';
+import { useCallback } from 'react';
+import { connect } from 'umi';
 import Checkbox from '@/components/ChartComponents/Common/Checkbox';
 import Select from '@/components/ChartComponents/Common/Select';
 import IconTooltipBase from '@/components/IconTooltip';
 import FilterDataUtil from '@/utils/Assist/FilterData';
 import GlobalConfig from '@/utils/Assist/GlobalConfig';
 import { API_CONTAIN_PARAMS_LAZY_REQUEST_URL_FLAG } from '@/utils/constants';
-import { InfoCircleOutlined } from '@ant-design/icons';
-import { Typography } from 'antd';
-import { merge } from 'lodash';
-import { useCallback } from 'react';
-import { connect } from 'umi';
 import SubTitle, { SubForm } from '../../SubTitle';
 import CodeEditor from '../SaveCodeEditor';
 import { TOnChange } from '../type';
@@ -78,9 +78,11 @@ const ApiConfig = (props: ApiConfigProps) => {
           options={[
             {
               label: 'POST',
+              value: 'POST',
             },
             {
               label: 'GET',
+              value: 'GET',
             },
           ]}
         />

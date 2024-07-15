@@ -91,9 +91,11 @@ const LensConfig = forwardRef<RequestConfigRef, Props>((props, ref) => {
               options={[
                 {
                   label: 'POST',
+                  value: 'POST',
                 },
                 {
                   label: 'GET',
+                  value: 'GET',
                 },
               ]}
             />

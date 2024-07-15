@@ -187,7 +187,10 @@ const SeriesConfig = (props: {
             className="w-100"
             value={symbolRepeatDirection}
             onChange={onKeyChange.bind(null, 'symbolRepeatDirection')}
-            options={[{ label: 'start' }, { label: 'end' }]}
+            options={[
+              { label: 'start', value: 'start' },
+              { label: 'end', value: 'end' },
+            ]}
           />
         </FullForm>
       </Item>

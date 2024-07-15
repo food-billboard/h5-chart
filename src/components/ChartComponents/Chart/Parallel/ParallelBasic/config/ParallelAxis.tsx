@@ -95,9 +95,9 @@ const ParallelAxisConfig = (props: {
               value={nameLocation}
               onChange={onKeyChange.bind(null, 'nameLocation')}
               options={[
-                { label: 'start' },
-                { label: 'center' },
-                { label: 'end' },
+                { label: 'start', value: 'start' },
+                { label: 'center', value: 'center' },
+                { label: 'end', value: 'end' },
               ]}
             />
           </FullForm>

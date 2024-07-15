@@ -256,7 +256,10 @@ const RadarConfig = (props: {
             value={shape}
             onChange={onKeyChange.bind(null, 'shape')}
             className="w-100"
-            options={[{ label: 'polygon' }, { label: 'circle' }]}
+            options={[
+              { label: 'polygon', value: 'polygon' },
+              { label: 'circle', value: 'circle' },
+            ]}
           />
         </FullForm>
       </Item>

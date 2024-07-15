@@ -287,9 +287,9 @@ class Config extends Component<
                       });
                     }}
                     options={[
-                      { label: 'easeOutExpo' },
-                      { label: 'outQuintic' },
-                      { label: 'outCubic' },
+                      { label: 'easeOutExpo', value: 'easeOutExpo' },
+                      { label: 'outQuintic', value: 'outQuintic' },
+                      { label: 'outCubic', value: 'outCubic' },
                     ]}
                   />
                 </Item>

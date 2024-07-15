@@ -1,12 +1,12 @@
 import { useCallback, useMemo } from 'react';
-import Select from '@/components/ChartComponents/Common/Select';
-import FullForm from '@/components/ChartComponents/Common/Structure/FullForm';
-import ConfigList from '@/components/ChartComponents/Common/Structure/ConfigList';
-import HalfForm from '@/components/ChartComponents/Common/Structure/HalfForm';
-import InputNumber from '@/components/ChartComponents/Common/InputNumber';
-import { FontConfigList } from '@/components/ChartComponents/Common/FontConfig';
 import { SingleCollapse as Collapse } from '@/components/ChartComponents/Common/Collapse';
+import { FontConfigList } from '@/components/ChartComponents/Common/FontConfig';
+import InputNumber from '@/components/ChartComponents/Common/InputNumber';
 import MaxMinConfig from '@/components/ChartComponents/Common/MaxMinConfig';
+import Select from '@/components/ChartComponents/Common/Select';
+import ConfigList from '@/components/ChartComponents/Common/Structure/ConfigList';
+import FullForm from '@/components/ChartComponents/Common/Structure/FullForm';
+import HalfForm from '@/components/ChartComponents/Common/Structure/HalfForm';
 import { TWordCloudBasicConfig } from '../type';
 
 const { Item } = ConfigList;
@@ -167,27 +167,35 @@ const SeriesConfig = (props: {
             options={[
               {
                 label: 'cardioid',
+                value: 'cardioid',
               },
               {
                 label: 'circle',
+                value: 'circle',
               },
               {
                 label: 'diamond',
+                value: 'diamond',
               },
               {
                 label: 'square',
+                value: 'square',
               },
               {
                 label: 'triangle-forward',
+                value: 'triangle-forward',
               },
               {
                 label: 'triangle',
+                value: 'triangle',
               },
               {
                 label: 'pentagon',
+                value: 'pentagon',
               },
               {
                 label: 'star',
+                value: 'star',
               },
             ]}
           />
