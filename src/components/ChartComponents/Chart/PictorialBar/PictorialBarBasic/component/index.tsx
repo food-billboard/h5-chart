@@ -1,7 +1,6 @@
-import { useEffect, useRef } from 'react';
-import { uniqueId, merge } from 'lodash';
 import classnames from 'classnames';
-import { useDeepUpdateEffect } from '@/hooks';
+import { uniqueId, merge } from 'lodash';
+import { useEffect, useRef } from 'react';
 import {
   useComponent,
   useChartComponentResize,
@@ -12,11 +11,12 @@ import {
   useChartComponentTooltip,
   useChartPerConfig,
 } from '@/components/ChartComponents/Common/Component/hook';
-import ColorSelect from '@/components/ColorSelect';
-import { init } from '@/utils/Assist/EchartsLoader';
 import FetchFragment from '@/components/ChartComponents/Common/FetchFragment';
-import { TPictorialBarBasicConfig } from '../type';
+import ColorSelect from '@/components/ColorSelect';
+import { useDeepUpdateEffect } from '@/hooks';
+import { init } from '@/utils/Assist/EchartsLoader';
 import { CHART_ID } from '../id';
+import { TPictorialBarBasicConfig } from '../type';
 
 const { getRgbaString } = ColorSelect;
 
@@ -59,11 +59,10 @@ const PictorialBar = (
     global,
   });
 
-  const {
-    onCondition: propsOnCondition,
-    style: conditionStyle,
-    className: conditionClassName,
-  } = useCondition(onCondition, screenType);
+  const { onCondition: propsOnCondition, ConditionComponent } = useCondition({
+    onCondition,
+    screenType,
+  });
 
   const { xAxisKeys, yAxisValues } = useChartValueMapField(processedValue, {
     map: componentFilterMap,
@@ -202,22 +201,21 @@ const PictorialBar = (
 
   return (
     <>
-      <div
-        className={classnames(className, conditionClassName)}
+      <ConditionComponent
+        className={className}
         style={merge(
           {
             width: '100%',
             height: '100%',
           },
           style,
-          conditionStyle,
         )}
       >
         <Wrapper border={border}>
           <div id={chartId.current} className="w-100 h-100"></div>
           {children}
         </Wrapper>
-      </div>
+      </ConditionComponent>
       <FetchFragment
         id={id}
         url={requestUrl}

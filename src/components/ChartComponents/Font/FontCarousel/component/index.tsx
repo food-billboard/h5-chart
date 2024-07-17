@@ -48,11 +48,10 @@ const TFontCarousel = (
     global,
   });
 
-  const {
-    onCondition: propsOnCondition,
-    style: conditionStyle,
-    className: conditionClassName,
-  } = useCondition(onCondition, screenType);
+  const { onCondition: propsOnCondition, ConditionComponent } = useCondition({
+    onCondition,
+    screenType,
+  });
 
   const finalValue = useMemo(() => {
     return FilterDataUtil.getFieldMapValue(processedValue, {
@@ -82,13 +81,12 @@ const TFontCarousel = (
       className,
       // 'dis-flex',
       styles['component-font-carousel'],
-      conditionClassName,
     );
-  }, [className, conditionClassName]);
+  }, [className]);
 
   return (
     <>
-      <div
+      <ConditionComponent
         className={componentClassName}
         style={merge(
           {
@@ -97,7 +95,6 @@ const TFontCarousel = (
           },
           style,
           componentStyle,
-          conditionStyle,
         )}
         id={chartId.current}
         onClick={onClick}
@@ -125,7 +122,7 @@ const TFontCarousel = (
             </Marquee>
           }
         </Wrapper>
-      </div>
+      </ConditionComponent>
       <FetchFragment
         id={id}
         url={requestUrl}

@@ -569,7 +569,8 @@ declare namespace ComponentData {
     | 'hidden'
     | 'ease-in-out'
     | 'ease-in'
-    | 'ease-out';
+    | 'ease-out'
+    | 'modal-visible';
 
   // condition
   export type ComponentCondition = {

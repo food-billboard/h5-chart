@@ -1,14 +1,14 @@
-import { useMemo, useRef, useCallback } from 'react';
-import { uniqueId, merge } from 'lodash';
 import classnames from 'classnames';
+import { uniqueId, merge } from 'lodash';
+import { useMemo, useRef, useCallback } from 'react';
 import {
   useComponent,
   useCondition,
 } from '@/components/ChartComponents/Common/Component/hook';
 import FetchFragment from '@/components/ChartComponents/Common/FetchFragment';
 import FilterDataUtil from '@/utils/Assist/FilterData';
-import { TAudioConfig } from '../type';
 import { CHART_ID } from '../id';
+import { TAudioConfig } from '../type';
 import styles from './index.less';
 
 const AudioBasic = (
@@ -42,11 +42,10 @@ const AudioBasic = (
     global,
   });
 
-  const {
-    onCondition: propsOnCondition,
-    style: conditionStyle,
-    className: conditionClassName,
-  } = useCondition(onCondition, screenType);
+  const { onCondition: propsOnCondition, ConditionComponent } = useCondition({
+    onCondition,
+    screenType,
+  });
 
   const autoplay = useMemo(() => {
     return screenType === 'edit' ? false : opAutoplay;
@@ -65,16 +64,12 @@ const AudioBasic = (
   }, [syncInteractiveAction, finalValue]);
 
   const componentClassName = useMemo(() => {
-    return classnames(
-      className,
-      styles['component-media-audio'],
-      conditionClassName,
-    );
-  }, [className, conditionClassName]);
+    return classnames(className, styles['component-media-audio']);
+  }, [className]);
 
   return (
     <>
-      <div
+      <ConditionComponent
         className={componentClassName}
         style={merge(
           {
@@ -82,7 +77,6 @@ const AudioBasic = (
             height: '100%',
           },
           style,
-          conditionStyle,
         )}
         id={chartId.current}
         onClick={onClick}
@@ -102,7 +96,7 @@ const AudioBasic = (
             </div>
           )}
         </Wrapper>
-      </div>
+      </ConditionComponent>
       <FetchFragment
         id={id}
         url={requestUrl}

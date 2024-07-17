@@ -35,11 +35,10 @@ const HtmlFragment = (
     global,
   });
 
-  const {
-    onCondition: propsOnCondition,
-    style: conditionStyle,
-    className: conditionClassName,
-  } = useCondition(onCondition, screenType);
+  const { onCondition: propsOnCondition, ConditionComponent } = useCondition({
+    onCondition,
+    screenType,
+  });
 
   const componentStyle = useMemo(() => {
     let baseStyle: CSSProperties = {
@@ -54,13 +53,12 @@ const HtmlFragment = (
       className,
       'dis-flex',
       styles['component-media-html-fragment'],
-      conditionClassName,
     );
-  }, [className, conditionClassName]);
+  }, [className]);
 
   return (
     <>
-      <div
+      <ConditionComponent
         className={componentClassName}
         style={merge(
           {
@@ -68,7 +66,6 @@ const HtmlFragment = (
             height: '100%',
           },
           style,
-          conditionStyle,
         )}
         id={chartId.current}
       >
@@ -82,7 +79,7 @@ const HtmlFragment = (
             }}
           />
         </Wrapper>
-      </div>
+      </ConditionComponent>
       <FetchFragment
         id={id}
         url={''}

@@ -1,3 +1,8 @@
+import { Carousel } from 'antd';
+import classnames from 'classnames';
+import { get, merge, uniqueId } from 'lodash';
+import { useCallback, useMemo, useRef } from 'react';
+import { connect } from 'umi';
 import {
   useComponent,
   useComponentSize,
@@ -8,11 +13,6 @@ import FetchFragment from '@/components/ChartComponents/Common/FetchFragment';
 import { useClipPath } from '@/hooks';
 import { ConnectState } from '@/models/connect';
 import FilterDataUtil from '@/utils/Assist/FilterData';
-import { Carousel } from 'antd';
-import classnames from 'classnames';
-import { get, merge, uniqueId } from 'lodash';
-import { useCallback, useMemo, useRef } from 'react';
-import { connect } from 'umi';
 import { CHART_ID } from '../id';
 import { TCarouselConfig } from '../type';
 import styles from './index.less';
@@ -68,11 +68,10 @@ const CarouselBasic = (
     global,
   });
 
-  const {
-    onCondition: propsOnCondition,
-    style: conditionStyle,
-    className: conditionClassName,
-  } = useCondition(onCondition, screenType);
+  const { onCondition: propsOnCondition, ConditionComponent } = useCondition({
+    onCondition,
+    screenType,
+  });
 
   const finalValue = useMemo(() => {
     return FilterDataUtil.getFieldMapValue(processedValue, {
@@ -89,12 +88,8 @@ const CarouselBasic = (
   );
 
   const componentClassName = useMemo(() => {
-    return classnames(
-      className,
-      styles['component-media-carousel'],
-      conditionClassName,
-    );
-  }, [className, conditionClassName]);
+    return classnames(className, styles['component-media-carousel']);
+  }, [className]);
 
   const imageList = useMemo(() => {
     return finalValue.map((item: any, index: number) => {
@@ -118,7 +113,7 @@ const CarouselBasic = (
 
   return (
     <>
-      <div
+      <ConditionComponent
         className={componentClassName}
         style={merge(
           {
@@ -127,7 +122,6 @@ const CarouselBasic = (
           },
           style,
           clipPathStyle,
-          conditionStyle,
         )}
         id={chartId.current}
       >
@@ -157,7 +151,7 @@ const CarouselBasic = (
             </Carousel>
           </div>
         </Wrapper>
-      </div>
+      </ConditionComponent>
       <FetchFragment
         id={id}
         url={requestUrl}

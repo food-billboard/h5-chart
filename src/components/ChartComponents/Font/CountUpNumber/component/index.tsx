@@ -71,11 +71,10 @@ const CountUpNumberBasic = (
     global,
   });
 
-  const {
-    onCondition: propsOnCondition,
-    style: conditionStyle,
-    className: conditionClassName,
-  } = useCondition(onCondition, screenType);
+  const { onCondition: propsOnCondition, ConditionComponent } = useCondition({
+    onCondition,
+    screenType,
+  });
 
   const finalValue = useMemo(() => {
     return FilterDataUtil.getFieldMapValue(processedValue, {
@@ -114,9 +113,8 @@ const CountUpNumberBasic = (
       className,
       'dis-flex',
       styles['component-font-count-up-number'],
-      conditionClassName,
     );
-  }, [className, conditionClassName]);
+  }, [className]);
 
   useDeepCompareEffect(() => {
     chartInstance.current = new CountUp(
@@ -143,7 +141,7 @@ const CountUpNumberBasic = (
 
   return (
     <>
-      <div
+      <ConditionComponent
         className={componentClassName}
         style={merge(
           {
@@ -151,7 +149,6 @@ const CountUpNumberBasic = (
             height: '100%',
           },
           style,
-          conditionStyle,
         )}
         onClick={onClick}
       >
@@ -174,7 +171,7 @@ const CountUpNumberBasic = (
           </div>
           {children}
         </Wrapper>
-      </div>
+      </ConditionComponent>
       <FetchFragment
         id={id}
         url={requestUrl}

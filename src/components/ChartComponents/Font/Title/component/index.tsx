@@ -1,6 +1,6 @@
-import { CSSProperties, useMemo, useRef, useCallback } from 'react';
-import { uniqueId, merge } from 'lodash';
 import classnames from 'classnames';
+import { uniqueId, merge } from 'lodash';
+import { CSSProperties, useMemo, useRef, useCallback } from 'react';
 import {
   useComponent,
   useCondition,
@@ -8,8 +8,8 @@ import {
 import FetchFragment from '@/components/ChartComponents/Common/FetchFragment';
 import ColorSelect from '@/components/ColorSelect';
 import FilterDataUtil from '@/utils/Assist/FilterData';
-import { TTitleConfig } from '../type';
 import { CHART_ID } from '../id';
+import { TTitleConfig } from '../type';
 import styles from './index.less';
 
 const { getRgbaString } = ColorSelect;
@@ -46,11 +46,10 @@ const TitleBasic = (
     global,
   });
 
-  const {
-    onCondition: propsOnCondition,
-    style: conditionStyle,
-    className: conditionClassName,
-  } = useCondition(onCondition, screenType);
+  const { onCondition: propsOnCondition, ConditionComponent } = useCondition({
+    onCondition,
+    screenType,
+  });
 
   const finalValue = useMemo(() => {
     return FilterDataUtil.getFieldMapValue(processedValue, {
@@ -97,13 +96,12 @@ const TitleBasic = (
       repeat,
       value,
       speed,
-      conditionClassName,
     );
-  }, [className, animation, conditionClassName]);
+  }, [className, animation]);
 
   return (
     <>
-      <div
+      <ConditionComponent
         className={componentClassName}
         style={merge(
           {
@@ -111,7 +109,6 @@ const TitleBasic = (
             height: '100%',
           },
           style,
-          conditionStyle,
         )}
         id={chartId.current}
         onClick={onClick}
@@ -122,7 +119,7 @@ const TitleBasic = (
             {finalValue.value || ''}
           </div>
         </Wrapper>
-      </div>
+      </ConditionComponent>
       <FetchFragment
         id={id}
         url={requestUrl}

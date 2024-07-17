@@ -1,10 +1,10 @@
-import { useRef, useCallback, useEffect, useState, useMemo } from 'react';
-import { get, isEqual, noop } from 'lodash';
 import { useUpdateEffect } from 'ahooks';
-import FilterDataUtil from '@/utils/Assist/FilterData';
-import VariableStringUtil from '@/utils/Assist/VariableString';
+import { get, isEqual, noop } from 'lodash';
+import { useRef, useCallback, useEffect, useState, useMemo } from 'react';
 import { mergeWithoutArray } from '@/utils';
 import { getDvaGlobalModelData } from '@/utils/Assist/Component';
+import FilterDataUtil from '@/utils/Assist/FilterData';
+import VariableStringUtil from '@/utils/Assist/VariableString';
 import { useFilterChange } from './useFilterChange';
 import { useLinkageInteractive } from './useLinkageInteractive';
 
@@ -215,6 +215,7 @@ export function useComponent<P extends object = {}>(
         }
       } else {
         const { type, rule } = valueCondition;
+        console.log(condition, value, 2222222);
         const method = type === 'and' ? 'every' : 'some';
         result = rule[method]((item) => {
           const { rule, type } = item;

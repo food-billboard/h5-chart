@@ -70,21 +70,19 @@ const SubGroup = (props: {
     },
   });
 
-  const {
-    onCondition: propsOnCondition,
-    style: conditionStyle,
-    className: conditionClassName,
-  } = useCondition(onCondition, screenType);
+  const { onCondition: propsOnCondition, ConditionComponent } = useCondition({
+    onCondition,
+    screenType,
+  });
 
   return (
-    <div
+    <ConditionComponent
       className={classnames(
         'w-100 h-100',
-        conditionClassName,
         className,
         styles['render-component-wrapper-inner'],
       )}
-      style={merge(childrenStyle, style || {}, conditionStyle, {
+      style={merge(childrenStyle, style || {}, {
         position: flag === 'H5' ? 'relative' : 'absolute',
       })}
       data-id={id}
@@ -113,7 +111,7 @@ const SubGroup = (props: {
         reGetValue={() => []}
         url=""
       />
-    </div>
+    </ConditionComponent>
   );
 };
 

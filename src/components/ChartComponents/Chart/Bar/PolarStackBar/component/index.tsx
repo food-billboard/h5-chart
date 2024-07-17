@@ -1,3 +1,5 @@
+import { merge, uniqueId } from 'lodash';
+import { useEffect, useMemo, useRef } from 'react';
 import {
   useAnimationChange,
   useChartComponentResize,
@@ -12,9 +14,6 @@ import FetchFragment from '@/components/ChartComponents/Common/FetchFragment';
 import ColorSelect from '@/components/ColorSelect';
 import { useDeepUpdateEffect, usePrimaryColorObject } from '@/hooks';
 import { init } from '@/utils/Assist/EchartsLoader';
-import classnames from 'classnames';
-import { merge, uniqueId } from 'lodash';
-import { useEffect, useMemo, useRef } from 'react';
 import { CHART_ID } from '../id';
 import { TPolarStackBarConfig } from '../type';
 
@@ -68,11 +67,10 @@ const PolarStackBar = (
     global,
   });
 
-  const {
-    onCondition: propsOnCondition,
-    style: conditionStyle,
-    className: conditionClassName,
-  } = useCondition(onCondition, screenType);
+  const { onCondition: propsOnCondition, ConditionComponent } = useCondition({
+    onCondition,
+    screenType,
+  });
 
   const { xAxisKeys, yAxisValues, seriesKeys } = useChartValueMapField(
     processedValue,
@@ -233,22 +231,21 @@ const PolarStackBar = (
 
   return (
     <>
-      <div
-        className={classnames(className, conditionClassName)}
+      <ConditionComponent
+        className={className}
         style={merge(
           {
             width: '100%',
             height: '100%',
           },
           style,
-          conditionStyle,
         )}
       >
         <Wrapper border={border}>
           <div id={chartId.current} className="w-100 h-100"></div>
           {children}
         </Wrapper>
-      </div>
+      </ConditionComponent>
       <FetchFragment
         id={id}
         url={requestUrl}

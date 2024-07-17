@@ -42,11 +42,10 @@ const LottieAnime = (
       global,
     });
 
-  const {
-    onCondition: propsOnCondition,
-    style: conditionStyle,
-    className: conditionClassName,
-  } = useCondition(onCondition, screenType);
+  const { onCondition: propsOnCondition, ConditionComponent } = useCondition({
+    onCondition,
+    screenType,
+  });
 
   const setOption = async (needReCreate: boolean) => {
     const { loop, speed, direction } = nextOptions;
@@ -85,11 +84,10 @@ const LottieAnime = (
 
   return (
     <>
-      <div
+      <ConditionComponent
         className={classnames(
           className,
           styles['component-media-lottie-anime'],
-          conditionClassName,
         )}
         style={merge(
           {
@@ -97,7 +95,6 @@ const LottieAnime = (
             height: '100%',
           },
           style,
-          conditionStyle,
         )}
       >
         <Wrapper border={border}>
@@ -105,7 +102,7 @@ const LottieAnime = (
           <ComponentDemoTooltip open={!lottieData && screenType === 'edit'} />
           {children}
         </Wrapper>
-      </div>
+      </ConditionComponent>
       <FetchFragment
         id={id}
         url={requestUrl}

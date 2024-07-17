@@ -49,9 +49,11 @@ const Component = (
 
   const {
     onCondition: propsOnCondition,
-    style: conditionStyle,
-    className: conditionClassName,
-  } = useCondition(onCondition, screenType);
+    ConditionComponent,
+  } = useCondition({
+    onCondition, 
+    screenType
+  });
 
   const finalValue = useMemo(() => {
     return FilterDataUtil.getFieldMapValue(processedValue, {
@@ -80,13 +82,12 @@ const Component = (
     return classnames(
       className,
       'dis-flex',
-      conditionClassName,
     );
-  }, [className, conditionClassName]);
+  }, [className]);
 
   return (
     <>
-      <div
+      <ConditionComponent
         className={componentClassName}
         style={merge(
           {
@@ -95,7 +96,6 @@ const Component = (
           },
           style,
           componentStyle,
-          conditionStyle,
         )}
         id={chartId.current}
         onClick={onClick}
@@ -104,7 +104,7 @@ const Component = (
           {children}
           组件render的地方
         </Wrapper>
-      </div>
+      </ConditionComponent>
       <FetchFragment
         id={id}
         url={requestUrl}
