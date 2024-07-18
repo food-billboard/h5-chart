@@ -7,6 +7,7 @@ import {
   useComponentResize,
   useAnimationChange,
   useCondition,
+  ConditionComponent,
   useChartPerConfig,
 } from '@/components/ChartComponents/Common/Component/hook';
 import FetchFragment from '@/components/ChartComponents/Common/FetchFragment';
@@ -57,9 +58,10 @@ const BoxPlotBasic = (
     global,
   });
 
-  const { onCondition: propsOnCondition, ConditionComponent } = useCondition({
+  const { onCondition: propsOnCondition } = useCondition({
     onCondition,
     screenType,
+    componentId: id,
   });
 
   const { seriesKeys, xAxisKeys, yAxisValues } = useChartValueMapField(
@@ -198,6 +200,7 @@ const BoxPlotBasic = (
   return (
     <>
       <ConditionComponent
+        componentId={id}
         className={className}
         style={merge(
           {

@@ -7,6 +7,7 @@ import {
   useComponentResize,
   useAnimationChange,
   useCondition,
+  ConditionComponent,
   useChartComponentTooltip,
   useChartPerConfig,
 } from '@/components/ChartComponents/Common/Component/hook';
@@ -66,9 +67,10 @@ const LineBar = (props: ComponentData.CommonComponentProps<TLineBarConfig>) => {
     global,
   });
 
-  const { onCondition: propsOnCondition, ConditionComponent } = useCondition({
+  const { onCondition: propsOnCondition } = useCondition({
     onCondition,
     screenType,
+    componentId: id,
   });
 
   const {
@@ -365,6 +367,7 @@ const LineBar = (props: ComponentData.CommonComponentProps<TLineBarConfig>) => {
   return (
     <>
       <ConditionComponent
+        componentId={id}
         className={className}
         style={merge(
           {

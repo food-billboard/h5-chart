@@ -7,6 +7,7 @@ import {
   useComponent,
   useComponentSize,
   useCondition,
+  ConditionComponent,
 } from '@/components/ChartComponents/Common/Component/hook';
 import { DEFAULT_BORDER_RADIUS } from '@/components/ChartComponents/Common/Constants/defaultConfig';
 import FetchFragment from '@/components/ChartComponents/Common/FetchFragment';
@@ -68,9 +69,10 @@ const CarouselBasic = (
     global,
   });
 
-  const { onCondition: propsOnCondition, ConditionComponent } = useCondition({
+  const { onCondition: propsOnCondition } = useCondition({
     onCondition,
     screenType,
+    componentId: id,
   });
 
   const finalValue = useMemo(() => {
@@ -114,6 +116,7 @@ const CarouselBasic = (
   return (
     <>
       <ConditionComponent
+        componentId={id}
         className={componentClassName}
         style={merge(
           {

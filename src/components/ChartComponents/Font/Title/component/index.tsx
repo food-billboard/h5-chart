@@ -4,6 +4,7 @@ import { CSSProperties, useMemo, useRef, useCallback } from 'react';
 import {
   useComponent,
   useCondition,
+  ConditionComponent,
 } from '@/components/ChartComponents/Common/Component/hook';
 import FetchFragment from '@/components/ChartComponents/Common/FetchFragment';
 import ColorSelect from '@/components/ColorSelect';
@@ -46,9 +47,10 @@ const TitleBasic = (
     global,
   });
 
-  const { onCondition: propsOnCondition, ConditionComponent } = useCondition({
+  const { onCondition: propsOnCondition } = useCondition({
     onCondition,
     screenType,
+    componentId: id,
   });
 
   const finalValue = useMemo(() => {
@@ -102,6 +104,7 @@ const TitleBasic = (
   return (
     <>
       <ConditionComponent
+        componentId={id}
         className={componentClassName}
         style={merge(
           {

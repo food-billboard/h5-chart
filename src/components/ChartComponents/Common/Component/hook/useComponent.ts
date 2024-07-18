@@ -215,7 +215,6 @@ export function useComponent<P extends object = {}>(
         }
       } else {
         const { type, rule } = valueCondition;
-        console.log(condition, value, 2222222);
         const method = type === 'and' ? 'every' : 'some';
         result = rule[method]((item) => {
           const { rule, type } = item;

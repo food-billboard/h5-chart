@@ -7,6 +7,7 @@ import {
   useComponentResize,
   useAnimationChange,
   useCondition,
+  ConditionComponent,
   useChartPerConfig,
 } from '@/components/ChartComponents/Common/Component/hook';
 import FetchFragment from '@/components/ChartComponents/Common/FetchFragment';
@@ -58,9 +59,10 @@ const PercentBar = (
     global,
   });
 
-  const { onCondition: propsOnCondition, ConditionComponent } = useCondition({
+  const { onCondition: propsOnCondition } = useCondition({
     onCondition,
     screenType,
+    componentId: id,
   });
 
   const { xAxisKeys, yAxisValues } = useChartValueMapField(processedValue, {
@@ -251,6 +253,7 @@ const PercentBar = (
   return (
     <>
       <ConditionComponent
+        componentId={id}
         className={className}
         style={merge(
           {

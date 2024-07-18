@@ -7,6 +7,7 @@ import {
   useChartValueMapField,
   useComponentResize,
   useCondition,
+  ConditionComponent,
 } from '@/components/ChartComponents/Common/Component/hook';
 import FetchFragment from '@/components/ChartComponents/Common/FetchFragment';
 import ColorSelect from '@/components/ColorSelect';
@@ -55,9 +56,10 @@ const WordCloudBasic = (
     global,
   });
 
-  const { onCondition: propsOnCondition, ConditionComponent } = useCondition({
+  const { onCondition: propsOnCondition } = useCondition({
     onCondition,
     screenType,
+    componentId: id,
   });
 
   const { xAxisKeys, yAxisValues } = useChartValueMapField(processedValue, {
@@ -191,6 +193,7 @@ const WordCloudBasic = (
   return (
     <>
       <ConditionComponent
+        componentId={id}
         className={className}
         style={merge(
           {

@@ -22,8 +22,6 @@ const ConditionConfig = (props: ConditionConfigProps) => {
   const { value: config, onChange, children } = props;
   const { value, initialState } = config;
 
-  console.log(props, 222222222);
-
   const onKeyChange = useCallback(
     (key: string, value: any) => {
       onChange?.({

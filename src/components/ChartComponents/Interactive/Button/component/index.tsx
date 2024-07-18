@@ -5,6 +5,7 @@ import { useCallback, useMemo, useRef } from 'react';
 import {
   useComponent,
   useCondition,
+  ConditionComponent,
 } from '@/components/ChartComponents/Common/Component/hook';
 import FetchFragment from '@/components/ChartComponents/Common/FetchFragment';
 import ColorSelect from '@/components/ColorSelect';
@@ -55,9 +56,10 @@ const Button = (props: ComponentData.CommonComponentProps<TButtonConfig>) => {
     global,
   });
 
-  const { onCondition: propsOnCondition, ConditionComponent } = useCondition({
+  const { onCondition: propsOnCondition } = useCondition({
     onCondition,
     screenType,
+    componentId: id,
   });
 
   const finalValue = useMemo(() => {

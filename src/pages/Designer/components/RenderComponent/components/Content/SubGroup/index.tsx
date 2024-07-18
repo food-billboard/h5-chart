@@ -4,6 +4,7 @@ import { CSSProperties, ReactNode, useMemo } from 'react';
 import { connect } from 'umi';
 import {
   useCondition,
+  ConditionComponent,
   useGroupComponent,
 } from '@/components/ChartComponents/Common/Component/hook';
 import FetchFragment from '@/components/ChartComponents/Common/FetchFragment';
@@ -70,9 +71,10 @@ const SubGroup = (props: {
     },
   });
 
-  const { onCondition: propsOnCondition, ConditionComponent } = useCondition({
+  const { onCondition: propsOnCondition } = useCondition({
     onCondition,
     screenType,
+    componentId: id,
   });
 
   return (

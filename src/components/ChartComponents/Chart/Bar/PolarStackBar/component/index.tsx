@@ -8,6 +8,7 @@ import {
   useComponent,
   useComponentResize,
   useCondition,
+  ConditionComponent,
 } from '@/components/ChartComponents/Common/Component/hook';
 import { DEFAULT_OPACITY } from '@/components/ChartComponents/Common/Constants/defaultConfig';
 import FetchFragment from '@/components/ChartComponents/Common/FetchFragment';
@@ -67,9 +68,10 @@ const PolarStackBar = (
     global,
   });
 
-  const { onCondition: propsOnCondition, ConditionComponent } = useCondition({
+  const { onCondition: propsOnCondition } = useCondition({
     onCondition,
     screenType,
+    componentId: id,
   });
 
   const { xAxisKeys, yAxisValues, seriesKeys } = useChartValueMapField(
@@ -232,6 +234,7 @@ const PolarStackBar = (
   return (
     <>
       <ConditionComponent
+        componentId={id}
         className={className}
         style={merge(
           {

@@ -7,6 +7,7 @@ import {
   useComponentResize,
   useAnimationChange,
   useCondition,
+  ConditionComponent,
   useChartComponentTooltip,
   useChartPerConfig,
 } from '@/components/ChartComponents/Common/Component/hook';
@@ -58,9 +59,10 @@ const StepLine = (
     global,
   });
 
-  const { onCondition: propsOnCondition, ConditionComponent } = useCondition({
+  const { onCondition: propsOnCondition } = useCondition({
     onCondition,
     screenType,
+    componentId: id,
   });
 
   const { seriesKeys, xAxisKeys, yAxisValues } = useChartValueMapField(
@@ -216,6 +218,7 @@ const StepLine = (
   return (
     <>
       <ConditionComponent
+        componentId={id}
         className={className}
         style={merge(
           {

@@ -5,6 +5,7 @@ import {
   useChartComponentResize,
   useComponentResize,
   useCondition,
+  ConditionComponent,
   useChartPerConfig,
 } from '@/components/ChartComponents/Common/Component/hook';
 import FetchFragment from '@/components/ChartComponents/Common/FetchFragment';
@@ -68,9 +69,10 @@ const PercentPie = (
     global,
   });
 
-  const { onCondition: propsOnCondition, ConditionComponent } = useCondition({
+  const { onCondition: propsOnCondition } = useCondition({
     onCondition,
     screenType,
+    componentId: id,
   });
 
   const finalValue = useMemo(() => {
@@ -483,6 +485,7 @@ const PercentPie = (
   return (
     <>
       <ConditionComponent
+        componentId={id}
         className={className}
         style={merge(
           {

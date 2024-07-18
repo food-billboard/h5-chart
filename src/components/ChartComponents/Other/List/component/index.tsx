@@ -8,6 +8,7 @@ import 'slick-carousel/slick/slick.css';
 import {
   useComponent,
   useCondition,
+  ConditionComponent,
 } from '@/components/ChartComponents/Common/Component/hook';
 import FetchFragment from '@/components/ChartComponents/Common/FetchFragment';
 import ColorSelect from '@/components/ColorSelect';
@@ -107,9 +108,10 @@ const ListBasic = (props: ComponentData.CommonComponentProps<TListConfig>) => {
     global,
   });
 
-  const { onCondition: propsOnCondition, ConditionComponent } = useCondition({
+  const { onCondition: propsOnCondition } = useCondition({
     onCondition,
     screenType,
+    componentId: id,
   });
 
   const finalValue = useMemo(() => {
@@ -351,6 +353,7 @@ const ListBasic = (props: ComponentData.CommonComponentProps<TListConfig>) => {
   return (
     <>
       <ConditionComponent
+        componentId={id}
         className={componentClassName}
         style={style}
         id={chartId.current}

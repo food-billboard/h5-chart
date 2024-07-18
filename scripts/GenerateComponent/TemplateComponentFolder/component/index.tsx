@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import {
   useComponent,
   useCondition,
+  ConditionComponent,
 } from '@/components/ChartComponents/Common/Component/hook';
 import FetchFragment from '@/components/ChartComponents/Common/FetchFragment';
 import ColorSelect from '@/components/ColorSelect';
@@ -48,11 +49,11 @@ const Component = (
   );
 
   const {
-    onCondition: propsOnCondition,
-    ConditionComponent,
+    onCondition: propsOnCondition
   } = useCondition({
     onCondition, 
-    screenType
+    screenType,
+    componentId: id
   });
 
   const finalValue = useMemo(() => {
@@ -88,6 +89,7 @@ const Component = (
   return (
     <>
       <ConditionComponent
+        componentId={id}
         className={componentClassName}
         style={merge(
           {

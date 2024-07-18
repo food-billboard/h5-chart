@@ -6,6 +6,7 @@ import {
   useComponent,
   useChartValueMapField,
   useCondition,
+  ConditionComponent,
 } from '@/components/ChartComponents/Common/Component/hook';
 import FetchFragment from '@/components/ChartComponents/Common/FetchFragment';
 import ColorSelect from '@/components/ColorSelect';
@@ -73,9 +74,10 @@ const Ali3DMap = (
     global,
   });
 
-  const { onCondition: propsOnCondition, ConditionComponent } = useCondition({
+  const { onCondition: propsOnCondition } = useCondition({
     onCondition,
     screenType,
+    componentId: id,
   });
 
   const { realValue } = useChartValueMapField(processedValue, {
@@ -356,6 +358,7 @@ const Ali3DMap = (
   return (
     <>
       <ConditionComponent
+        componentId={id}
         className={classnames(styles['component-map-ali3d'], className)}
         style={merge(
           {

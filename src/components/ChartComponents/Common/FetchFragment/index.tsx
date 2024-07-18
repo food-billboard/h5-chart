@@ -1,8 +1,8 @@
-import { CompareFilterUtil } from '@/utils/Assist/FilterData';
-import { useUpdateEffect } from 'ahooks';
+import { useDeepCompareEffect, useUpdateEffect } from 'ahooks';
 import { noop } from 'lodash';
 import { useEffect, useRef } from 'react';
 import { connect } from 'umi';
+import { CompareFilterUtil } from '@/utils/Assist/FilterData';
 import { mapDispatchToProps, mapStateToProps } from './connect';
 
 export type TFetchFragmentProps = {
@@ -88,7 +88,7 @@ const FetchFragment = (props: TFetchFragmentProps) => {
     filterUtil.current?.compare(params);
   }, [params]);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     componentCondition.forEach((condition) => {
       reCondition(condition, initialState);
     });

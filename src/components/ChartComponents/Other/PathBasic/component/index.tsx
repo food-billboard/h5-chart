@@ -7,6 +7,7 @@ import { connect } from 'umi';
 import {
   useComponent,
   useCondition,
+  ConditionComponent,
 } from '@/components/ChartComponents/Common/Component/hook';
 import FetchFragment from '@/components/ChartComponents/Common/FetchFragment';
 import ColorSelect from '@/components/ColorSelect';
@@ -64,9 +65,10 @@ const _PathBasic = (
     global,
   });
 
-  const { onCondition: propsOnCondition, ConditionComponent } = useCondition({
+  const { onCondition: propsOnCondition } = useCondition({
     onCondition,
     screenType,
+    componentId: id,
   });
 
   const finalValue = useMemo(() => {
@@ -233,6 +235,7 @@ const _PathBasic = (
   return (
     <>
       <ConditionComponent
+        componentId={id}
         className={classnames(className, styles['component-other-path-basic'])}
         style={merge(
           {

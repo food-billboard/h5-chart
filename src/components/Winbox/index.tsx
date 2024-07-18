@@ -10,7 +10,7 @@ import 'winbox/dist/css/winbox.min.css';
 import { DEFAULT_THEME_COLOR_LIST } from '@/utils/Assist/Theme';
 
 export type WinBoxRef = {
-  open: () => void;
+  open: (visible?: boolean) => void;
 };
 
 const Winbox = forwardRef<
@@ -18,17 +18,19 @@ const Winbox = forwardRef<
   WinBoxPropType & {
     widthRate?: [number, number];
     heightRate?: [number, number];
+    onClose?: () => void;
   }
 >((props, ref) => {
   const {
     widthRate = [0.3, 0.6],
     heightRate = [0.3, 0.6],
+    onClose,
     ...nextProps
   } = props;
 
   const { width = 0, height = 0 } = useSize(() => document.body) || {};
 
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
 
   const [colorA, , colorB] = DEFAULT_THEME_COLOR_LIST;
 
@@ -38,9 +40,9 @@ const Winbox = forwardRef<
     ref,
     () => {
       return {
-        open: () => {
+        open: (visible) => {
           setVisible((prev) => {
-            return !prev;
+            return visible ?? !prev;
           });
         },
       };
@@ -48,7 +50,7 @@ const Winbox = forwardRef<
     [],
   );
 
-  if (visible) return null;
+  if (!visible) return null;
 
   return (
     <WinBox
@@ -62,9 +64,10 @@ const Winbox = forwardRef<
       {...nextProps}
       className={classnames(props.className, 'modern')}
       background={`linear-gradient(90deg, ${colorA}, ${colorB})`}
-      hide={visible}
+      hide={!visible}
       onClose={() => {
-        setVisible(true);
+        setVisible(false);
+        onClose?.();
       }}
     />
   );

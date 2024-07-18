@@ -5,6 +5,7 @@ import { useMemo, useRef, useCallback, useState } from 'react';
 import {
   useComponent,
   useCondition,
+  ConditionComponent,
 } from '@/components/ChartComponents/Common/Component/hook';
 import { DEFAULT_BORDER_RADIUS } from '@/components/ChartComponents/Common/Constants/defaultConfig';
 import FetchFragment from '@/components/ChartComponents/Common/FetchFragment';
@@ -57,9 +58,10 @@ const ImageBasic = (
     global,
   });
 
-  const { onCondition: propsOnCondition, ConditionComponent } = useCondition({
+  const { onCondition: propsOnCondition } = useCondition({
     onCondition,
     screenType,
+    componentId: id,
   });
 
   const finalValue = useMemo(() => {
@@ -101,6 +103,7 @@ const ImageBasic = (
   return (
     <>
       <ConditionComponent
+        componentId={id}
         className={componentClassName}
         style={merge(
           {

@@ -5,6 +5,7 @@ import { CSSProperties, useMemo, useRef, useCallback } from 'react';
 import {
   useComponent,
   useCondition,
+  ConditionComponent,
 } from '@/components/ChartComponents/Common/Component/hook';
 import FetchFragment from '@/components/ChartComponents/Common/FetchFragment';
 import ColorSelect from '@/components/ColorSelect';
@@ -47,9 +48,10 @@ const Text = (props: ComponentData.CommonComponentProps<TTextConfig>) => {
     global,
   });
 
-  const { onCondition: propsOnCondition, ConditionComponent } = useCondition({
+  const { onCondition: propsOnCondition } = useCondition({
     onCondition,
     screenType,
+    componentId: id,
   });
 
   const isLimit = useMemo(() => {
@@ -114,6 +116,7 @@ const Text = (props: ComponentData.CommonComponentProps<TTextConfig>) => {
   return (
     <>
       <ConditionComponent
+        componentId={id}
         className={componentClassName}
         style={merge(
           {
