@@ -49,7 +49,8 @@ const Component = (
   );
 
   const {
-    onCondition: propsOnCondition
+    onCondition: propsOnCondition,
+    actionAble
   } = useCondition({
     onCondition, 
     screenType,

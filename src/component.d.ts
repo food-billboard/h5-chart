@@ -684,8 +684,20 @@ declare namespace ComponentData {
     type: ComponentLineStyle;
   };
 
+  export type SetParamsChangeValue = {
+    // null 表示新增
+    prev: TParams | null;
+    // TParams 修改 false 删除
+    now: TParams | false;
+  };
+
+  export type SetParamsFunction = (
+    params: TParams[],
+    changeParams: SetParamsChangeValue[],
+  ) => void;
+
   export type TGlobalData = {
-    setParams: (params: TParams[]) => void;
+    setParams: SetParamsFunction;
     screenType: 'edit' | 'preview' | 'production';
     screenTheme: TScreenTheme['value'];
   };

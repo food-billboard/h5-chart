@@ -73,15 +73,18 @@ export const ConditionComponent = forwardRef<HTMLDivElement, DivProps>(
         <div
           {...childrenProps}
           style={{
-            pointerEvents: visible ? 'none' : 'all',
             ...childrenProps.style,
+            pointerEvents: visible ? 'none' : 'all',
           }}
         />
         <WinBox
           wrapperComponentRef={boxRef}
           widthRate={[0.4, 0.7]}
           heightRate={[0.4, 0.7]}
-          onClose={() => setVisible(false)}
+          onClose={() => {
+            setVisible(false);
+            EMITTER.emit(`${componentId}close`);
+          }}
         >
           <div {...childrenProps} />
         </WinBox>
@@ -101,6 +104,8 @@ export const useCondition = ({
   screenType: ComponentData.ComponentProps['global']['screenType'];
   componentId: string;
 }) => {
+  const [visible, setVisible] = useState(false);
+
   // 响应条件变化
   const internalOnCondition = useCallback(
     (
@@ -142,13 +147,25 @@ export const useCondition = ({
         style,
         modalVisible,
       });
+      setVisible(modalVisible);
 
       return result;
     },
     [onCondition, screenType, componentId],
   );
 
+  useEffect(() => {
+    function listener() {
+      setVisible(false);
+    }
+    EMITTER.addListener(`${componentId}close`, listener);
+    return () => {
+      EMITTER.removeListener(`${componentId}close` + 'close', listener);
+    };
+  }, []);
+
   return {
     onCondition: internalOnCondition,
+    actionAble: visible,
   };
 };

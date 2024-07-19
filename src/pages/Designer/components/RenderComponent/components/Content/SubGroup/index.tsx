@@ -88,6 +88,7 @@ const SubGroup = (props: {
         position: flag === 'H5' ? 'relative' : 'absolute',
       })}
       data-id={id}
+      componentId={id}
     >
       <Wrapper border={border}>
         <div
