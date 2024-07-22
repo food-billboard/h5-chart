@@ -185,10 +185,7 @@ export default {
         changeValue,
       }: {
         value: ComponentData.TParams[];
-        changeValue: {
-          prev: ComponentData.TParams;
-          now: ComponentData.TParams;
-        }[];
+        changeValue: ComponentData.SetParamsChangeValue[];
       },
       { put }: any,
     ) {
@@ -197,6 +194,10 @@ export default {
         EVENT_NAME_MAP.PARAMS_CHANGE,
         value,
         changeValue,
+        changeValue.map((item) => {
+          const { now, prev } = item;
+          return now ? now.id : prev?.id;
+        }),
       );
 
       yield put({
