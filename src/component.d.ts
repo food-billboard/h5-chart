@@ -591,7 +591,6 @@ declare namespace ComponentData {
   export type ComponentConditionConfig = {
     value: ComponentCondition[];
     initialState: 'visible' | 'hidden';
-    modalEnable: boolean;
   };
 
   export type ComponentTooltipAnimation = {
