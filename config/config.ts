@@ -164,6 +164,22 @@ const productionConfig: any = merge({}, commonConfig, {
   // chunks: ['antdesigns', 'vendors', 'commons', 'umi'],
 });
 
-export default defineConfig(
-  REACT_APP_ENV === 'prod' ? productionConfig : developmentConfig,
-);
+const raspberryProductionConfig: any = merge({}, productionConfig, {
+  define: {
+    'process.env.REACT_APP_ENV': 'prod-local',
+  },
+});
+
+let config: any;
+switch (REACT_APP_ENV) {
+  case 'prod':
+    config = productionConfig;
+    break;
+  case 'prod-local':
+    config = raspberryProductionConfig;
+    break;
+  default:
+    config = developmentConfig;
+}
+
+export default defineConfig(config);
