@@ -8,6 +8,8 @@
   "license": "MIT",
   "scripts": {
     "monaco-loader": "node ./scripts/MonacoEditorLoader.js",
+    "build-deploy:raspberry": "npm run build:raspberry && npm run deploy:raspberry",
+    "deploy:raspberry": "node ./scripts/RaspberryDeploy.js",
     "build:raspberry": "npm run monaco-loader && cross-env REACT_APP=prod REACT_APP_ENV=prod-local max build",
     "build:improve": "npm run monaco-loader && cross-env REACT_APP=improve REACT_APP_ENV=prod max build",
     "analyze:improve": "cross-env ANALYZE=1 REACT_APP_ENV=prod REACT_APP=improve max build",
@@ -153,6 +155,7 @@
     "commander": "^9.4.0",
     "compression-webpack-plugin": "^10.0.0",
     "cross-env": "^7.0.3",
+    "dotenv": "^16.4.5",
     "gh-pages": "^4.0.0",
     "inquirer": "^8.0.0",
     "koa": "^2.14.2",
@@ -161,6 +164,7 @@
     "lint-staged": "^10.0.7",
     "monaco-editor-webpack-plugin": "^7.0.1",
     "prettier": "^2.2.0",
+    "ssh2-sftp-client": "9.1.0",
     "string.prototype.replaceall": "^1.0.6",
     "typescript": "^4.1.2",
     "yorkie": "^2.0.0"
