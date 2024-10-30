@@ -5,17 +5,13 @@ import React, {
   forwardRef,
   useCallback,
   useState,
-  useRef,
   useEffect,
 } from 'react';
-import LazyLoadWrapper from '@/components/LazyLoad';
-import type { WinBoxRef } from '@/components/Winbox';
+import { connect } from 'umi';
+import WinBox from '@/components/Winbox';
+import { ConnectState } from '@/models/connect';
 
 const EMITTER = new EventEmitter();
-
-const WinBox = LazyLoadWrapper<any, WinBoxRef>(() => {
-  return import(/* webpackChunkName: "WinBox" */ '@/components/Winbox');
-});
 
 type DivProps = React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLDivElement>,
@@ -24,74 +20,90 @@ type DivProps = React.DetailedHTMLProps<
   componentId: string;
 };
 
-export const ConditionComponent = forwardRef<HTMLDivElement, DivProps>(
-  function (props, ref) {
-    const {
-      className: customClassName,
-      style: customStyle,
-      componentId,
-      ...nextProps
-    } = props;
+export const InternalConditionComponent = forwardRef<
+  HTMLDivElement,
+  DivProps & {
+    screenType: ComponentData.ScreenType;
+    scale: number;
+  }
+>(function (props, ref) {
+  const {
+    className: customClassName,
+    style: customStyle,
+    componentId,
+    screenType,
+    scale,
+    ...nextProps
+  } = props;
 
-    const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(false);
 
-    const [className, setClassName] = useState<string>('');
-    const [style, setStyle] = useState<CSSProperties>({});
+  const [className, setClassName] = useState<string>('');
+  const [style, setStyle] = useState<CSSProperties>({});
 
-    const boxRef = useRef<WinBoxRef>(null);
+  const childrenProps = {
+    ...nextProps,
+    ref,
+    className: classnames(customClassName, className),
+    style: {
+      ...customStyle,
+      ...style,
+    },
+  };
 
-    const childrenProps = {
-      ...nextProps,
-      ref,
-      className: classnames(customClassName, className),
-      style: {
-        ...customStyle,
-        ...style,
-      },
+  useEffect(() => {
+    function listener(config: {
+      className: string;
+      style: CSSProperties;
+      modalVisible: boolean;
+    }) {
+      const { className, style, modalVisible = false } = config;
+      setVisible(modalVisible);
+      setClassName(className);
+      setStyle(style);
+    }
+    EMITTER.addListener(componentId, listener);
+    return () => {
+      EMITTER.removeListener(componentId, listener);
     };
+  }, [componentId]);
 
-    useEffect(() => {
-      function listener(config: {
-        className: string;
-        style: CSSProperties;
-        modalVisible: boolean;
-      }) {
-        const { className, style, modalVisible = false } = config;
-        boxRef.current?.open(modalVisible);
-        setVisible(modalVisible);
-        setClassName(className);
-        setStyle(style);
-      }
-      EMITTER.addListener(componentId, listener);
-      return () => {
-        EMITTER.removeListener(componentId, listener);
-      };
-    }, [componentId]);
+  return (
+    <>
+      <div
+        {...childrenProps}
+        style={{
+          ...childrenProps.style,
+          pointerEvents: screenType === 'edit' || visible ? 'none' : 'all',
+        }}
+      />
+      <WinBox
+        // widthRate={[0.4, 0.7]}
+        // heightRate={[0.4, 0.7]}
+        onClose={() => {
+          setVisible(false);
+          EMITTER.emit(`${componentId}close`);
+        }}
+        visible={visible}
+        scale={scale / 100}
+      >
+        <div {...childrenProps} />
+      </WinBox>
+    </>
+  );
+});
 
-    return (
-      <>
-        <div
-          {...childrenProps}
-          style={{
-            ...childrenProps.style,
-            pointerEvents: visible ? 'none' : 'all',
-          }}
-        />
-        <WinBox
-          wrapperComponentRef={boxRef}
-          widthRate={[0.4, 0.7]}
-          heightRate={[0.4, 0.7]}
-          onClose={() => {
-            setVisible(false);
-            EMITTER.emit(`${componentId}close`);
-          }}
-        >
-          <div {...childrenProps} />
-        </WinBox>
-      </>
-    );
+export const ConditionComponent = connect(
+  (state: ConnectState) => {
+    return {
+      screenType: state.global.screenType,
+      scale: state.global.scale,
+    };
   },
-);
+  () => ({}),
+  null,
+  { forwardRef: true },
+)(InternalConditionComponent);
 
 export const useCondition = ({
   onCondition,
