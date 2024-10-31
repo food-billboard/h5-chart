@@ -231,7 +231,11 @@ const Designer = (props: {
         loading={loading}
       />
       <PageLoading value={loading} />
-      <FetchScreenComponent onLoad={onLoad} ref={requestRef} />
+      <FetchScreenComponent
+        onLoad={onLoad}
+        ref={requestRef}
+        screenType="edit"
+      />
     </ConfigProvider>
   );
 };

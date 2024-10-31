@@ -130,6 +130,7 @@ function Share(props: {
       <FetchScreenComponent
         needFetch={needFetch}
         fetchScreenShot={GlobalConfig.IS_IMPROVE_BACKEND}
+        screenType="preview"
       />
       <PasswordConfirm ref={passwordConfirmRef} onOk={onPasswordConfirm} />
     </PainterWrapper>
