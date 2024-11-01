@@ -8,7 +8,7 @@ export const gotoBlog = () => {
 
 export const gotoOperation = () => {
   window.open(
-    'http://47.97.27.23/api/backend/create-chart-docs/index.html',
+    `http://${process.env.RASPBERRY_IP}/api/backend/create-chart-docs/index.html`,
     '_blank',
   );
 };

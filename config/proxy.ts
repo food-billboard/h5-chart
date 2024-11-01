@@ -1,4 +1,4 @@
-export const API_DOMAIN = 'http://47.97.27.23';
+export const API_DOMAIN = `http://${process.env.RASPBERRY_IP}`;
 // export const API_DOMAIN = 'http://localhost:4000';
 const API_IMPROVE_URL = process.env.API_IMPROVE_URL;
 

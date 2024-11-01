@@ -18,7 +18,7 @@
 支持<b>纯前端版本</b>和<b>完整交互版本</b>。
 </div>
 
-## 😈   当前版本(1.21) 
+## 😈   当前版本(1.22) 
 
 <br/>
 
@@ -63,6 +63,7 @@
 如有兴趣或有问题也可以在[issue](https://github.com/food-billboard/create-chart/issues)中联系我。     
 
 ## 👇🏻  Changelog  
+[1.22](https://github.com/food-billboard/create-chart/blob/main/assets/docs/1.22.md)  
 [1.21](https://github.com/food-billboard/create-chart/blob/main/assets/docs/1.21.md)  
 [1.20](https://github.com/food-billboard/create-chart/blob/main/assets/docs/1.20.md)  
 [1.19](https://github.com/food-billboard/create-chart/blob/main/assets/docs/1.19.md)  
@@ -87,13 +88,13 @@
 [1.0](https://github.com/food-billboard/create-chart/blob/main/assets/docs/1.0.md)  
 
 ## 🔗  链接  
-[官网](http://47.97.27.23/api/backend/screen/index.html#/)  
+~~[官网](http://47.97.27.23/api/backend/screen/index.html#/)~~ （服务器过期了😅）  
 [静态版本官网](https://food-billboard.github.io/create-chart/index.html#/) (访问速度可能很慢，请谅解)      
-[操作文档](http://47.97.27.23/api/backend/create-chart-docs/index.html#/)  
+~~[操作文档](http://47.97.27.23/api/backend/create-chart-docs/index.html#/)~~ （服务器过期了😅）    
 
 ## 👀  引用  
 [一些边框和装饰的组件](https://github.com/DataV-Team/DataV)  
 [图片主题色获取](https://github.com/lokesh/color-thief)   
 
 ## 🔚  说在后头  
-目前版本稳定在`1.21`，已经过自己简单的测试，后续如有发现问题或者各位在使用过程中发现问题，都会尽量进行迭代处理。  
+目前版本稳定在`1.22`，已经过自己简单的测试，后续如有发现问题或者各位在使用过程中发现问题，都会尽量进行迭代处理。  

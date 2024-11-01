@@ -1,6 +1,7 @@
 // https://umijs.org/config/
 // @ts-ignore
 import CompressionPlugin from 'compression-webpack-plugin';
+import 'dotenv/config';
 import { merge } from 'lodash';
 import MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
 import { defineConfig } from 'umi';
@@ -29,6 +30,7 @@ const commonConfig = {
     'process.env.REACT_DEBUG': process.env.REACT_DEBUG,
     'process.env.API_IMPROVE_URL': process.env.API_IMPROVE_URL,
     'process.env.ACCESS_IMPROVE_URL': process.env.ACCESS_IMPROVE_URL,
+    'process.env.RASPBERRY_IP': process.env.RASPBERRY_IP,
   },
   hash: true,
   antd: {},
@@ -43,7 +45,7 @@ const commonConfig = {
       : [
           `
       window._AMapSecurityConfig = {
-        serviceHost:'http://47.97.27.23/_AMapService',  
+        serviceHost:'http://${process.env.RASPBERRY_IP}/_AMapService',  
       }
     `,
           `https://webapi.amap.com/maps?v=2.0&key=1605b2f5a0a90cde9c112f5ea32025d3`,
