@@ -24,7 +24,6 @@ export const InternalConditionComponent = forwardRef<
   HTMLDivElement,
   DivProps & {
     screenType: ComponentData.ScreenType;
-    scale: number;
   }
 >(function (props, ref) {
   const {
@@ -32,7 +31,6 @@ export const InternalConditionComponent = forwardRef<
     style: customStyle,
     componentId,
     screenType,
-    scale,
     ...nextProps
   } = props;
 
@@ -80,12 +78,13 @@ export const InternalConditionComponent = forwardRef<
       <WinBox
         // widthRate={[0.4, 0.7]}
         // heightRate={[0.4, 0.7]}
-        onClose={() => {
-          setVisible(false);
-          EMITTER.emit(`${componentId}close`);
+        onVisibleChange={(visible) => {
+          if (!visible) {
+            setVisible(false);
+            EMITTER.emit(`${componentId}close`);
+          }
         }}
         visible={visible}
-        scale={scale / 100}
       >
         <div {...childrenProps} />
       </WinBox>
@@ -97,7 +96,6 @@ export const ConditionComponent = connect(
   (state: ConnectState) => {
     return {
       screenType: state.global.screenType,
-      scale: state.global.scale,
     };
   },
   () => ({}),

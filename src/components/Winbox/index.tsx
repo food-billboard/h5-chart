@@ -13,6 +13,7 @@ import {
 } from 'ahooks';
 import { Button, Space } from 'antd';
 import classnames from 'classnames';
+import { isNil } from 'lodash';
 import {
   forwardRef,
   useImperativeHandle,
@@ -26,19 +27,24 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 import { Rnd, RndResizeCallback, RndDragCallback } from 'react-rnd';
+import { connect } from 'umi';
 import { DEFAULT_THEME_COLOR_LIST } from '@/utils/Assist/Theme';
+import { mapStateToProps, mapDispatchToProps } from './connect';
 import styles from './index.less';
+import { useClientSize } from './utils';
 
 export type WinBoxRef = {
   open: (visible?: boolean) => void;
 };
+
+// 1、普通状态保证窗口不脱离视口
+// 2、铺满状态保证窗口不脱离视口
 
 const Winbox = forwardRef<
   WinBoxRef,
   {
     widthRate?: [number, number];
     heightRate?: [number, number];
-    onClose?: () => void;
     className?: string;
     style?: CSSProperties;
     children?: ReactNode;
@@ -51,12 +57,12 @@ const Winbox = forwardRef<
     title?: ReactNode;
     actionIgnore?: string[];
     scale: number;
+    screenType: ComponentData.ScreenType;
   }
 >((props, ref) => {
   const {
     widthRate = [0.3, 0.6],
     heightRate = [0.3, 0.6],
-    onClose,
     children,
     defaultWidth = 300,
     defaultHeight = 200,
@@ -66,16 +72,26 @@ const Winbox = forwardRef<
     style,
     actionIgnore,
     visible: _visible,
+    scale: propsScale,
+    screenType,
+    onVisibleChange,
     ...nextProps
   } = props;
 
-  const { width = 0, height = 0 } = useSize(() => document.body) || {};
+  // 视图的宽高
+  const [{ width: clientWidth, height: clientHeight }, , getClientSize] =
+    useClientSize();
+
+  // 大屏的宽高
+  const { width: screenWidth = 0, height: screenHeight = 0 } =
+    useSize(() => document.body) || {};
 
   const [visible, setVisible] = useControllableValue<boolean>(props, {
     valuePropName: 'visible',
     trigger: 'onVisibleChange',
     defaultValue: false,
   });
+  // 窗口的宽高
   const [rndWidth, setRndWidth] = useState<number>(defaultWidth);
   const [rndHeight, setRndHeight] = useState<number>(defaultHeight);
   const [rndX, setRndX, getRndX] = useGetState<number | undefined>(
@@ -84,6 +100,7 @@ const Winbox = forwardRef<
   const [rndY, setRndY, getRndY] = useGetState<number | undefined>(
     propsDefaultY,
   );
+  // 铺满浏览器
   const [expandScreen, { set: setExpandScreen, toggle: toggleExpandScreen }] =
     useToggle(false);
 
@@ -105,21 +122,52 @@ const Winbox = forwardRef<
 
   const [colorA, , colorB] = DEFAULT_THEME_COLOR_LIST;
 
+  const scale = useMemo(() => {
+    return screenType === 'edit' ? 1 : propsScale / 100;
+  }, [propsScale, screenType]);
+
   const { defaultX, defaultY } = useMemo(() => {
+    let defaultX!: number;
+    let defaultY!: number;
+    if (isNil(propsDefaultX)) {
+      if (clientWidth >= screenWidth) {
+        defaultX = screenWidth - defaultWidth - 60;
+      } else {
+        defaultX =
+          screenWidth / 2 + clientWidth / scale / 2 - defaultWidth - 60;
+      }
+    } else {
+      defaultX = propsDefaultX;
+    }
+    if (isNil(propsDefaultY)) {
+      if (clientHeight >= screenHeight) {
+        defaultY = screenHeight - defaultHeight - 60;
+      } else {
+        defaultY =
+          screenHeight / 2 + clientHeight / scale / 2 - defaultHeight - 60;
+      }
+    } else {
+      defaultY = propsDefaultY;
+    }
+
     return {
-      defaultX: propsDefaultX ?? width - defaultWidth - 60,
-      defaultY: propsDefaultY ?? height - defaultHeight - 60,
+      defaultX: defaultX,
+      defaultY: defaultY,
     };
   }, [
     propsDefaultX,
     propsDefaultY,
-    width,
-    height,
+    screenWidth,
+    screenHeight,
     defaultWidth,
     defaultHeight,
+    clientWidth,
+    clientHeight,
+    scale,
   ]);
 
   const handleExpand = useCallback(() => {
+    // 取消平铺
     if (expandScreen) {
       const { width, height, x, y } = expandBeforeInfo.current;
       setRndWidth(width);
@@ -127,19 +175,43 @@ const Winbox = forwardRef<
       setRndX(x);
       setRndY(y);
     } else {
+      // 平铺
       expandBeforeInfo.current = {
         width: rndWidth,
         height: rndHeight,
         x: rndX!,
         y: rndY!,
       };
-      setRndWidth(width);
-      setRndHeight(height);
-      setRndX(0);
-      setRndY(0);
+      const scaleClientWidth = clientWidth / scale;
+      const scaleClientHeight = clientHeight / scale;
+      if (clientWidth >= screenWidth) {
+        setRndWidth(screenWidth);
+        setRndX(0);
+      } else {
+        setRndWidth(scaleClientWidth);
+        setRndX(screenWidth / 2 - scaleClientWidth / 2);
+      }
+      if (clientHeight >= screenHeight) {
+        setRndHeight(screenHeight);
+        setRndY(0);
+      } else {
+        setRndHeight(scaleClientHeight);
+        setRndY(screenHeight / 2 - scaleClientHeight / 2);
+      }
     }
     toggleExpandScreen();
-  }, [expandScreen, rndWidth, rndHeight, rndX, rndY, width, height]);
+  }, [
+    expandScreen,
+    rndWidth,
+    rndHeight,
+    rndX,
+    rndY,
+    screenWidth,
+    screenHeight,
+    clientWidth,
+    clientHeight,
+    scale,
+  ]);
 
   const handleClose = useCallback(() => {
     setVisible(false);
@@ -160,8 +232,12 @@ const Winbox = forwardRef<
     const { width, height } = delta;
     const { x, y } = position;
     setRndX(x), setRndY(y);
-    setRndWidth(width);
-    setRndHeight(height);
+    setRndWidth((prev) => {
+      return prev + width;
+    });
+    setRndHeight((prev) => {
+      return prev + height;
+    });
   };
 
   useImperativeHandle(
@@ -186,19 +262,20 @@ const Winbox = forwardRef<
   }, [visible]);
 
   useEffect(() => {
-    if (getRndX() === undefined) {
+    if (getRndX() === undefined || !visible) {
       setRndX(defaultX);
     }
-    if (getRndY() === undefined) {
+    if (getRndY() === undefined || !visible) {
       setRndY(defaultY);
     }
-  }, [defaultX, defaultY]);
+  }, [defaultX, defaultY, visible]);
 
   if (!visible) return null;
 
   return createPortal(
     <Rnd
       {...nextProps}
+      scale={scale}
       style={{
         ...style,
         zIndex: 1001,
@@ -218,8 +295,8 @@ const Winbox = forwardRef<
         height: rndHeight,
       }}
       position={{
-        x: rndX || defaultX,
-        y: rndY || defaultY,
+        x: rndX ?? defaultX,
+        y: rndY ?? defaultY,
       }}
       // minWidth={Math.max(width * widthRate[0], 350)}
       // minHeight={height * heightRate[0]}
@@ -274,4 +351,6 @@ const Winbox = forwardRef<
   );
 });
 
-export default Winbox;
+export default connect(mapStateToProps, mapDispatchToProps, null, {
+  forwardRef: true,
+})(Winbox);
