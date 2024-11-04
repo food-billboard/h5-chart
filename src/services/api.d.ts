@@ -166,61 +166,20 @@ declare namespace API_SCREEN {
     _id: string;
     type: 'screen' | 'model';
   };
-}
-
-declare namespace API_MOCK {
-  export type TGetMockKindListData = {
-    id: string;
-    value: string;
-    description: string;
-  };
-}
-
-declare namespace API_THIRD {
-  export type TWeatherParams = {
-    city: string;
-  };
-
-  export type TWeatherData = {
-    realtime: {
-      info: string;
-      wid: string;
-      temperature: string;
-      humidity: string;
-      direct: string;
-      power: string;
-      aqi: string;
-    };
-  };
-}
-
-declare namespace API_IMPROVE {
-  export type ResponseListData<T = any> = {
-    data: {
-      res: {
-        list: T[];
-        total: number;
-      };
-    };
-  };
 
   export type MediaParams = {
     current: number;
     pageSize: number;
-    classic?: string;
+    _id?: string;
   };
 
   export type MediaData = {
-    // 文件对应的数据id
-    collectionId: string;
-    // 文件对应的数据集名
-    collectionName: string;
-    created: string;
-    // 文件
-    file: string;
-    // 文件id
-    id: string;
-    updated: string;
+    createdAt: string;
+    updatedAt: string;
+    src: string;
+    image_id: string;
+    _id: string;
+    classify: string;
   };
 
   export type MediaDataRes = {
@@ -229,25 +188,28 @@ declare namespace API_IMPROVE {
   };
 
   export type MediaClassicData = {
-    label: string;
-    value: string;
+    name: string;
+    _id: string;
+    createdAt: string;
+    updatedAt: string;
   };
 
   export type AddMediaClassicParams = {
-    label: string;
+    name: string;
   };
 
   export type UpdateMediaClassParams = AddMediaClassicParams & {
-    value: string;
+    _id: string;
   };
 
   export type AddMediaDataParams = {
-    collectionId: string;
-    id: string;
-    file: string;
+    _id: string;
+    image: string;
   };
 
-  export type DeleteMediaDataParams = AddMediaDataParams;
+  export type DeleteMediaDataParams = {
+    _id: string;
+  };
 
   export type GetScreenShotListParams = {
     _id: string;
@@ -282,6 +244,32 @@ declare namespace API_IMPROVE {
     type: 'BUG' | 'RECOMMEND' | 'QUESTION';
     description: string;
     image?: File[];
+  };
+}
+
+declare namespace API_MOCK {
+  export type TGetMockKindListData = {
+    id: string;
+    value: string;
+    description: string;
+  };
+}
+
+declare namespace API_THIRD {
+  export type TWeatherParams = {
+    city: string;
+  };
+
+  export type TWeatherData = {
+    realtime: {
+      info: string;
+      wid: string;
+      temperature: string;
+      humidity: string;
+      direct: string;
+      power: string;
+      aqi: string;
+    };
   };
 }
 

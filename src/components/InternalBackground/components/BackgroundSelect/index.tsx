@@ -4,6 +4,7 @@ import { Pagination, Row, Col, Tabs, App } from 'antd';
 import type { ModalProps } from 'antd';
 import type { UploadFile } from 'antd/es/upload/interface';
 import classnames from 'classnames';
+import { get } from 'lodash';
 import {
   ReactNode,
   useCallback,
@@ -24,9 +25,8 @@ import {
   addClassic,
   updateClassic,
   deleteMediaData,
+  addMediaData,
 } from '@/services';
-import GlobalConfig from '@/utils/Assist/GlobalConfig';
-import { createImproveUploadResultFileUrl } from '@/utils/Assist/Upload';
 import ImageUpload from '../../../ImageUpload';
 import BackgroundMap from '../Background';
 import BackgroundRender from '../BackgroundRender';
@@ -34,6 +34,7 @@ import AddClassic, { AddClassicRef } from './components/AddClassic';
 import styles from './index.less';
 
 const LOCAL_BACKGROUND_LIST = Object.entries(BackgroundMap);
+const LOCAL_BACKGROUND_LIST_TOTAL = LOCAL_BACKGROUND_LIST.length;
 
 export type BackgroundData = {
   label: string;
@@ -68,15 +69,13 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
     const [visible, setVisible] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [currentClassic, setCurrentClassic] = useState('');
-    const [improveDataSource, setImproveDataSource] = useState<
+    const [serviceDataSource, setServiceDataSource] = useState<
       BackgroundData[]
     >([]);
-    const [improveClassicDataSource, setImproveClassicDataSource] = useState<
-      API_IMPROVE.MediaClassicData[]
+    const [classicDataSource, setClassicDataSource] = useState<
+      API_SCREEN.MediaClassicData[]
     >([]);
-    const [total, setTotal] = useState(
-      GlobalConfig.IS_IMPROVE_BACKEND ? 0 : LOCAL_BACKGROUND_LIST.length,
-    );
+    const [total, setTotal] = useState(0);
 
     const addClassicRef = useRef<AddClassicRef>(null);
 
@@ -93,38 +92,33 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
 
     const classicItems = useMemo(() => {
       return [
-        {
-          label: '全部',
-          key: '',
-          closable: false,
-        },
-        ...improveClassicDataSource.map((item) => {
+        ...classicDataSource.map((item) => {
           return {
             label: (
               <>
-                {item.label}
+                {item.name}
                 {mode === 'editable' && (
                   <EditOutlined
                     className="m-l-4"
-                    onClick={() =>
-                      addClassicRef.current?.open({
-                        label: item.label,
-                        value: item.value,
-                      })
-                    }
+                    onClick={() => addClassicRef.current?.open(item)}
                   />
                 )}
               </>
             ),
-            key: item.value,
+            key: item._id,
             closable: true,
             closeIcon: <DeleteOutlined />,
           };
         }),
+        {
+          label: '内置背景',
+          key: 'internal',
+          closable: false,
+        },
       ];
-    }, [improveClassicDataSource]);
+    }, [classicDataSource]);
 
-    // 普通大屏获取获取
+    // 内置背景获取
     const normalDataSource = useMemo(() => {
       return LOCAL_BACKGROUND_LIST.slice(
         (currentPage - 1) * 10,
@@ -140,39 +134,57 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
     }, [currentPage]);
 
     const dataSource = useMemo(() => {
-      return GlobalConfig.IS_IMPROVE_BACKEND || mode === 'editable'
-        ? improveDataSource
+      return currentClassic !== 'internal'
+        ? serviceDataSource
         : normalDataSource;
-    }, [normalDataSource, improveDataSource]);
+    }, [normalDataSource, serviceDataSource]);
 
     const tabBarExtraContent = useMemo(() => {
       if (mode === 'select') return null;
       return <></>;
     }, [mode]);
 
-    // improve 获取数据
+    // 获取分类数据
+    const fetchClassifyData = async () => {
+      const data: any = await getMediaClassicList({
+        currPage: 0,
+        pageSize: 999,
+      });
+      const list = get(data, 'res.data.list') || [];
+      setClassicDataSource(list);
+      return list;
+    };
+
+    // 获取数据
     const fetchData = useCallback(
       async ({ current, classic }: { current: number; classic: string }) => {
-        if (!GlobalConfig.IS_IMPROVE_BACKEND) return;
+        if (!classic) {
+          return;
+        }
+        if (classic === 'internal') {
+          setTotal(LOCAL_BACKGROUND_LIST_TOTAL);
+          setServiceDataSource([]);
+          return;
+        }
         setFetchLoading(true);
-        const data = await getMediaList({
+        const result: any = await getMediaList({
           current,
           pageSize: pageSize.current,
-          classic,
+          _id: classic,
         });
-        setImproveDataSource(
-          data.list.map((item) => {
+        setServiceDataSource(
+          result.res.data.list.map((item: any) => {
             return {
               ...item,
-              value: createImproveUploadResultFileUrl(item),
-              image: createImproveUploadResultFileUrl(item),
-              classic: item.collectionId,
+              value: item._id,
+              image: item.src,
+              classic: item.classify,
               // 没有label
               label: '',
             };
           }),
         );
-        setTotal(data.total);
+        setTotal(result.res.data.total);
         setFetchLoading(false);
       },
       [],
@@ -182,8 +194,8 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
     const handleDeleteClassic = useCallback(
       async (targetKey) => {
         await deleteClassic(targetKey);
-        const index = improveClassicDataSource.findIndex(
-          (item) => item.value === targetKey,
+        const index = classicDataSource.findIndex(
+          (item) => item._id === targetKey,
         );
         let nextClassic = currentClassic;
         // 相同则切换至最近一个
@@ -191,30 +203,29 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
           if (!index) {
             nextClassic = '';
           } else {
-            nextClassic = improveClassicDataSource[index - 1].value;
+            nextClassic = classicDataSource[index - 1]._id;
           }
           setCurrentPage(1);
         }
-        improveClassicDataSource.splice(index, 1);
-        setImproveClassicDataSource([...improveClassicDataSource]);
+        classicDataSource.splice(index, 1);
+        setClassicDataSource([...classicDataSource]);
         setCurrentClassic(nextClassic);
       },
-      [improveClassicDataSource, currentClassic],
+      [classicDataSource, currentClassic],
     );
 
     // 新增或者修改分类
-    const handleAddClassic = useCallback(async ({ label, value }) => {
+    const handleAddClassic = useCallback(async ({ name, _id }) => {
       try {
         let result: any;
-        if (value) {
-          result = await updateClassic({ label, value });
+        if (_id) {
+          result = await updateClassic({ name, _id });
         } else {
-          result = await addClassic({ label });
+          result = await addClassic({ name });
         }
-        getMediaClassicList();
         setCurrentPage(1);
-        setCurrentClassic((result as string) || value);
-        // TODO 根据是否返回了分类的id来判断是否成功或失败
+        setCurrentClassic(get(result, 'res.data.data') || _id);
+        fetchClassifyData();
         return true;
       } catch (err) {
         return false;
@@ -252,8 +263,8 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
 
     // 编辑模式下的图片删除
     const onDeleteBackground = useCallback(
-      async ({ file, id, collectionId }) => {
-        await deleteMediaData({ file, id, collectionId });
+      async ({ _id }) => {
+        await deleteMediaData({ _id });
         if (currentPage === 1) {
           fetchData({ current: currentPage, classic: currentClassic });
         }
@@ -267,15 +278,15 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
       async (fileList: UploadFile<any>[]) => {
         const [target] = fileList;
         if (target?.status === 'done') {
-          const fileUrl = target.url as string;
-          // ! 如果上传和新增不是一步走的话，需要在这里添加媒体资源
+          const imageId = target.response?.id || '';
+          await addMediaData({ _id: currentClassic, image: imageId });
           if (currentPage === 1) {
             fetchData({ current: currentPage, classic: currentClassic });
           }
           setCurrentPage(1);
         }
       },
-      [currentClassic, currentPage],
+      [currentClassic, currentPage, currentClassic],
     );
 
     useImperativeHandle(
@@ -299,19 +310,18 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
     }, [currentPage, currentClassic]);
 
     useEffect(() => {
-      if (!GlobalConfig.IS_IMPROVE_BACKEND) return;
-      // ? 因为没有分类，所以直接设置一个全部
-      // 后面有需要把这个注释打开
-      // getMediaClassicList().then((data) => {
-      //   setImproveClassicDataSource([]);
-      // });
+      fetchClassifyData().then((list) => {
+        if (list.length) {
+          setCurrentClassic(list[0]._id);
+        } else {
+          setCurrentClassic('internal');
+        }
+      });
     }, []);
 
     useEffect(() => {
       pageSize.current =
-        GlobalConfig.IS_IMPROVE_BACKEND && mode === 'editable' && currentClassic
-          ? 11
-          : 12;
+        mode === 'editable' && currentClassic !== 'internal' ? 11 : 12;
     }, [mode, currentClassic]);
 
     const children = (
@@ -324,15 +334,15 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
         style={style}
       >
         <Tabs
-          // ? 现在没有分类，所以先去掉，后面如果加了分类再改回来
-          // type={mode === 'editable' ? 'editable-card' : 'line'}
+          type={mode === 'editable' ? 'editable-card' : 'line'}
           onEdit={onTabEdit}
           items={classicItems}
           onChange={onTabChange}
           tabBarExtraContent={tabBarExtraContent}
+          activeKey={currentClassic}
         />
         <Row gutter={24}>
-          {GlobalConfig.IS_IMPROVE_BACKEND && mode === 'editable' && (
+          {mode === 'editable' && currentClassic !== 'internal' && (
             <Col span={6}>
               <ImageUpload
                 value={[]}

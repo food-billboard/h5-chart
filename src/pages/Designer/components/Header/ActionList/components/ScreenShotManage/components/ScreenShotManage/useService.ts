@@ -19,30 +19,28 @@ const useService = ({ screen }: { screen: string }) => {
   const { getState } = useAnyDva();
 
   const [localDataSource = {}, setLocalDataSource, getLocalDataSource] =
-    useLocalStorage<API_IMPROVE.LocalScreenShotData>(
+    useLocalStorage<API_SCREEN.LocalScreenShotData>(
       LocalConfig.STATIC_SCREEN_SHOT_SAVE_KEY,
       {},
     );
 
   const [dataSource, setDataSource] = useState<
-    API_IMPROVE.GetScreenShotListData[]
+    API_SCREEN.GetScreenShotListData[]
   >([]);
 
   // 获取数据
   const fetchData = async () => {
-    if (GlobalConfig.IS_IMPROVE_BACKEND) {
+    if (GlobalConfig.IS_STATIC) {
+      // ? 不需要获取数据，直接从本地storage拿
+    } else {
       const result = await getScreenShotList({ _id: screen });
       setDataSource(result || []);
-    } else if (GlobalConfig.IS_STATIC) {
-      // ? 不需要获取数据，直接从本地storage拿
     }
   };
 
   // 新增
   const onAdd = async (callback: any = fetchData) => {
-    if (GlobalConfig.IS_IMPROVE_BACKEND) {
-      await addScreenShot({ _id: screen });
-    } else if (GlobalConfig.IS_STATIC) {
+    if (GlobalConfig.IS_STATIC) {
       try {
         const { screenData, components, version } = getState().global;
         const localDataSource = getLocalDataSource() || {};
@@ -71,6 +69,8 @@ const useService = ({ screen }: { screen: string }) => {
         console.error(err);
         message.info('快照生成失败');
       }
+    } else {
+      await addScreenShot({ _id: screen });
     }
     callback();
   };
@@ -80,9 +80,7 @@ const useService = ({ screen }: { screen: string }) => {
     { value, _id }: { value: string; _id: string },
     callback: any = fetchData,
   ) => {
-    if (GlobalConfig.IS_IMPROVE_BACKEND) {
-      await updateScreenShot({ screen, _id, description: value });
-    } else if (GlobalConfig.IS_STATIC) {
+    if (GlobalConfig.IS_STATIC) {
       try {
         const localDataSource = getLocalDataSource() || {};
         await setLocalDataSource({
@@ -101,6 +99,8 @@ const useService = ({ screen }: { screen: string }) => {
         console.error(err);
         message.info('操作失败');
       }
+    } else {
+      await updateScreenShot({ screen, _id, description: value });
     }
     callback();
   };
@@ -110,9 +110,7 @@ const useService = ({ screen }: { screen: string }) => {
     { _id }: { _id: string },
     callback: any = fetchData,
   ) => {
-    if (GlobalConfig.IS_IMPROVE_BACKEND) {
-      await deleteScreenShot({ screen, _id });
-    } else if (GlobalConfig.IS_STATIC) {
+    if (GlobalConfig.IS_STATIC) {
       try {
         const localDataSource = getLocalDataSource() || {};
         await setLocalDataSource({
@@ -125,15 +123,15 @@ const useService = ({ screen }: { screen: string }) => {
         console.error(err);
         message.info('操作失败');
       }
+    } else {
+      await deleteScreenShot({ screen, _id });
     }
     callback();
   };
 
   // 使用
   const onUse = async ({ _id }: { _id: string }, callback: any = fetchData) => {
-    if (GlobalConfig.IS_IMPROVE_BACKEND) {
-      await useScreenShot({ screen, _id });
-    } else if (GlobalConfig.IS_STATIC) {
+    if (GlobalConfig.IS_STATIC) {
       try {
         const localDataSource = getLocalDataSource() || {};
         await setLocalDataSource({
@@ -149,6 +147,8 @@ const useService = ({ screen }: { screen: string }) => {
         console.error(err);
         message.info('操作失败');
       }
+    } else {
+      await useScreenShot({ screen, _id });
     }
     callback();
   };
@@ -158,9 +158,7 @@ const useService = ({ screen }: { screen: string }) => {
     { _id }: { _id: string },
     callback: any = fetchData,
   ) => {
-    if (GlobalConfig.IS_IMPROVE_BACKEND) {
-      await coverScreenShot({ screen, _id });
-    } else if (GlobalConfig.IS_STATIC) {
+    if (GlobalConfig.IS_STATIC) {
       try {
         const { screenData, components, version } = getState().global;
         const localDataSource = getLocalDataSource() || {};
@@ -184,6 +182,8 @@ const useService = ({ screen }: { screen: string }) => {
         console.error(err);
         message.info('操作失败');
       }
+    } else {
+      await coverScreenShot({ screen, _id });
     }
     callback();
   };

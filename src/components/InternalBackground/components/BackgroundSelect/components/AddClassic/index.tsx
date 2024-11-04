@@ -9,12 +9,12 @@ import {
 import Modal from '@/components/FocusModal';
 
 export type AddClassicRef = {
-  open: (params?: API_IMPROVE.UpdateMediaClassParams) => void;
+  open: (params?: API_SCREEN.UpdateMediaClassParams) => void;
 };
 
 export type AddClassicProps = {
   onConfirm: (
-    data: Partial<API_IMPROVE.UpdateMediaClassParams>,
+    data: Partial<API_SCREEN.UpdateMediaClassParams>,
   ) => Promise<boolean>;
 };
 
@@ -28,21 +28,21 @@ const AddClassic = forwardRef<AddClassicRef, AddClassicProps>((props, ref) => {
 
   const { message } = App.useApp();
 
-  const baseValue = useRef<Partial<API_IMPROVE.UpdateMediaClassParams>>({});
+  const baseValue = useRef<Partial<API_SCREEN.UpdateMediaClassParams>>({});
 
   const close = () => setVisible(false);
 
-  const open = (value?: API_IMPROVE.UpdateMediaClassParams) => {
+  const open = (value?: API_SCREEN.UpdateMediaClassParams) => {
     baseValue.current = value || {};
     setVisible(true);
-    setLabel(value?.label || '');
+    setLabel(value?.name || '');
   };
 
   const onOk = useCallback(async () => {
     if (!label) return message.info('请输入分类名称');
     setLoading(true);
-    const result = await onConfirm({ ...baseValue.current, label });
-    setLoading(true);
+    const result = await onConfirm({ ...baseValue.current, name: label });
+    setLoading(false);
     if (result) {
       setVisible(false);
     }

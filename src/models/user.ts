@@ -107,11 +107,7 @@ export default {
         });
       };
       //重置成功跳转至登录
-      if (GlobalConfig.IS_IMPROVE_BACKEND) {
-        if (response.id) {
-          action();
-        }
-      } else if (response.token) {
+      if (response.token) {
         action();
       }
     },
@@ -133,11 +129,7 @@ export default {
         });
       };
       //重置成功跳转至登录
-      if (GlobalConfig.IS_IMPROVE_BACKEND) {
-        if (response) {
-          action();
-        }
-      } else if (response.status === 'ok') {
+      if (response.status === 'ok') {
         action();
       }
     },

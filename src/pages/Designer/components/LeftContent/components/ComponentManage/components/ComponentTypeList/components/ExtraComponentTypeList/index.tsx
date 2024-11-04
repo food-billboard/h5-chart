@@ -123,7 +123,7 @@ export const EXTRA_TYPE_EMPTY_DESC_MAP = {
 
 export const useExtraComponentTypeList = () => {
   const extraTypeList = useMemo(() => {
-    if (!GlobalConfig.IS_IMPROVE_BACKEND) return [];
+    if (GlobalConfig.IS_STATIC) return [];
     return [
       {
         onClick: () => {

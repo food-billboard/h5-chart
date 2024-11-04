@@ -42,9 +42,7 @@ class LocalUpload extends Component<{
       const [target] = fileList;
       try {
         const baseUploadFile = createBaseUploadFile(target);
-        if (GlobalConfig.IS_IMPROVE_BACKEND) {
-          // TODO
-        } else if (GlobalConfig.IS_STATIC) {
+        if (GlobalConfig.IS_STATIC) {
           message.info('静态版本暂不支持文件上传');
         } else {
           UploadImage(baseUploadFile, {

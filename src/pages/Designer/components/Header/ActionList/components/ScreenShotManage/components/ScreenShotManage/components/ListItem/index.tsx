@@ -14,7 +14,7 @@ import styles from './index.less';
 
 const ListItem = (props: {
   screen: string;
-  value: API_IMPROVE.GetScreenShotListData;
+  value: API_SCREEN.GetScreenShotListData;
   onUpdate: () => Promise<any>;
 }) => {
   const { value, onUpdate, screen } = props;

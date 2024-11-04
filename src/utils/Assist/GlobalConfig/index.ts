@@ -5,7 +5,6 @@ import {
 } from '../../constants';
 
 const isStatic = process.env.REACT_APP === 'static';
-const isImportBackend = process.env.REACT_APP === 'improve';
 const isDebug = process.env.REACT_DEBUG === 'debug';
 
 class GlobalConfig {
@@ -15,11 +14,6 @@ class GlobalConfig {
   COMPONENT_HIDDEN = isDebug && true;
 
   // --debug
-
-  // ? 1.22
-  // 是否为优化分支版本
-  // 优化分支版本是存在后端优化的版本，当中会有一些特殊的接口啥的配置
-  IS_IMPROVE_BACKEND = isImportBackend;
 
   // 是否是简易前端版本
   IS_STATIC = isStatic;
@@ -50,7 +44,7 @@ class GlobalConfig {
   };
 
   // 是否开启 mock数据配置
-  ENABLE_MOCK_DATA_CONFIG = !isImportBackend;
+  ENABLE_MOCK_DATA_CONFIG = !isStatic;
 
   // mock数据请求的url地址
   // ? 不知道为什么赋值不了，改成get/set
@@ -87,8 +81,7 @@ class GlobalConfig {
     | 'auto'
     | 'manual'
     | 'auto-all'
-    | 'auto-all-storage' =
-    isStatic || isImportBackend ? 'auto-all-storage' : 'auto';
+    | 'auto-all-storage' = isStatic ? 'auto-all-storage' : 'auto';
 
   // 是否为自动保存类型
   isAutoSaveType() {

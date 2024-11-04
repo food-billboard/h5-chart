@@ -172,8 +172,6 @@ const Login = (props: { login: (value: any) => any }) => {
   const [fetchLoading, setFetchLoading] = useState<boolean>(false);
 
   const tips = useMemo(() => {
-    if (GlobalConfig.IS_IMPROVE_BACKEND)
-      return <div style={{ marginBottom: 8 }}></div>;
     return (
       <div
         style={{
@@ -196,10 +194,7 @@ const Login = (props: { login: (value: any) => any }) => {
     if (fetchLoading) return;
     const realEmail = email.trim();
     const realMobile = mobile.trim();
-    if (
-      !(GlobalConfig.IS_IMPROVE_BACKEND ? realEmail : realMobile) ||
-      !password
-    ) {
+    if (!realMobile || !password) {
       return message.info('账号或密码错误');
     }
     setFetchLoading(true);
@@ -247,11 +242,7 @@ const Login = (props: { login: (value: any) => any }) => {
       action={action}
       onSubmit={handleLogin}
     >
-      {GlobalConfig.IS_IMPROVE_BACKEND ? (
-        <Email value={email} onChange={setEmail} />
-      ) : (
-        <Mobile value={mobile} onChange={setMobile} />
-      )}
+      <Mobile value={mobile} onChange={setMobile} />
       <Password value={password} onChange={setPassword} />
     </CommonBackground>
   );

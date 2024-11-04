@@ -26,18 +26,6 @@ const Avatar = (props: { logout: () => void; userInfo: any }) => {
         label: <a onClick={handleLogout}>退出登录</a>,
         key: 'logout',
       },
-      ...(GlobalConfig.IS_IMPROVE_BACKEND
-        ? [
-            {
-              label: <a onClick={handleResetPassword}>重置密码</a>,
-              key: 'reset-password',
-            },
-            // {
-            //   label: <a onClick={handleUserSet}>用户设置</a>,
-            //   key: 'user-set',
-            // },
-          ]
-        : []),
     ];
   }, [handleLogout, handleResetPassword]);
 

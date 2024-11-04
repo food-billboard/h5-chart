@@ -22,7 +22,7 @@ const Register = (props: { register: (value: any) => any }) => {
     const realMobile = mobile.trim();
     const realEmail = email.trim();
     const realCaptcha = captcha.trim();
-    if (!realMobile && !GlobalConfig.IS_IMPROVE_BACKEND) {
+    if (!realMobile) {
       return message.info('请输入手机号');
     }
     if (!password) {
@@ -31,7 +31,7 @@ const Register = (props: { register: (value: any) => any }) => {
     if (!realEmail) {
       return message.info('请输入邮箱');
     }
-    if (!realCaptcha && !GlobalConfig.IS_IMPROVE_BACKEND) {
+    if (!realCaptcha) {
       return message.info('请输入验证码');
     }
 
@@ -66,19 +66,15 @@ const Register = (props: { register: (value: any) => any }) => {
 
   return (
     <CommonBackground title="注册" action={action} onSubmit={handleRegister}>
-      {!GlobalConfig.IS_IMPROVE_BACKEND && (
-        <Mobile value={mobile} onChange={setMobile} />
-      )}
+      <Mobile value={mobile} onChange={setMobile} />
       <Email value={email} onChange={setEmail} />
       <Password value={password} onChange={setPassword} />
-      {!GlobalConfig.IS_IMPROVE_BACKEND && (
-        <Captcha
-          email={email}
-          value={captcha}
-          onChange={setCaptcha}
-          status="register"
-        />
-      )}
+      <Captcha
+        email={email}
+        value={captcha}
+        onChange={setCaptcha}
+        status="register"
+      />
     </CommonBackground>
   );
 };

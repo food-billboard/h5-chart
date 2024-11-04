@@ -25,12 +25,12 @@ export async function removeCurrentScreenData() {
 export async function updateCurrentScreenShot(
   screenId: string,
   screenShotData?:
-    | API_IMPROVE.LocalScreenShotDataValue[]
+    | API_SCREEN.LocalScreenShotDataValue[]
     | ((
-        currentValue: API_IMPROVE.LocalScreenShotDataValue[],
-      ) => API_IMPROVE.LocalScreenShotDataValue[]),
+        currentValue: API_SCREEN.LocalScreenShotDataValue[],
+      ) => API_SCREEN.LocalScreenShotDataValue[]),
 ) {
-  let nextValue: API_IMPROVE.LocalScreenShotData;
+  let nextValue: API_SCREEN.LocalScreenShotData;
   const { value } = await LocalConfigInstance.getItem(
     LocalConfig.STATIC_SCREEN_SHOT_SAVE_KEY,
   );

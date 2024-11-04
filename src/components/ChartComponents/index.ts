@@ -1,7 +1,6 @@
 import { get, omit } from 'lodash';
 import { getDvaGlobalModelData } from '@/utils/Assist/Component';
 import { isGroupComponent } from '@/utils/Assist/Component';
-import GlobalConfig from '@/utils/Assist/GlobalConfig';
 import { DEFAULT_GROUP_CONFIG } from '@/utils/constants/screenData';
 import { mergeWithoutArray } from '@/utils/tool';
 // Chart
@@ -205,12 +204,8 @@ COMPONENT_MAP.set(ThreeBar.type, ThreeBar);
 COMPONENT_MAP.set(LottieAnime.type, LottieAnime);
 COMPONENT_MAP.set(HtmlFragment.type, HtmlFragment);
 COMPONENT_MAP.set(PercentPieBasic.type, PercentPieBasic);
-// improve 和 static使用model-viewer来展示模型
-if (GlobalConfig.IS_IMPROVE_BACKEND || GlobalConfig.IS_STATIC) {
-  COMPONENT_MAP.set(ModelViewer.type, ModelViewer);
-} else {
-  COMPONENT_MAP.set(Model.type, Model);
-}
+// ? 使用model-viewer来展示模型，之前的iframe模式看是否可以去掉
+COMPONENT_MAP.set(ModelViewer.type, ModelViewer);
 // component-map-insert-prefix
 
 // 根据组件类型获取组件信息

@@ -88,16 +88,10 @@ const Header = (props: {
     );
   }, [editMode, name, setScreen]);
 
-  const handlePreviewImprove = useCallback(async () => {}, []);
-
   const handlePreview = useCallback(async () => {
     // 纯前端大屏
     if (GlobalConfig.IS_STATIC) {
       return goView();
-    }
-    // improve大屏
-    if (GlobalConfig.IS_IMPROVE_BACKEND) {
-      return handlePreviewImprove();
     }
 
     setFetchLoading(true);
@@ -120,7 +114,7 @@ const Header = (props: {
       loading: fetchLoading,
       setLoading: setFetchLoading,
     });
-  }, [fetchLoading, handlePreviewImprove]);
+  }, [fetchLoading]);
 
   // 导入
   const handleImport = useCallback(async () => {
@@ -281,18 +275,12 @@ const Header = (props: {
           resetScreenButton,
         );
       }
-      // improve大屏
       // ? 实时保存在localstorage，但是需要手动保存到后端
-      else if (GlobalConfig.IS_IMPROVE_BACKEND) {
-        baseList.push(previewButton, storeButton);
-      } else {
+      else {
         baseList.push(previewButton);
       }
     }
-    if (
-      GlobalConfig.IS_STATIC ||
-      (GlobalConfig.IS_IMPROVE_BACKEND && !isModel)
-    ) {
+    if (GlobalConfig.IS_STATIC || !isModel) {
       baseList.push(screenShotManage);
     }
     return baseList;
@@ -327,13 +315,6 @@ const Header = (props: {
                 </a>
                 代码在本地运行。
                 可以将本地的大屏配置文件导入的设计器当中，预览的数据也会跟着改变。
-              </Marquee>
-            );
-          }
-          if (GlobalConfig.IS_IMPROVE_BACKEND) {
-            return (
-              <Marquee gradient={false} play pauseOnHover open>
-                新版本的大屏的保存方式发生了变化，虽然是实时保存，但是它只是保存在本地，需要手动点击保存才可以真正保存。忘记点保存也没有关系，只要下次打开还是同一电脑的同一浏览器，记录就还是存在的。
               </Marquee>
             );
           }

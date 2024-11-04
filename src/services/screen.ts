@@ -1,49 +1,13 @@
 import { merge } from 'lodash';
 import { isModelHash, useAnyDva } from '@/hooks';
-import GlobalConfig from '@/utils/Assist/GlobalConfig';
 import { getLocationQuery } from '../utils';
 import { SCREEN_VERSION, SERVICE_REQUEST_URL } from '../utils/constants';
 import request from '../utils/request';
-import {
-  postScreen4Improve,
-  putScreen4Improve,
-  putScreenPool4Improve,
-  createPutScreenPool4Improve,
-  putScreenPoolValid4Improve,
-  deleteScreenPool4Improve,
-  getScreenDetail4Improve,
-  getScreenList4Improve,
-  deleteScreen4Improve,
-  previewScreen4Improve,
-  previewScreenValid4Improve,
-  copyScreen4Improve,
-  shareScreen4Improve,
-  closeShareScreen4Improve,
-  shareScreenHeartbeat4Improve,
-  shareScreenGet4Improve,
-  shareScreenPost4Improve,
-  enableScreen4Improve,
-  disabledScreen4Improve,
-  preRequestData4Improve,
-  postScreenLeadIn4Improve,
-  postScreenExport4Improve,
-} from './improve';
 
 const { REACT_APP_ENV } = process.env;
 
-export {
-  getScreenShotList,
-  getCurrentScreenShotData,
-  deleteScreenShot,
-  updateScreenShot,
-  addScreenShot,
-  useScreenShot,
-  coverScreenShot,
-} from './improve';
-
 // 新增大屏
 export const postScreen = (data: API_SCREEN.TAddScreenParams) => {
-  if (GlobalConfig.IS_IMPROVE_BACKEND) return postScreen4Improve(data);
   return request('/api/screen/list', {
     method: 'POST',
     data: {
@@ -55,7 +19,6 @@ export const postScreen = (data: API_SCREEN.TAddScreenParams) => {
 
 // 修改大屏
 export const putScreen = (data: API_SCREEN.TEditScreenParams) => {
-  if (GlobalConfig.IS_IMPROVE_BACKEND) return putScreen4Improve(data);
   return request('/api/screen/list', {
     method: 'PUT',
     data: {
@@ -67,7 +30,6 @@ export const putScreen = (data: API_SCREEN.TEditScreenParams) => {
 
 // 链式修改大屏
 export const putScreenPool = (data: API_SCREEN.TEditScreenPoolParams) => {
-  if (GlobalConfig.IS_IMPROVE_BACKEND) return putScreenPool4Improve(data);
   return request('/api/screen/list/pool', {
     method: 'PUT',
     data: {
@@ -81,7 +43,6 @@ export const putScreenPool = (data: API_SCREEN.TEditScreenPoolParams) => {
 export const createPutScreenPool = (
   data: API_SCREEN.TCreateScreenPoolParams,
 ) => {
-  if (GlobalConfig.IS_IMPROVE_BACKEND) return createPutScreenPool4Improve(data);
   return request('/api/screen/list/pool', {
     method: 'POST',
     data,
@@ -90,8 +51,6 @@ export const createPutScreenPool = (
 
 // 大屏编辑状态验证
 export const putScreenPoolValid = (params: { _id: string }) => {
-  if (GlobalConfig.IS_IMPROVE_BACKEND)
-    return putScreenPoolValid4Improve(params);
   return request('/api/screen/list/pool', {
     method: 'GET',
     params,
@@ -103,8 +62,6 @@ export const deleteScreenPool = (
   sync: boolean = false,
   customParams?: Partial<{ _id: string; type: string }>,
 ) => {
-  if (GlobalConfig.IS_IMPROVE_BACKEND)
-    return deleteScreenPool4Improve(sync, customParams);
   const { id } = getLocationQuery() || {};
   const { getState } = useAnyDva();
   const userId = getState().user.currentUser._id;
@@ -131,7 +88,6 @@ export const deleteScreenPool = (
 
 // 大屏详情
 export const getScreenDetail = (params: API_SCREEN.TGetScreenDetail) => {
-  if (GlobalConfig.IS_IMPROVE_BACKEND) return getScreenDetail4Improve(params);
   return request<API_SCREEN.TScreenDetail>('/api/screen/detail', {
     method: 'GET',
     params,
@@ -140,7 +96,6 @@ export const getScreenDetail = (params: API_SCREEN.TGetScreenDetail) => {
 
 // 大屏列表
 export const getScreenList = (params: API_SCREEN.TGetScreenListParams) => {
-  if (GlobalConfig.IS_IMPROVE_BACKEND) return getScreenList4Improve(params);
   return request<any>('/api/screen/list', {
     method: 'GET',
     params,
@@ -150,7 +105,6 @@ export const getScreenList = (params: API_SCREEN.TGetScreenListParams) => {
 
 // 大屏删除
 export const deleteScreen = (params: API_SCREEN.TDeleteScreenParams) => {
-  if (GlobalConfig.IS_IMPROVE_BACKEND) return deleteScreen4Improve(params);
   return request('/api/screen/list', {
     method: 'DELETE',
     params,
@@ -159,7 +113,6 @@ export const deleteScreen = (params: API_SCREEN.TDeleteScreenParams) => {
 
 // 大屏预览
 export const previewScreen = (data: API_SCREEN.TPreviewScreenParams) => {
-  if (GlobalConfig.IS_IMPROVE_BACKEND) return previewScreen4Improve(data);
   return request('/api/screen/preview', {
     method: 'POST',
     data,
@@ -168,8 +121,6 @@ export const previewScreen = (data: API_SCREEN.TPreviewScreenParams) => {
 
 // 大屏预览验证
 export const previewScreenValid = (params: API_SCREEN.TPreviewScreenParams) => {
-  if (GlobalConfig.IS_IMPROVE_BACKEND)
-    return previewScreenValid4Improve(params);
   return request('/api/screen/preview/valid', {
     method: 'GET',
     params,
@@ -178,7 +129,6 @@ export const previewScreenValid = (params: API_SCREEN.TPreviewScreenParams) => {
 
 // 大屏复制 | 大屏模板使用
 export const copyScreen = (data: { _id: string; type: 'screen' | 'model' }) => {
-  if (GlobalConfig.IS_IMPROVE_BACKEND) return copyScreen4Improve(data);
   return request('/api/screen/copy', {
     method: 'POST',
     data,
@@ -190,7 +140,6 @@ export const copyScreen = (data: { _id: string; type: 'screen' | 'model' }) => {
 // 设置公共或加密
 // 设置有效时间
 export const shareScreen = (data: API_SCREEN.TShareScreenParams) => {
-  if (GlobalConfig.IS_IMPROVE_BACKEND) return shareScreen4Improve(data);
   return request('/api/screen/share', {
     method: 'POST',
     data,
@@ -201,7 +150,6 @@ export const shareScreen = (data: API_SCREEN.TShareScreenParams) => {
 export const closeShareScreen = (
   params: API_SCREEN.TCloseShareScreenParams,
 ) => {
-  if (GlobalConfig.IS_IMPROVE_BACKEND) return closeShareScreen4Improve(params);
   return request('/api/screen/share', {
     method: 'DELETE',
     params,
@@ -212,8 +160,6 @@ export const closeShareScreen = (
 export const shareScreenHeartbeat = (
   params: API_SCREEN.TShareScreenHeartbeatParams,
 ) => {
-  if (GlobalConfig.IS_IMPROVE_BACKEND)
-    return shareScreenHeartbeat4Improve(params);
   return request('/api/screen/share', {
     method: 'GET',
     params,
@@ -222,7 +168,6 @@ export const shareScreenHeartbeat = (
 
 // 大屏分享权限信息获取
 export const shareScreenGet = (params: API_SCREEN.TShareScreenGetParams) => {
-  if (GlobalConfig.IS_IMPROVE_BACKEND) return shareScreenGet4Improve(params);
   return request<API_SCREEN.TShareScreenGetData>('/api/screen/share/valid', {
     method: 'GET',
     params,
@@ -232,7 +177,6 @@ export const shareScreenGet = (params: API_SCREEN.TShareScreenGetParams) => {
 
 // 大屏分享权限验证
 export const shareScreenPost = (data: API_SCREEN.TShareScreenPostParams) => {
-  if (GlobalConfig.IS_IMPROVE_BACKEND) return shareScreenPost4Improve(data);
   return request('/api/screen/share/valid', {
     method: 'POST',
     data: {
@@ -244,7 +188,6 @@ export const shareScreenPost = (data: API_SCREEN.TShareScreenPostParams) => {
 
 // 大屏启用
 export const enableScreen = (data: API_SCREEN.TEnableScreenParams) => {
-  if (GlobalConfig.IS_IMPROVE_BACKEND) return enableScreen4Improve(data);
   return request('/api/screen/enable', {
     method: 'PUT',
     data,
@@ -253,7 +196,6 @@ export const enableScreen = (data: API_SCREEN.TEnableScreenParams) => {
 
 // 大屏禁用
 export const disabledScreen = (params: API_SCREEN.TDisabledScreenParams) => {
-  if (GlobalConfig.IS_IMPROVE_BACKEND) return disabledScreen4Improve(params);
   return request('/api/screen/enable', {
     method: 'DELETE',
     params,
@@ -262,7 +204,6 @@ export const disabledScreen = (params: API_SCREEN.TDisabledScreenParams) => {
 
 // 服务端代理数据请求
 export const preRequestData = (data: API_SCREEN.TPreRequestDataParams) => {
-  if (GlobalConfig.IS_IMPROVE_BACKEND) return preRequestData4Improve(data);
   return request(SERVICE_REQUEST_URL, {
     method: 'POST',
     data,
@@ -271,7 +212,6 @@ export const preRequestData = (data: API_SCREEN.TPreRequestDataParams) => {
 
 // 大屏导入
 export const postScreenLeadIn = (data: API_SCREEN.TPreLeadInDataParams) => {
-  if (GlobalConfig.IS_IMPROVE_BACKEND) return postScreenLeadIn4Improve(data);
   return request('/api/screen/pre/leadin', {
     method: 'POST',
     data,
@@ -280,7 +220,6 @@ export const postScreenLeadIn = (data: API_SCREEN.TPreLeadInDataParams) => {
 
 // 大屏导出
 export const postScreenExport = (data: API_SCREEN.TPreExportDataParams) => {
-  if (GlobalConfig.IS_IMPROVE_BACKEND) return postScreenExport4Improve(data);
   return request('/api/screen/pre/export', {
     method: 'POST',
     data,
@@ -288,3 +227,68 @@ export const postScreenExport = (data: API_SCREEN.TPreExportDataParams) => {
     origin: true,
   });
 };
+
+// 使用快照
+export async function useScreenShot(data: { _id: string; screen: string }) {
+  return request('/api/screen/shot', {
+    method: 'POST',
+    data,
+  });
+}
+
+// 新增快照
+export async function addScreenShot(data: { _id: string }) {
+  return request('/api/screen/shot', {
+    method: 'POST',
+    data,
+  });
+}
+
+// 覆盖快照
+// 将当前大屏的数据覆盖到当前快照，即更新快照的data
+export async function coverScreenShot(data: { _id: string; screen: string }) {
+  return request('/api/screen/shot', {
+    method: 'POST',
+    data,
+  });
+}
+
+// 快照列表
+export async function getScreenShotList(
+  params: API_SCREEN.GetScreenShotListParams,
+): Promise<API_SCREEN.GetScreenShotListData[]> {
+  return request<API_SCREEN.GetScreenShotListData[]>('/api/screen/list', {
+    method: 'GET',
+    params,
+    origin: true,
+  });
+}
+
+// 当前快照详情
+export async function getCurrentScreenShotData(
+  params: API_SCREEN.TGetScreenDetail,
+) {
+  return request<API_SCREEN.GetScreenShotListData>('/api/screen/detail', {
+    method: 'GET',
+    params,
+  });
+}
+
+// 删除快照
+export async function deleteScreenShot(params: {
+  _id: string;
+  screen: string;
+}) {
+  return request('/api/screen/list', {
+    method: 'DELETE',
+    params,
+  });
+}
+
+// 更新快照
+export async function updateScreenShot(data: API_SCREEN.UpdateScreenShotData) {
+  return request('/api/screen/list', {
+    method: 'PUT',
+    data,
+  });
+}

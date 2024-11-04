@@ -713,7 +713,7 @@ declare namespace ComponentData {
 
   export type StaticExportData = {
     value: TScreenData;
-    screenShot: API_IMPROVE.LocalScreenShotDataValue[];
+    screenShot: API_SCREEN.LocalScreenShotDataValue[];
   };
 }
 

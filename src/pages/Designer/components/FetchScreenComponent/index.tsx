@@ -222,7 +222,7 @@ const FetchScreenComponent = forwardRef<
             const [screenId] = Object.keys(value);
             if (!screenId) return fetch(false);
             const targetScreenShotData = (
-              value[screenId] as API_IMPROVE.LocalScreenShotDataValue[]
+              value[screenId] as API_SCREEN.LocalScreenShotDataValue[]
             ).find((item) => item.isUse);
             if (!targetScreenShotData) return fetch(false);
             return {
@@ -273,17 +273,12 @@ const FetchScreenComponent = forwardRef<
         const { id } = getLocationQuery() || {};
         if (!id) return;
         let method: any;
-        if (GlobalConfig.IS_IMPROVE_BACKEND) {
-          // !这里是要改过的，improve的接口还未提供
-          if (isModel) {
-            method = getScreenModelDetail;
-          } else if (fetchScreenShot) {
-            method = getScreenDetail;
-          } else {
-            method = getScreenDetail;
-          }
+        if (isModel) {
+          method = getScreenModelDetail;
+        } else if (fetchScreenShot) {
+          method = getScreenDetail;
         } else {
-          method = isModel ? getScreenModelDetail : getScreenDetail;
+          method = getScreenDetail;
         }
 
         const data = await method({
@@ -302,46 +297,9 @@ const FetchScreenComponent = forwardRef<
     });
   };
 
-  // improve获取数据
-  const fetchDataImprove = async (isReload: boolean = false) => {
-    try {
-      const { id } = getLocationQuery() || {};
-      const cacheKey =
-        LocalConfig.IMPROVE_BACKEND_STATIC_COMPONENT_DATA_SAVE_PREFIX + id;
-      const localData = await LocalConfigInstance.getItem(cacheKey);
-      if (!localData.errMsg && localData.value && !fetchScreenShot) {
-        return new Promise<void>((resolve) => {
-          modal.confirm({
-            title: '提示',
-            content: '本地电脑存在未保存的记录，是否加载该记录',
-            okText: '使用本地记录',
-            cancelText: '使用保存记录',
-            maskClosable: false,
-            onCancel: async () => {
-              await LocalConfigInstance.removeItem(cacheKey);
-              await fetchDataNormal(isReload);
-              resolve();
-            },
-            onOk: async () => {
-              await fetchData4Local({
-                localKey: cacheKey,
-                isReload,
-                needCache: true,
-              });
-              resolve();
-            },
-          });
-        });
-      }
-      return fetchDataNormal(isReload);
-    } catch (err) {}
-  };
-
   const fetchData = (isReload: boolean = false) => {
     if (GlobalConfig.IS_STATIC) {
       return fetchData4Static(isReload);
-    } else if (GlobalConfig.IS_IMPROVE_BACKEND) {
-      return fetchDataImprove(isReload);
     } else {
       return fetchDataNormal(isReload);
     }

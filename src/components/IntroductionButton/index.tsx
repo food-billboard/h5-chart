@@ -24,7 +24,7 @@ const IntroductionButton = () => {
 
   const handleClick = useCallback((key, callback) => {
     // 问题反馈
-    if (key === 'feedback' && GlobalConfig.IS_IMPROVE_BACKEND) {
+    if (key === 'feedback' && !GlobalConfig.IS_STATIC) {
       feedBackRef.current?.open();
     } else {
       callback();

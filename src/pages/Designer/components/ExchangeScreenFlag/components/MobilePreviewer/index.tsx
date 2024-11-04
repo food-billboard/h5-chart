@@ -231,17 +231,13 @@ const MobilePreviewer = forwardRef<MobilePreviewerRef, {}>((props, ref) => {
     }
   }, [componentList]);
 
-  const handleOkImprove = useCallback(async () => {}, []);
-
   const handleOk = useCallback(() => {
     if (GlobalConfig.IS_STATIC) {
       return handleOkStatic();
-    } else if (GlobalConfig.IS_IMPROVE_BACKEND) {
-      return handleOkImprove();
     } else {
       return handleOkNormal();
     }
-  }, [handleOkNormal, handleOkStatic, handleOkImprove]);
+  }, [handleOkNormal, handleOkStatic]);
 
   useImperativeHandle(
     ref,

@@ -22,20 +22,18 @@ import styles from './index.less';
 
 // 非开发环境
 if (process.env.REACT_APP_ENV === 'prod') {
-  // 静态版本 || 后端版本
-  if (['prod', 'static'].includes(process.env.REACT_APP || '')) {
+  // 静态版本
+  if (['static'].includes(process.env.REACT_APP || '')) {
     loader.config({
       paths: {
         vs: 'https://food-billboard.github.io/create-chart/lib/monaco-editor/vs',
       },
     });
-  }
-  // improve版本
-  if (process.env.REACT_APP === 'improve') {
+  } else {
     // 把文件放到对应服务器上
     loader.config({
       paths: {
-        vs: `${process.env.ACCESS_IMPROVE_URL}/lib/monaco-editor/vs`,
+        vs: `${process.env.ACCESS_LIB_URL}/lib/monaco-editor/vs`,
       },
     });
   }

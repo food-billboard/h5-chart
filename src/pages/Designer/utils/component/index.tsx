@@ -556,7 +556,7 @@ const _COMPONENT_TYPE_LIST = [
             title: '高德3d地图',
             icon: ALiMap,
             description: '',
-            disabled: GlobalConfig.IS_STATIC || GlobalConfig.IS_IMPROVE_BACKEND,
+            disabled: GlobalConfig.IS_STATIC,
           },
         ],
       },
@@ -612,7 +612,7 @@ const _COMPONENT_TYPE_LIST = [
             title: '天气',
             icon: Weather,
             description: '',
-            disabled: GlobalConfig.IS_STATIC || GlobalConfig.IS_IMPROVE_BACKEND,
+            disabled: GlobalConfig.IS_STATIC,
           },
           {
             type: 'PATH_BASIC',

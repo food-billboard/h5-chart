@@ -17,8 +17,6 @@ function getPublicPath() {
   switch (env) {
     case 'static':
       return '/create-chart/';
-    case 'improve':
-      return '/';
     default:
       return '/api/backend/screen/';
   }
@@ -28,8 +26,7 @@ const commonConfig = {
   define: {
     'process.env.REACT_APP': process.env.REACT_APP,
     'process.env.REACT_DEBUG': process.env.REACT_DEBUG,
-    'process.env.API_IMPROVE_URL': process.env.API_IMPROVE_URL,
-    'process.env.ACCESS_IMPROVE_URL': process.env.ACCESS_IMPROVE_URL,
+    'process.env.ACCESS_LIB_URL': process.env.ACCESS_LIB_URL,
     'process.env.RASPBERRY_IP': process.env.RASPBERRY_IP,
   },
   hash: true,

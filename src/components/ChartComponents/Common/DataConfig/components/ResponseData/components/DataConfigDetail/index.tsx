@@ -117,12 +117,9 @@ const DataConfigDetail = forwardRef<
 
   const dataSourceOptions = useMemo(() => {
     const options = [{ label: '静态数据', value: 'static' }];
-    if (
-      !!GlobalConfig.ENABLE_MOCK_DATA_CONFIG &&
-      !GlobalConfig.IS_STATIC &&
-      !GlobalConfig.IS_IMPROVE_BACKEND
-    )
+    if (!!GlobalConfig.ENABLE_MOCK_DATA_CONFIG && !GlobalConfig.IS_STATIC) {
       options.push({ label: 'Mock', value: 'mock' });
+    }
     options.push({ label: 'API', value: 'api' });
     return options;
   }, []);
