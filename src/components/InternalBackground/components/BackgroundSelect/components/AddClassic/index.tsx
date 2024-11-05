@@ -68,7 +68,7 @@ const AddClassic = forwardRef<AddClassicRef, AddClassicProps>((props, ref) => {
       open={visible}
       onCancel={close}
       onOk={onOk}
-      width={200}
+      width={300}
       confirmLoading={loading}
     >
       <Input

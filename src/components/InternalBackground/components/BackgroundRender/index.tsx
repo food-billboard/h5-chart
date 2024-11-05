@@ -2,6 +2,7 @@ import { DeleteOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import classnames from 'classnames';
 import { CSSProperties, ReactNode, useCallback, useMemo } from 'react';
+import { modal } from '@/components/Message';
 import BackgroundMap from '../Background';
 import styles from './index.less';
 
@@ -49,7 +50,13 @@ const BackgroundRender = ({
   const handleDelete = useCallback(
     (e) => {
       e.stopPropagation();
-      editable && editable.onDelete?.();
+      if (editable) {
+        modal.confirm({
+          title: '提示',
+          content: '是否确认删除？',
+          onOk: editable.onDelete,
+        });
+      }
     },
     [editable],
   );

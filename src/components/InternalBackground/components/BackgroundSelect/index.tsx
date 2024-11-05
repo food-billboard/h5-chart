@@ -63,7 +63,7 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
 
     const { modal } = App.useApp();
 
-    const [_, onChange] = useControllableValue(props);
+    const [value, onChange] = useControllableValue(props);
 
     const [fetchLoading, setFetchLoading] = useState(false);
     const [visible, setVisible] = useState(false);
@@ -146,13 +146,12 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
 
     // 获取分类数据
     const fetchClassifyData = async () => {
-      const data: any = await getMediaClassicList({
+      const data = await getMediaClassicList({
         currPage: 0,
         pageSize: 999,
       });
-      const list = get(data, 'res.data.list') || [];
-      setClassicDataSource(list);
-      return list;
+      setClassicDataSource(data.list);
+      return data.list;
     };
 
     // 获取数据
@@ -167,24 +166,26 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
           return;
         }
         setFetchLoading(true);
-        const result: any = await getMediaList({
+        const result = await getMediaList({
           current,
           pageSize: pageSize.current,
           _id: classic,
         });
         setServiceDataSource(
-          result.res.data.list.map((item: any) => {
-            return {
-              ...item,
-              value: item._id,
-              image: item.src,
-              classic: item.classify,
-              // 没有label
-              label: '',
-            };
-          }),
+          result.list
+            .filter((item: any) => item.src)
+            .map((item: any) => {
+              return {
+                ...item,
+                value: item.src,
+                image: item.src,
+                classic: item.classify,
+                // 没有label
+                label: '',
+              };
+            }),
         );
-        setTotal(result.res.data.total);
+        setTotal(result.total);
         setFetchLoading(false);
       },
       [],
@@ -224,7 +225,7 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
           result = await addClassic({ name });
         }
         setCurrentPage(1);
-        setCurrentClassic(get(result, 'res.data.data') || _id);
+        setCurrentClassic(result.data || _id);
         fetchClassifyData();
         return true;
       } catch (err) {
@@ -294,15 +295,11 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
       () => {
         return {
           open: (visible = true) => {
-            if (visible) {
-              setCurrentClassic('');
-              setCurrentPage(1);
-            }
             setVisible(visible);
           },
         };
       },
-      [],
+      [value],
     );
 
     useEffect(() => {
@@ -343,13 +340,12 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
         />
         <Row gutter={24}>
           {mode === 'editable' && currentClassic !== 'internal' && (
-            <Col span={6}>
+            <Col span={6} style={{ height: 80, marginBottom: 12 }}>
               <ImageUpload
                 value={[]}
                 onChange={onBackgroundChange}
                 inputVisible={false}
                 height={'80px'}
-                style={{ marginBottom: 12 }}
               />
             </Col>
           )}
@@ -367,7 +363,8 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
                   className={styles['internal-background-modal-list-item-main']}
                   thumb
                   editable={
-                    mode === 'editable' && {
+                    mode === 'editable' &&
+                    currentClassic !== 'internal' && {
                       onDelete: onDeleteBackground.bind(null, item),
                     }
                   }

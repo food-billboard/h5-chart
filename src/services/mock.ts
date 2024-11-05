@@ -4,8 +4,8 @@ import request from '../utils/request';
 export const getMockKindList = async () => {
   return request<API_MOCK.TGetMockKindListData[]>('/api/screen/mock/params', {
     method: 'GET',
-  }).then((data) => {
-    return data.map((item: any) => {
+  }).then((response) => {
+    return response.map((item: any) => {
       return {
         id: item._id,
         value: item.data_kind,
