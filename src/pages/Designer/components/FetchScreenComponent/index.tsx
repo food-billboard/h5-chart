@@ -5,7 +5,11 @@ import { forwardRef, useEffect, useImperativeHandle } from 'react';
 import { connect } from 'umi';
 import { mergeComponentDefaultConfig } from '@/components/ChartComponents';
 import { useIsModelHash, useThemeChange } from '@/hooks';
-import { getScreenDetail, getScreenModelDetail } from '@/services';
+import {
+  getScreenDetail,
+  getScreenModelDetail,
+  getCurrentScreenShotData,
+} from '@/services';
 import { getLocationQuery, isDesignerPage, sleep } from '@/utils';
 import BreakingChange from '@/utils/Assist/BreakingChange';
 import GlobalConfig from '@/utils/Assist/GlobalConfig';
@@ -276,7 +280,7 @@ const FetchScreenComponent = forwardRef<
         if (isModel) {
           method = getScreenModelDetail;
         } else if (fetchScreenShot) {
-          method = getScreenDetail;
+          method = getCurrentScreenShotData;
         } else {
           method = getScreenDetail;
         }

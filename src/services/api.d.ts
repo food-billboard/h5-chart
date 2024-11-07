@@ -213,11 +213,14 @@ declare namespace API_SCREEN {
 
   export type GetScreenShotListParams = {
     _id: string;
+    content?: string;
   };
 
   export type GetScreenShotListData = {
     _id: string;
-    created: string;
+    created?: string;
+    createdAt: string;
+    updatedAt?: string;
     user: string;
     description: string;
     isUse: boolean;

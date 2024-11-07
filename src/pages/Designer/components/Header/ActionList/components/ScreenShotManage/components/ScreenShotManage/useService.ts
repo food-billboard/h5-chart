@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { message } from '@/components/Message';
 import { useLocalStorage, useAnyDva } from '@/hooks';
 import {
+  getCurrentScreenShotId,
   getScreenShotList,
   addScreenShot,
   updateScreenShot,
@@ -14,7 +15,7 @@ import GlobalConfig from '@/utils/Assist/GlobalConfig';
 import { LocalConfig } from '@/utils/Assist/LocalConfig';
 import { MAX_SCREEN_SHOT_COUNT } from '@/utils/constants';
 
-// 区分improve 和 static
+// 区分后端 和 static
 const useService = ({ screen }: { screen: string }) => {
   const { getState } = useAnyDva();
 
@@ -33,13 +34,22 @@ const useService = ({ screen }: { screen: string }) => {
     if (GlobalConfig.IS_STATIC) {
       // ? 不需要获取数据，直接从本地storage拿
     } else {
+      // setDataSource([])
       const result = await getScreenShotList({ _id: screen });
-      setDataSource(result || []);
+      const currentScreenShot = await getCurrentScreenShotId({ _id: screen });
+      setDataSource(
+        (result.list || []).map((item) => {
+          return {
+            ...item,
+            isUse: item._id === currentScreenShot.data,
+          };
+        }),
+      );
     }
   };
 
   // 新增
-  const onAdd = async (callback: any = fetchData) => {
+  const onAdd = async (callback?: any) => {
     if (GlobalConfig.IS_STATIC) {
       try {
         const { screenData, components, version } = getState().global;
@@ -54,6 +64,7 @@ const useService = ({ screen }: { screen: string }) => {
             {
               _id: Date.now().toString(),
               created: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+              createdAt: dayjs().format('YYYY-MM-DD HH:mm:ss'),
               user: '',
               description: '',
               isUse: false,
@@ -71,14 +82,15 @@ const useService = ({ screen }: { screen: string }) => {
       }
     } else {
       await addScreenShot({ _id: screen });
+      await fetchData();
     }
-    callback();
+    typeof callback === 'function' && callback();
   };
 
   // 更新
   const onUpdate = async (
     { value, _id }: { value: string; _id: string },
-    callback: any = fetchData,
+    callback?: any,
   ) => {
     if (GlobalConfig.IS_STATIC) {
       try {
@@ -101,15 +113,13 @@ const useService = ({ screen }: { screen: string }) => {
       }
     } else {
       await updateScreenShot({ screen, _id, description: value });
+      await fetchData();
     }
-    callback();
+    typeof callback === 'function' && callback();
   };
 
   // 删除
-  const onDelete = async (
-    { _id }: { _id: string },
-    callback: any = fetchData,
-  ) => {
+  const onDelete = async ({ _id }: { _id: string }, callback?: any) => {
     if (GlobalConfig.IS_STATIC) {
       try {
         const localDataSource = getLocalDataSource() || {};
@@ -125,12 +135,13 @@ const useService = ({ screen }: { screen: string }) => {
       }
     } else {
       await deleteScreenShot({ screen, _id });
+      await fetchData();
     }
-    callback();
+    typeof callback === 'function' && callback();
   };
 
   // 使用
-  const onUse = async ({ _id }: { _id: string }, callback: any = fetchData) => {
+  const onUse = async ({ _id }: { _id: string }, callback?: any) => {
     if (GlobalConfig.IS_STATIC) {
       try {
         const localDataSource = getLocalDataSource() || {};
@@ -149,15 +160,13 @@ const useService = ({ screen }: { screen: string }) => {
       }
     } else {
       await useScreenShot({ screen, _id });
+      await fetchData();
     }
-    callback();
+    typeof callback === 'function' && callback();
   };
 
   // 覆盖
-  const onCover = async (
-    { _id }: { _id: string },
-    callback: any = fetchData,
-  ) => {
+  const onCover = async ({ _id }: { _id: string }, callback?: any) => {
     if (GlobalConfig.IS_STATIC) {
       try {
         const { screenData, components, version } = getState().global;
@@ -184,8 +193,9 @@ const useService = ({ screen }: { screen: string }) => {
       }
     } else {
       await coverScreenShot({ screen, _id });
+      await fetchData();
     }
-    callback();
+    typeof callback === 'function' && callback();
   };
 
   return {

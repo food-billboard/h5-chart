@@ -8,7 +8,6 @@ import {
   shareScreenPost,
 } from '@/services';
 import { getLocationQuery } from '@/utils';
-import GlobalConfig from '@/utils/Assist/GlobalConfig';
 import FetchScreenComponent from '../Designer/components/FetchScreenComponent';
 import { NormalPainter } from '../Designer/components/Panel/components/Painter';
 import PainterWrapper from './components/PainterWrapper';
@@ -127,7 +126,7 @@ function Share(props: {
   return (
     <PainterWrapper scale={scale}>
       {heartbeat && <NormalPainter {...wrapperProps} />}
-      <FetchScreenComponent needFetch={needFetch} />
+      <FetchScreenComponent needFetch={needFetch} fetchScreenShot />
       <PasswordConfirm ref={passwordConfirmRef} onOk={onPasswordConfirm} />
     </PainterWrapper>
   );

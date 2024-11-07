@@ -153,7 +153,7 @@ const Designer = (props: {
   useHashChangeReload(reload);
 
   useEffect(() => {
-    // 前端大屏或improve不需要
+    // 前端大屏不需要
     if (!GlobalConfig.IS_STATIC) {
       getMockValueKindMap();
     }

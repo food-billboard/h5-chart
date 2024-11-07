@@ -30,9 +30,9 @@ const ScreenShotManage = forwardRef<ScreenShotManageRef, ScreenShotManageProps>(
     const title = useMemo(() => {
       return (
         <div>
-          快照管理
-          <span>{count}</span>个/还可创建
-          <span>{MAX_SCREEN_SHOT_COUNT - count}</span>个
+          快照管理{'  '}
+          <span> {count} </span>个 / 还可创建
+          <span> {MAX_SCREEN_SHOT_COUNT - count} </span>个
         </div>
       );
     }, [count]);
@@ -49,7 +49,7 @@ const ScreenShotManage = forwardRef<ScreenShotManageRef, ScreenShotManageProps>(
           open,
         };
       },
-      [],
+      [_id],
     );
 
     return (
@@ -57,14 +57,7 @@ const ScreenShotManage = forwardRef<ScreenShotManageRef, ScreenShotManageProps>(
         <div className={styles['screen-shot-list']}>
           {dataSource.map((item) => {
             const { _id: shotId } = item;
-            return (
-              <ListItem
-                key={shotId}
-                value={item}
-                onUpdate={fetchData}
-                screen={_id}
-              />
-            );
+            return <ListItem key={shotId} value={item} screen={_id} />;
           })}
         </div>
         <div className="ali-r">

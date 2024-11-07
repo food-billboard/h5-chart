@@ -92,7 +92,7 @@ const MAX_CONFIG_WIDTH = 500;
 const MIN_CONFIG_WIDTH = 302;
 
 // 快照可生成最大个数
-const MAX_SCREEN_SHOT_COUNT = 3;
+const MAX_SCREEN_SHOT_COUNT = 5;
 
 export {
   IMAGE_FALLBACK,

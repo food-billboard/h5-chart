@@ -228,14 +228,6 @@ export const postScreenExport = (data: API_SCREEN.TPreExportDataParams) => {
   });
 };
 
-// 使用快照
-export async function useScreenShot(data: { _id: string; screen: string }) {
-  return request('/api/screen/shot', {
-    method: 'POST',
-    data,
-  });
-}
-
 // 新增快照
 export async function addScreenShot(data: { _id: string }) {
   return request('/api/screen/shot', {
@@ -247,7 +239,7 @@ export async function addScreenShot(data: { _id: string }) {
 // 覆盖快照
 // 将当前大屏的数据覆盖到当前快照，即更新快照的data
 export async function coverScreenShot(data: { _id: string; screen: string }) {
-  return request('/api/screen/shot', {
+  return request('/api/screen/shot/cover', {
     method: 'POST',
     data,
   });
@@ -256,11 +248,21 @@ export async function coverScreenShot(data: { _id: string; screen: string }) {
 // 快照列表
 export async function getScreenShotList(
   params: API_SCREEN.GetScreenShotListParams,
-): Promise<API_SCREEN.GetScreenShotListData[]> {
-  return request<API_SCREEN.GetScreenShotListData[]>('/api/screen/list', {
+) {
+  return request<{
+    list: API_SCREEN.GetScreenShotListData[];
+    total: number;
+  }>('/api/screen/shot', {
     method: 'GET',
     params,
-    origin: true,
+  });
+}
+
+// 使用快照
+export async function useScreenShot(data: { _id: string; screen: string }) {
+  return request('/api/screen/shot/use', {
+    method: 'POST',
+    data,
   });
 }
 
@@ -268,7 +270,17 @@ export async function getScreenShotList(
 export async function getCurrentScreenShotData(
   params: API_SCREEN.TGetScreenDetail,
 ) {
-  return request<API_SCREEN.GetScreenShotListData>('/api/screen/detail', {
+  return request<API_SCREEN.TScreenDetail>('/api/screen/shot/detail', {
+    method: 'GET',
+    params,
+  });
+}
+
+// 当前快照的id
+export async function getCurrentScreenShotId(
+  params: API_SCREEN.TGetScreenDetail,
+) {
+  return request<{ data: string }>('/api/screen/shot/use', {
     method: 'GET',
     params,
   });
@@ -279,7 +291,7 @@ export async function deleteScreenShot(params: {
   _id: string;
   screen: string;
 }) {
-  return request('/api/screen/list', {
+  return request('/api/screen/shot', {
     method: 'DELETE',
     params,
   });
@@ -287,7 +299,7 @@ export async function deleteScreenShot(params: {
 
 // 更新快照
 export async function updateScreenShot(data: API_SCREEN.UpdateScreenShotData) {
-  return request('/api/screen/list', {
+  return request('/api/screen/shot', {
     method: 'PUT',
     data,
   });

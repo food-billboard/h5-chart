@@ -280,7 +280,7 @@ const Header = (props: {
         baseList.push(previewButton);
       }
     }
-    if (GlobalConfig.IS_STATIC || !isModel) {
+    if (!isModel) {
       baseList.push(screenShotManage);
     }
     return baseList;

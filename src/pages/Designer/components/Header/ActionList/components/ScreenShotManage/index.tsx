@@ -1,7 +1,6 @@
 import { CameraOutlined } from '@ant-design/icons';
 import { Dropdown } from 'antd';
 import type { ButtonProps } from 'antd';
-import { noop } from 'lodash';
 import { useCallback, useRef } from 'react';
 import { connect } from 'umi';
 import DebounceButton from '@/components/DebounceButton';
@@ -23,7 +22,7 @@ const ScreenShotManage = (props: {
   const onMenuClick = useCallback(({ key }) => {
     switch (key) {
       case 'add':
-        return onAdd(noop);
+        return onAdd();
       case 'manage':
         drawerRef.current?.open();
     }

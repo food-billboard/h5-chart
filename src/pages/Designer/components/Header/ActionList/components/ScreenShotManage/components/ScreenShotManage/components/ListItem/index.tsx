@@ -6,7 +6,7 @@ import {
 } from '@ant-design/icons';
 import { Button, Input, Popconfirm } from 'antd';
 import classnames from 'classnames';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import FocusModal from '@/components/FocusModal';
 import LoadingButton from '@/components/LoadingButton';
 import useService from '../../useService';
@@ -15,9 +15,8 @@ import styles from './index.less';
 const ListItem = (props: {
   screen: string;
   value: API_SCREEN.GetScreenShotListData;
-  onUpdate: () => Promise<any>;
 }) => {
-  const { value, onUpdate, screen } = props;
+  const { value, screen } = props;
   const { isUse, _id, created, description } = value;
 
   const {
@@ -69,10 +68,7 @@ const ListItem = (props: {
             title="编辑"
             size="middle"
           />
-          <Popconfirm
-            title="是否确认删除"
-            onConfirm={() => onDelete({ _id }, onUpdate)}
-          >
+          <Popconfirm title="是否确认删除" onConfirm={() => onDelete({ _id })}>
             <Button
               disabled={isUse}
               type="link"
@@ -82,7 +78,7 @@ const ListItem = (props: {
             />
           </Popconfirm>
           <LoadingButton
-            onClick={onUse.bind(null, { _id }, onUpdate)}
+            onClick={onUse.bind(null, { _id })}
             type="link"
             icon={<CheckCircleOutlined />}
             title="使用"
@@ -91,7 +87,7 @@ const ListItem = (props: {
           />
           <Popconfirm
             title="将使用最新的大屏数据覆盖当前快照，是否确认？"
-            onConfirm={() => onCover({ _id }, onUpdate)}
+            onConfirm={() => onCover({ _id })}
           >
             <Button
               type="link"
@@ -107,7 +103,7 @@ const ListItem = (props: {
         open={editable}
         onCancel={() => setEditable(false)}
         onOk={() => {
-          serviceUpdate({ _id, value: descriptionValue }, onUpdate);
+          serviceUpdate({ _id, value: descriptionValue });
           setEditable(false);
         }}
       >
