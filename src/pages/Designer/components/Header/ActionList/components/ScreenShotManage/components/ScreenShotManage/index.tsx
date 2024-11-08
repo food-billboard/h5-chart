@@ -1,4 +1,10 @@
-import { forwardRef, useImperativeHandle, useMemo, useState } from 'react';
+import {
+  forwardRef,
+  useContext,
+  useImperativeHandle,
+  useMemo,
+  useState,
+} from 'react';
 import { connect } from 'umi';
 import Drawer from '@/components/FocusDrawer';
 import LoadingButton from '@/components/LoadingButton';
@@ -6,7 +12,7 @@ import { MAX_SCREEN_SHOT_COUNT } from '@/utils/constants';
 import ListItem from './components/ListItem';
 import { mapStateToProps, mapDispatchToProps } from './connect';
 import styles from './index.less';
-import useService from './useService';
+import { Context } from './useService';
 
 export type ScreenShotManageRef = {
   open: () => void;
@@ -23,7 +29,7 @@ const ScreenShotManage = forwardRef<ScreenShotManageRef, ScreenShotManageProps>(
 
     const [visible, setVisible] = useState(false);
 
-    const { fetchData, dataSource, onAdd } = useService({ screen: _id });
+    const { fetchData, dataSource, onAdd } = useContext(Context);
 
     const count = dataSource.length;
 
@@ -57,7 +63,7 @@ const ScreenShotManage = forwardRef<ScreenShotManageRef, ScreenShotManageProps>(
         <div className={styles['screen-shot-list']}>
           {dataSource.map((item) => {
             const { _id: shotId } = item;
-            return <ListItem key={shotId} value={item} screen={_id} />;
+            return <ListItem key={shotId} value={item} />;
           })}
         </div>
         <div className="ali-r">

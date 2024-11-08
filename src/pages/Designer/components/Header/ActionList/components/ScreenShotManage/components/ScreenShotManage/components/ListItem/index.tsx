@@ -6,17 +6,14 @@ import {
 } from '@ant-design/icons';
 import { Button, Input, Popconfirm } from 'antd';
 import classnames from 'classnames';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import FocusModal from '@/components/FocusModal';
 import LoadingButton from '@/components/LoadingButton';
-import useService from '../../useService';
+import { Context } from '../../useService';
 import styles from './index.less';
 
-const ListItem = (props: {
-  screen: string;
-  value: API_SCREEN.GetScreenShotListData;
-}) => {
-  const { value, screen } = props;
+const ListItem = (props: { value: API_SCREEN.GetScreenShotListData }) => {
+  const { value } = props;
   const { isUse, _id, created, description } = value;
 
   const {
@@ -24,7 +21,7 @@ const ListItem = (props: {
     onDelete,
     onUse,
     onCover,
-  } = useService({ screen });
+  } = useContext(Context);
 
   const [editable, setEditable] = useState(false);
   const [descriptionValue, setDescriptionValue] = useState(description || '');

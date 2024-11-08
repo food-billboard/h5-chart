@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { useState } from 'react';
+import { createContext, useState } from 'react';
 import { message } from '@/components/Message';
 import { useLocalStorage, useAnyDva } from '@/hooks';
 import {
@@ -14,6 +14,24 @@ import {
 import GlobalConfig from '@/utils/Assist/GlobalConfig';
 import { LocalConfig } from '@/utils/Assist/LocalConfig';
 import { MAX_SCREEN_SHOT_COUNT } from '@/utils/constants';
+
+export const Context = createContext<{
+  dataSource: API_SCREEN.GetScreenShotListData[];
+  fetchData: () => Promise<void>;
+  onAdd: (callback?: any) => Promise<any>;
+  onUpdate: (callback?: any) => Promise<any>;
+  onDelete: (callback?: any) => Promise<any>;
+  onUse: (callback?: any) => Promise<any>;
+  onCover: (callback?: any) => Promise<any>;
+}>({
+  dataSource: [],
+  fetchData: async () => {},
+  onAdd: async () => {},
+  onUpdate: async () => {},
+  onDelete: async () => {},
+  onUse: async () => {},
+  onCover: async () => {},
+});
 
 // 区分后端 和 static
 const useService = ({ screen }: { screen: string }) => {
