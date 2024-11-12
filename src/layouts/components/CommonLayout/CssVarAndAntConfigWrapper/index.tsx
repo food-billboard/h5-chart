@@ -16,6 +16,9 @@ const CssVarWrapper = (props: any) => {
             titleFontSizeSM: 12,
             verticalItemMargin: '0px',
           },
+          Switch: {
+            colorText: 'red',
+          },
         },
         algorithm: theme.darkAlgorithm,
         token: {

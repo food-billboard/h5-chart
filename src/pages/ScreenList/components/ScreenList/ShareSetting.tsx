@@ -234,7 +234,9 @@ const ShareSetting = forwardRef<
         </Item>
         {shared && (
           <Item label="分享地址">
-            <Paragraph copyable={{ tooltips: false }}>{shareAddress}</Paragraph>
+            <Paragraph style={{ margin: 0 }} copyable={{ tooltips: false }}>
+              {shareAddress}
+            </Paragraph>
           </Item>
         )}
       </Form>

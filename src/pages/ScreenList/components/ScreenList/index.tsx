@@ -4,10 +4,12 @@ import {
   DesktopOutlined,
   CopyOutlined,
   ExportOutlined,
+  SmallDashOutlined,
+  BranchesOutlined,
 } from '@ant-design/icons';
-import { Row, Col, Button, Switch, App } from 'antd';
+import { Row, Col, Button, Switch, App, Dropdown } from 'antd';
 import classnames from 'classnames';
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useMemo } from 'react';
 import {
   deleteScreen,
   previewScreen,
@@ -15,9 +17,18 @@ import {
   enableScreen,
   disabledScreen,
   copyScreen,
+  deleteScreenModel,
+  previewScreenModel,
+  enableScreenModel,
+  disabledScreenModel,
 } from '@/services';
 import { exportData } from '@/utils/Assist/LeadInAndOutput';
-import { goDesign, goPreview } from '@/utils/tool';
+import {
+  goDesign,
+  goPreview,
+  goPreviewModel,
+  goDesignModel,
+} from '@/utils/tool';
 import ShareSetting, { ShareSettingRef } from './ShareSetting';
 import styles from './index.less';
 
@@ -32,8 +43,11 @@ const COL_SPAN = {
 const ScreenList = (props: {
   value: API_SCREEN.TGetScreenListData[];
   onChange?: () => any;
+  // copy share delete export use
+  ignoreAction?: string[];
+  listType: 'screen' | 'model';
 }) => {
-  const { value, onChange } = props;
+  const { value, onChange, ignoreAction = [], listType = 'screen' } = props;
 
   const { message, modal } = App.useApp();
 
@@ -47,9 +61,13 @@ const ScreenList = (props: {
       if (fetchLoading.current) return;
       try {
         if (value) {
-          await enableScreen({ _id: target._id });
+          await (listType === 'screen' ? enableScreen : enableScreenModel)({
+            _id: target._id,
+          });
         } else {
-          await disabledScreen({ _id: target._id });
+          await (listType === 'screen' ? disabledScreen : disabledScreenModel)({
+            _id: target._id,
+          });
         }
         onChange?.();
       } catch (err) {
@@ -58,20 +76,22 @@ const ScreenList = (props: {
         fetchLoading.current = false;
       }
     },
-    [onChange],
+    [onChange, listType],
   );
 
   // 编辑
-  const handleEdit = useCallback((value) => {
-    const { _id, enable } = value;
-    if (enable) return;
-    goDesign(_id);
-  }, []);
+  const handleEdit = useCallback(
+    (value) => {
+      const { _id, enable } = value;
+      if (enable) return;
+      listType === 'screen' ? goDesign(_id) : goDesignModel(_id);
+    },
+    [listType],
+  );
 
   // 复制
   const copyScreenMethod = useCallback(
-    async (value: any, e) => {
-      e.stopPropagation();
+    async (value: any) => {
       fetchLoading.current = true;
       try {
         const response: any = await copyScreen({
@@ -96,23 +116,30 @@ const ScreenList = (props: {
   );
 
   // 预览
-  const previewScreenMethod = useCallback(async (value, e) => {
-    e.stopPropagation();
-    if (fetchLoading.current) return;
-    fetchLoading.current = true;
-    try {
-      await previewScreen({ _id: value._id });
-      goPreview(value._id);
-    } catch (err) {
-      message.info('操作失败');
-    } finally {
-      fetchLoading.current = false;
-    }
-  }, []);
+  const previewScreenMethod = useCallback(
+    async (value, e) => {
+      e.stopPropagation();
+      if (fetchLoading.current) return;
+      fetchLoading.current = true;
+      try {
+        if (listType === 'screen') {
+          await previewScreen({ _id: value._id });
+          goPreview(value._id);
+        } else {
+          await previewScreenModel({ _id: value._id });
+          goPreviewModel(value._id);
+        }
+      } catch (err) {
+        message.info('操作失败');
+      } finally {
+        fetchLoading.current = false;
+      }
+    },
+    [listType],
+  );
 
   // 分享
-  const shareScreenMethod = useCallback(async (value, e) => {
-    e.stopPropagation();
+  const shareScreenMethod = useCallback(async (value) => {
     if (fetchLoading.current) return;
     fetchLoading.current = true;
     shareSettingRef.current?.open(value._id);
@@ -136,15 +163,14 @@ const ScreenList = (props: {
 
   // 删除
   const deleteScreenMethod = useCallback(
-    async (value, e) => {
-      e.stopPropagation();
+    async (value) => {
       if (fetchLoading.current) return;
       modal.confirm({
         title: '提示',
         content: '是否确定删除？',
         onOk: async () => {
           try {
-            await deleteScreen({
+            await (listType === 'screen' ? deleteScreen : deleteScreenModel)({
               _id: value._id,
             });
             onChange?.();
@@ -156,19 +182,62 @@ const ScreenList = (props: {
         },
       });
     },
-    [onChange],
+    [onChange, listType],
   );
 
   // 导出
   const handleExport = useCallback(
-    async (value: API_SCREEN.TGetScreenListData, e: any) => {
-      e.stopPropagation();
+    async (value: API_SCREEN.TGetScreenListData) => {
       await exportData({
-        type: 'screen',
+        type: listType,
         _id: value._id,
       });
     },
-    [],
+    [listType],
+  );
+
+  // 模板使用
+  const useModelMethod = useCallback(
+    async (value: any) => {
+      fetchLoading.current = true;
+      try {
+        const response: any = await copyScreen({
+          _id: value._id,
+          type: 'model',
+        });
+        goDesign(response[0]);
+      } catch (err) {
+        message.info('操作失败');
+      } finally {
+        fetchLoading.current = false;
+      }
+    },
+    [onChange, handleEdit],
+  );
+
+  // 更多操作
+  const handleExtraActionClick = useCallback(
+    (item, { key }) => {
+      switch (key) {
+        case 'copy':
+          return copyScreenMethod(item);
+        case 'share':
+          return shareScreenMethod(item);
+        case 'delete':
+          return deleteScreenMethod(item);
+        case 'export':
+          return handleExport(item);
+        case 'use':
+          return useModelMethod(item);
+      }
+    },
+    [
+      copyScreenMethod,
+      shareScreenMethod,
+      deleteScreenMethod,
+      handleExport,
+      useModelMethod,
+    ],
   );
 
   return (
@@ -182,6 +251,44 @@ const ScreenList = (props: {
       >
         {value.map((item) => {
           const { name, poster, _id, enable, description, flag } = item;
+
+          const actionList: any = [];
+          if (!ignoreAction.includes('copy')) {
+            actionList.push({
+              label: '复制',
+              key: 'copy',
+              icon: <CopyOutlined />,
+            });
+          }
+          if (!ignoreAction.includes('share') && enable) {
+            actionList.push({
+              label: '分享',
+              key: 'share',
+              icon: <SendOutlined />,
+            });
+          }
+          if (!ignoreAction.includes('export')) {
+            actionList.push({
+              label: '导出',
+              key: 'export',
+              icon: <ExportOutlined />,
+            });
+          }
+          if (!ignoreAction.includes('delete') && !enable) {
+            actionList.push({
+              label: '删除',
+              key: 'delete',
+              icon: <DeleteOutlined />,
+            });
+          }
+          if (!ignoreAction.includes('use')) {
+            actionList.push({
+              label: '使用',
+              key: 'use',
+              icon: <BranchesOutlined />,
+            });
+          }
+
           return (
             <Col key={_id} {...COL_SPAN} onClick={handleEdit.bind(null, item)}>
               <div className={styles['screen-list-icon-content-item']}>
@@ -190,33 +297,6 @@ const ScreenList = (props: {
                 >
                   <div className={styles['screen-list-icon-content-item-main']}>
                     <img src={poster} />
-                    <div>
-                      <Button
-                        size="small"
-                        type="link"
-                        icon={<ExportOutlined />}
-                        title="导出"
-                        onClick={handleExport.bind(null, item)}
-                      ></Button>
-                      {enable && (
-                        <Button
-                          size="small"
-                          type="link"
-                          icon={<SendOutlined />}
-                          title={'分享'}
-                          onClick={shareScreenMethod.bind(null, item)}
-                        ></Button>
-                      )}
-                      {!enable && (
-                        <Button
-                          size="small"
-                          type="link"
-                          icon={<DeleteOutlined />}
-                          title="删除"
-                          onClick={deleteScreenMethod.bind(null, item)}
-                        ></Button>
-                      )}
-                    </div>
                   </div>
                 </div>
                 <div className={styles['screen-list-icon-content-item-footer']}>
@@ -262,6 +342,7 @@ const ScreenList = (props: {
                       size="small"
                       checked={enable}
                       onChange={onEnabledChange.bind(null, item)}
+                      style={{ marginRight: 7 }}
                     />
                     <Button
                       size="small"
@@ -271,15 +352,16 @@ const ScreenList = (props: {
                     >
                       预览
                     </Button>
-                    <Button
-                      size="small"
-                      icon={<CopyOutlined />}
-                      type="link"
-                      onClick={copyScreenMethod.bind(null, item)}
-                      style={{ paddingLeft: 0 }}
+                    <Dropdown
+                      menu={{
+                        items: actionList,
+                        onClick: handleExtraActionClick.bind(null, item),
+                      }}
                     >
-                      复制
-                    </Button>
+                      <Button size="small" type="link" title="更多操作">
+                        更多
+                      </Button>
+                    </Dropdown>
                   </div>
                 </div>
               </div>

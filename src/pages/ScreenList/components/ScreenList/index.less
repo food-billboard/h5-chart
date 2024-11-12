@@ -1,6 +1,6 @@
 .screen-list-icon-content {
   &-item {
-    height: 214px;
+    height: 222px;
     cursor: pointer;
     border-radius: 8px;
     overflow: hidden;
@@ -27,9 +27,9 @@
       }
     }
     &-footer {
-      height: 64px;
+      height: 72px;
       background-color: white;
-      padding: 0 8px;
+      padding: 0 8px 8px;
       &-name {
         font-size: 16px;
         color: black;
@@ -40,15 +40,20 @@
       &-desc {
         font-size: 12px;
         color: gray;
-        line-height: 14px;
-        height: 14px;
+        line-height: 16px;
+        height: 16px;
       }
       &-action {
-        text-align: right;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
         &-switch-close {
           :global {
             .ant-switch-inner {
               color: gray;
+            }
+            .ant-switch-inner-unchecked {
+              color: gray !important;
             }
           }
         }

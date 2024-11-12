@@ -5,7 +5,7 @@ import { DEFAULT_THEME_COLOR } from '@/utils/Assist/Theme';
 import styles from './index.less';
 
 const GhostButton = (props: ButtonProps) => {
-  const { className, ...nextProps } = props;
+  const { className, style, ...nextProps } = props;
 
   return (
     <Button
@@ -16,6 +16,7 @@ const GhostButton = (props: ButtonProps) => {
       style={{
         // @ts-ignore
         '--primary-color': DEFAULT_THEME_COLOR,
+        ...style,
       }}
     />
   );
