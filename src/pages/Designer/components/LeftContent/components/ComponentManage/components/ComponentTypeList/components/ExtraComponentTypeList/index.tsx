@@ -92,6 +92,7 @@ const _MediaResourceComponentList = (props: {
       }}
       ref={modalRef}
       onChange={handleSelect}
+      internalIgnore
     />
   );
 };

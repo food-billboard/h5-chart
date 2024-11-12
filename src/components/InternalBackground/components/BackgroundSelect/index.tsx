@@ -1,10 +1,9 @@
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useControllableValue } from 'ahooks';
-import { Pagination, Row, Col, Tabs, App } from 'antd';
+import { Pagination, Row, Col, Tabs, App, Empty } from 'antd';
 import type { ModalProps } from 'antd';
 import type { UploadFile } from 'antd/es/upload/interface';
 import classnames from 'classnames';
-import { get } from 'lodash';
 import {
   ReactNode,
   useCallback,
@@ -55,11 +54,19 @@ export type BackgroundSelectProps = {
   visibleType?: 'modal' | 'page';
   style?: CSSProperties;
   className?: string;
+  internalIgnore?: boolean;
 };
 
 const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
   (props, ref) => {
-    const { mode, modalProps, visibleType = 'modal', style, className } = props;
+    const {
+      mode,
+      modalProps,
+      visibleType = 'modal',
+      style,
+      className,
+      internalIgnore = false,
+    } = props;
 
     const { modal } = App.useApp();
 
@@ -110,11 +117,15 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
             closeIcon: <DeleteOutlined />,
           };
         }),
-        {
-          label: '内置背景',
-          key: 'internal',
-          closable: false,
-        },
+        ...(internalIgnore
+          ? []
+          : [
+              {
+                label: '内置背景',
+                key: 'internal',
+                closable: false,
+              },
+            ]),
       ];
     }, [classicDataSource]);
 
@@ -195,6 +206,7 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
     const handleDeleteClassic = useCallback(
       async (targetKey) => {
         await deleteClassic(targetKey);
+        const length = classicDataSource.length;
         const index = classicDataSource.findIndex(
           (item) => item._id === targetKey,
         );
@@ -202,7 +214,7 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
         // 相同则切换至最近一个
         if (targetKey === currentClassic) {
           if (!index) {
-            nextClassic = '';
+            nextClassic = length === 1 ? 'internal' : classicDataSource[1]._id;
           } else {
             nextClassic = classicDataSource[index - 1]._id;
           }
@@ -307,6 +319,7 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
     }, [currentPage, currentClassic]);
 
     useEffect(() => {
+      if (!visible) return;
       fetchClassifyData().then((list) => {
         if (list.length) {
           setCurrentClassic(list[0]._id);
@@ -314,7 +327,7 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
           setCurrentClassic('internal');
         }
       });
-    }, []);
+    }, [visible]);
 
     useEffect(() => {
       pageSize.current =
@@ -380,6 +393,11 @@ const BackgroundSelect = forwardRef<BackgroundSelectRef, BackgroundSelectProps>(
             );
           })}
         </Row>
+        {!dataSource.length && mode !== 'editable' && (
+          <div className="dis-flex-cen h-100">
+            <Empty description={'暂无资源'} />
+          </div>
+        )}
         <Pagination
           total={total}
           pageSize={pageSize.current}

@@ -96,7 +96,7 @@ const ContextMenu = (
         label,
         key: type,
         style: {
-          padding: '2px 4px',
+          padding: '4px 2px',
         },
       };
     });
