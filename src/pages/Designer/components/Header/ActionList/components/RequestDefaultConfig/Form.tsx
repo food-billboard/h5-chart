@@ -1,5 +1,6 @@
 import { useControllableValue } from 'ahooks';
 import { Drawer, Switch } from 'antd';
+import classnames from 'classnames';
 import { forwardRef, useCallback, useImperativeHandle, useState } from 'react';
 import { connect } from 'umi';
 import InputNumber from '@/components/ChartComponents/Common/InputNumber';
@@ -78,9 +79,15 @@ const LensConfig = forwardRef<RequestConfigRef, Props>((props, ref) => {
       onClose={onClose}
       title="默认请求配置"
       placement="left"
-      width={400}
+      width={500}
     >
-      <ConfigList level={1}>
+      <ConfigList
+        level={1}
+        style={{
+          // @ts-ignore
+          '--config-component-container-width': '300px',
+        }}
+      >
         <Item label="请求方法">
           <FullForm>
             <Select
@@ -123,7 +130,7 @@ const LensConfig = forwardRef<RequestConfigRef, Props>((props, ref) => {
           </FullForm>
         </Item>
         <Item label="自动更新请求">
-          <HalfForm style={{ width: '30%' }}>
+          <HalfForm style={{ width: '15%' }}>
             <Switch
               checked={frequency.show}
               onChange={(value) =>
@@ -133,7 +140,10 @@ const LensConfig = forwardRef<RequestConfigRef, Props>((props, ref) => {
               }
             />
           </HalfForm>
-          <HalfForm style={{ width: '66%' }}>
+          <HalfForm
+            style={{ width: '85%' }}
+            className={styles['custom-half-form']}
+          >
             <InputNumber
               value={frequency.value || 0}
               disabled={!frequency.show}
@@ -143,9 +153,12 @@ const LensConfig = forwardRef<RequestConfigRef, Props>((props, ref) => {
                 })
               }
               controls={false}
-              className={styles['request-default-config-frequency']}
+              className={classnames(
+                styles['request-default-config-frequency'],
+                'f-1',
+              )}
             />
-            <span className="c-f-s">{' 秒一次'}</span>
+            <span className="c-f-s m-l-8">{' 秒一次'}</span>
           </HalfForm>
         </Item>
       </ConfigList>

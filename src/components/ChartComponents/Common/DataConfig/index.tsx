@@ -1,9 +1,9 @@
-import { getPath } from '@/utils/Assist/Component';
-import DataChangePool from '@/utils/Assist/DataChangePool';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
 import { useCallback } from 'react';
 import { connect } from 'umi';
+import { getPath } from '@/utils/Assist/Component';
+import DataChangePool from '@/utils/Assist/DataChangePool';
 import FieldMap from './components/FieldMap';
 import ResponseData from './components/ResponseData';
 import { mapDispatchToProps, mapStateToProps } from './connect';
@@ -60,20 +60,22 @@ const DataConfig = (props: {
       >
         <span className={classnames('text-ellipsis-2')}>数据接口</span>
       </div>
-      <FieldMap
-        value={fieldMap}
-        onChange={(value) =>
-          onValueChange({
-            config: {
-              data: {
-                filter: {
-                  map: value,
+      <div className="p-lr-10">
+        <FieldMap
+          value={fieldMap}
+          onChange={(value) =>
+            onValueChange({
+              config: {
+                data: {
+                  filter: {
+                    map: value,
+                  },
                 },
               },
-            },
-          })
-        }
-      />
+            })
+          }
+        />
+      </div>
       <div
         className={classnames(styles['design-config-data-title'], 'border-1')}
       >

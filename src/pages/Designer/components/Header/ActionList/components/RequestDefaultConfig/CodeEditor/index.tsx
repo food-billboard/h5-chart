@@ -32,7 +32,7 @@ const SaveCodeEditor = (props: {
     <div>
       <CodeEditor
         language={language}
-        width={192}
+        width={300}
         height={138}
         bordered
         value={stateValue}
