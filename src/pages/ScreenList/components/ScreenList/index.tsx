@@ -4,12 +4,12 @@ import {
   DesktopOutlined,
   CopyOutlined,
   ExportOutlined,
-  SmallDashOutlined,
   BranchesOutlined,
 } from '@ant-design/icons';
 import { Row, Col, Button, Switch, App, Dropdown } from 'antd';
 import classnames from 'classnames';
-import { useRef, useCallback, useMemo } from 'react';
+import { useRef, useCallback } from 'react';
+import { useAsyncCallback } from '@/hooks';
 import {
   deleteScreen,
   previewScreen,
@@ -21,6 +21,7 @@ import {
   previewScreenModel,
   enableScreenModel,
   disabledScreenModel,
+  getCurrentScreenShotId,
 } from '@/services';
 import { exportData } from '@/utils/Assist/LeadInAndOutput';
 import {
@@ -80,13 +81,33 @@ const ScreenList = (props: {
   );
 
   // 编辑
-  const handleEdit = useCallback(
-    (value) => {
+  const handleEdit = useAsyncCallback(
+    async (value) => {
       const { _id, enable } = value;
-      if (enable) return;
+      if (enable) {
+        if (listType === 'model') return;
+        message.loading('数据获取中');
+        const currentScreenShotId = await getCurrentScreenShotId({ _id });
+        if (!currentScreenShotId.data) {
+          const result = await new Promise((resolve) => {
+            modal.confirm({
+              title: '提示',
+              content:
+                '当前大屏暂无快照，修改大屏后分享链接的内容也会同步更改，是否确认修改',
+              onOk: () => {
+                resolve(true);
+              },
+              onCancel: () => {
+                resolve(false);
+              },
+            });
+          });
+          if (!result) return;
+        }
+      }
       listType === 'screen' ? goDesign(_id) : goDesignModel(_id);
     },
-    [listType],
+    [listType, message, modal],
   );
 
   // 复制
